@@ -1,22 +1,32 @@
 const { defineConfig, devices } = require('@playwright/test');
-require('dotenv').config();
 
 module.exports = defineConfig({
   testDir: './test',
-  timeout: 30_000,
-  expect: { timeout: 10_000 },
+  timeout: 30000,
+  expect: {
+    timeout: 10000,
+  },
   fullyParallel: false,
-  workers: 1,
-  retries: 0,
-  reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
+
   use: {
-    baseURL: process.env.BASE_URL || 'https://demoapp.stratzen.ai',
-    headless: true,
+    baseURL: 'https://demoapp.stratzen.ai',
+    headless: false,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
     video: 'off',
-    actionTimeout: 10_000,
+    actionTimeout: 10000,
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+
+  projects: [
+    {
+      name: 'chrome',
+      use: {
+        browserName: 'chromium',
+        channel: 'chrome',
+        ...devices['Desktop Chrome'],
+      },
+    },
+  ],
+
   outputDir: 'test-results',
 });
