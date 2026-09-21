@@ -64,7 +64,77 @@ test.describe('Login Module', () => {
     expect(messageVisible || ariaInvalid || htmlInvalid).toBeTruthy();
   });
 
-  test('TC003_Login_ValidCredentials', async ({ page }) => {
+  test('TC003_Login_EmptyFormSubmissionBlocked', async ({ page }) => {
+    // Step 1: Navigate to login page.
+    await page.goto('/login');
+    await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+
+    // Step 2: Confirm login action is available.
+    const submit = page.getByRole('button', { name: /log\s*in|sign\s*in/i });
+    await expect(submit).toBeVisible();
+
+    // Step 3: Submit without entering credentials.
+    await submit.click();
+
+    // Step 4: Verify user remains on login route.
+    await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+
+    // Step 5: Verify at least one required-field validation signal is shown.
+    const email = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+    const password = page.locator('input[type="password"]').first();
+    const validationMessage = page.getByText(/required|enter.+email|enter.+password|please fill/i).first();
+
+    const messageVisible = await validationMessage.isVisible().catch(() => false);
+    const emailInvalid = await email.evaluate((el) => {
+      if (!(el instanceof HTMLInputElement)) {
+        return false;
+      }
+      return !el.checkValidity();
+    });
+    const passwordInvalid = await password.evaluate((el) => {
+      if (!(el instanceof HTMLInputElement)) {
+        return false;
+      }
+      return !el.checkValidity();
+    });
+
+    expect(messageVisible || emailInvalid || passwordInvalid).toBeTruthy();
+  });
+
+  test('TC004_Login_PasswordRequiredWhenEmailProvided', async ({ page }) => {
+    // Step 1: Navigate to login page.
+    await page.goto('/login');
+    await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+
+    // Step 2: Fill only the email value.
+    const email = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+    const password = page.locator('input[type="password"]').first();
+    await expect(email).toBeVisible();
+    await expect(password).toBeVisible();
+    await email.fill('qa@example.com');
+
+    // Step 3: Submit with password left empty.
+    const submit = page.getByRole('button', { name: /log\s*in|sign\s*in/i });
+    await expect(submit).toBeVisible();
+    await submit.click();
+
+    // Step 4: Verify login does not proceed.
+    await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+
+    // Step 5: Verify password-required signal appears.
+    const validationMessage = page.getByText(/password.+required|enter.+password|required/i).first();
+    const messageVisible = await validationMessage.isVisible().catch(() => false);
+    const passwordInvalid = await password.evaluate((el) => {
+      if (!(el instanceof HTMLInputElement)) {
+        return false;
+      }
+      return !el.checkValidity();
+    });
+
+    expect(messageVisible || passwordInvalid).toBeTruthy();
+  });
+
+  test('TC005_Login_ValidCredentials', async ({ page }) => {
     // Step 1: This scenario is intentionally skipped until live selectors
     // and post-login destination are verified in the target environment.
     test.skip(!process.env.STRATZEN_EMAIL || !process.env.STRATZEN_PASSWORD, 'Set STRATZEN_EMAIL and STRATZEN_PASSWORD in .env');
@@ -84,28 +154,28 @@ test.describe('Login Module', () => {
 });
 
 test.describe('Summary Module', () => {
-  test.skip('TC004_Summary_ScreenRendersForAuthenticatedUser', async () => {
+  test.skip('TC006_Summary_ScreenRendersForAuthenticatedUser', async () => {
     // Step 1: Placeholder for summary scenario.
     // Selectors and acceptance criteria must be verified in live UI.
   });
 });
 
 test.describe('Research Module', () => {
-  test.skip('TC005_Research_WorkflowCanBeStarted', async () => {
+  test.skip('TC007_Research_WorkflowCanBeStarted', async () => {
     // Step 1: Placeholder for research scenario.
     // Selectors and acceptance criteria must be verified in live UI.
   });
 });
 
 test.describe('Preferences Module', () => {
-  test.skip('TC006_Preferences_OpenAndSave', async () => {
+  test.skip('TC008_Preferences_OpenAndSave', async () => {
     // Step 1: Placeholder for preferences scenario.
     // Selectors and acceptance criteria must be verified in live UI.
   });
 });
 
 test.describe('Logout Module', () => {
-  test.skip('TC007_Logout_AuthenticatedUserCanLogOut', async () => {
+  test.skip('TC009_Logout_AuthenticatedUserCanLogOut', async () => {
     // Step 1: Placeholder for logout scenario.
     // Selectors and acceptance criteria must be verified in live UI.
   });
