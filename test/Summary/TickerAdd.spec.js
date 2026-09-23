@@ -11,11 +11,12 @@ test.describe('Research and Summary XLK Watchlist', () => {
     await page.locator('input[type="email"]').fill(email);
     await page.locator('input[type="password"]').fill(passwordValue);
     await page.getByRole('button', { name: /sign in/i }).click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForURL('https://demoapp.stratzen.ai/summary');
+
 
     // Step 2: Open Research and the Watchlist ETF tab.
     await page.getByRole('link', { name: 'Research', exact: true }).click();
-    await expect(page).toHaveURL(/research/);
+    await expect(page).toHaveURL('https://demoapp.stratzen.ai/research?watchlist_asset=stock&screener_asset=all&tab=watchlist');
     await page.getByRole('tab', { name: 'Watchlist', exact: true }).click();
     await page.getByRole('tab', { name: /ETFs/i }).click();
 
@@ -50,9 +51,14 @@ test.describe('Research and Summary XLK Watchlist', () => {
 
   // removing the ticker from watchlist
   await page.getByRole('link', { name: 'Research' }).dblclick();
-  await page.waitForLoadState('networkidle');
+  await page.waitForURL('https://demoapp.stratzen.ai/research?watchlist_asset=stock&screener_asset=all&tab=watchlist');
   await page.getByRole('tab', { name: 'ETFs (2)' }).click();
   await page.getByText('★').first().click();
+
+  // logout 
+
+  await page.getByText('QA', { exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Logout' }).click();
 
 });
   });

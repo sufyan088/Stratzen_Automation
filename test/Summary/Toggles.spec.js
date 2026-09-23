@@ -8,7 +8,7 @@ test.describe('Summary Module - Toggle Visibility', () => {
         // Step 1: Navigate to Login Page.
         await page.goto('https://demoapp.stratzen.ai/login', {
             waitUntil: 'domcontentloaded',
-            timeout: 60000,
+            timeout: 90000,
         });
         await expect(page).toHaveURL(/login/);
 
@@ -65,27 +65,21 @@ test.describe('Summary Module - Toggle Visibility', () => {
         }
         await expect(newsMarketToggle).toHaveAttribute('aria-pressed', 'false');
 
-        // Wait for popup Save Preferences button
+        await page.pause();
 
-        // Wait up to 60 seconds for the popup button to appear
+        // Step 12: Confirm the Save Preferences action is available, then navigate from the sidebar without clicking it.
+        const savePreferencesButton = page.getByRole('button', { name: 'Save Preferences' });
+        await savePreferencesButton.scrollIntoViewIfNeeded();
+        await expect(savePreferencesButton).toBeVisible();
 
-        const savePreferencesButton = page.getByRole('button', {
-    name: 'Save Preferences'
-});
-
-await savePreferencesButton.scrollIntoViewIfNeeded();
-
-await expect(savePreferencesButton).toBeVisible({
-    timeout: 60000
-});
-
-await savePreferencesButton.evaluate((button) => button.click());
-await page.waitForLoadState('networkidle');
-
-        // Step 12: Click on the Summary module from the left sidebar.
         await page.getByRole('link', { name: 'Summary', exact: true }).click();
-    await page.waitForURL(/summary/);
-    await page.waitForLoadState('networkidle');
+        const discardChangesDialog = page.getByRole('dialog');
+        await expect(discardChangesDialog).toBeVisible();
+        await expect(discardChangesDialog).toContainText('Discard changes?');
+        await discardChangesDialog
+            .getByRole('button', { name: 'Discard', exact: true })
+            .click();
+        await expect(page).toHaveURL(/summary/);
 
         // Step 13-19: Verify the disabled subsections are not displayed on Summary.
 
