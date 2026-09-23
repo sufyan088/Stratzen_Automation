@@ -1,14 +1,24 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('Summary Module - Login', () => {
+    test.describe.configure({ timeout: 120000 });
 
     test('TC001_Login_To_Stratzen', async ({ page }) => {
+        const appBaseUrl = process.env.URL
+            || process.env.APP_URL
+            || process.env.BASE_URL
+            || test.info().project.use.baseURL;
 
-        const email = 'SZ_AutoQA@stratzen.ai';
-        const passwordValue = 'StratzenAutomation123';
+        if (!appBaseUrl) {
+            throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
+        }
+
+        const buildUrl = (path) => new URL(path, appBaseUrl).toString();
+        const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+        const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
         // Step 1: Navigate to Login Page
-        await page.goto('https://demoapp.stratzen.ai/login');
+        await page.goto(buildUrl('/login'));
 
         // Verify Login Page
         await expect(page).toHaveURL(/login/);

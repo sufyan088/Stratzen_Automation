@@ -1,20 +1,31 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('Summary Module - Market Pulse', () => {
 	test('TC_VerifyMarketPulseDisplayAndRefresh', async ({ page }) => {
 		test.setTimeout(90000);
 
-		const email = 'SZ_AutoQA@stratzen.ai';
-		const passwordValue = 'StratzenAutomation123';
+		const appBaseUrl = process.env.URL
+			|| process.env.APP_URL
+			|| process.env.BASE_URL
+			|| test.info().project.use.baseURL;
 
-		await page.goto('https://demoapp.stratzen.ai/login');
+		if (!appBaseUrl) {
+			throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
+		}
+
+		const buildUrl = (path) => new URL(path, appBaseUrl).toString();
+		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
+
+		await page.goto(buildUrl('/login'));
 		await expect(page).toHaveURL(/login/);
 
 		await page.locator('input[type="email"]').fill(email);
 		await page.locator('input[type="password"]').fill(passwordValue);
 		await page.getByRole('button', { name: /sign in/i }).click();
 
-		await page.waitForURL('https://demoapp.stratzen.ai/summary');
+		await page.waitForLoadState('networkidle');
+		await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
 
 		const marketPulseSection = page
 			.getByRole('button', {

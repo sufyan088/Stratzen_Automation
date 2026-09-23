@@ -1,9 +1,28 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
+
+const getRuntimeConfig = (testInfo) => {
+  const appBaseUrl = process.env.URL
+    || process.env.APP_URL
+    || process.env.BASE_URL
+    || testInfo.project.use.baseURL;
+
+  if (!appBaseUrl) {
+    throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
+  }
+
+  return {
+    buildUrl: (path) => new URL(path, appBaseUrl).toString(),
+    email: process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai',
+    password: process.env.STRATZEN_PASSWORD || 'StratzenAutomation123',
+  };
+};
 
 test.describe('Login Module', () => {
   test('TC001_Login_PageDisplaysExpectedFormControls', async ({ page }) => {
+    const { buildUrl } = getRuntimeConfig(test.info());
+
     // Step 1: Navigate directly to login.
-    await page.goto('/login');
+    await page.goto(buildUrl('/login'));
 
     // Step 2: Confirm expected route is loaded.
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
@@ -27,8 +46,10 @@ test.describe('Login Module', () => {
   });
 
   test('TC002_Login_InvalidEmailInputRejected', async ({ page }) => {
+    const { buildUrl } = getRuntimeConfig(test.info());
+
     // Step 1: Navigate to login page.
-    await page.goto('/login');
+    await page.goto(buildUrl('/login'));
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
 
     // Step 2: Enter an invalid email value.
@@ -65,8 +86,10 @@ test.describe('Login Module', () => {
   });
 
   test('TC003_Login_EmptyFormSubmissionBlocked', async ({ page }) => {
+    const { buildUrl } = getRuntimeConfig(test.info());
+
     // Step 1: Navigate to login page.
-    await page.goto('/login');
+    await page.goto(buildUrl('/login'));
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
 
     // Step 2: Confirm login action is available.
@@ -102,8 +125,10 @@ test.describe('Login Module', () => {
   });
 
   test('TC004_Login_PasswordRequiredWhenEmailProvided', async ({ page }) => {
+    const { buildUrl } = getRuntimeConfig(test.info());
+
     // Step 1: Navigate to login page.
-    await page.goto('/login');
+    await page.goto(buildUrl('/login'));
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
 
     // Step 2: Fill only the email value.
@@ -135,17 +160,19 @@ test.describe('Login Module', () => {
   });
 
   test('TC005_Login_ValidCredentials', async ({ page }) => {
+    const { buildUrl, email, password } = getRuntimeConfig(test.info());
+
     // Step 1: This scenario is intentionally skipped until live selectors
     // and post-login destination are verified in the target environment.
     test.skip(!process.env.STRATZEN_EMAIL || !process.env.STRATZEN_PASSWORD, 'Set STRATZEN_EMAIL and STRATZEN_PASSWORD in .env');
 
     // Step 2: Open login and confirm route.
-    await page.goto('/login');
+    await page.goto(buildUrl('/login'));
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
 
     // Step 3: Fill credentials from environment variables.
-    await page.getByRole('textbox', { name: /email/i }).fill(process.env.STRATZEN_EMAIL);
-    await page.locator('input[type="password"]').fill(process.env.STRATZEN_PASSWORD);
+    await page.getByRole('textbox', { name: /email/i }).fill(email);
+    await page.locator('input[type="password"]').fill(password);
 
     // Step 4: Submit and verify authenticated landing URL.
     await page.getByRole('button', { name: /log\s*in|sign\s*in/i }).click();

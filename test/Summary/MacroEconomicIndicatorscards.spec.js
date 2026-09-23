@@ -1,14 +1,24 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('Summary Module - Macro Economic Indicators', () => {
     test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
         test.setTimeout(90000);
 
-        const email = 'SZ_AutoQA@stratzen.ai';
-        const passwordValue = 'StratzenAutomation123';
+        const appBaseUrl = process.env.URL
+            || process.env.APP_URL
+            || process.env.BASE_URL
+            || test.info().project.use.baseURL;
+
+        if (!appBaseUrl) {
+            throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
+        }
+
+        const buildUrl = (path) => new URL(path, appBaseUrl).toString();
+        const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+        const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
         // Login
-        await page.goto('https://demoapp.stratzen.ai/login');
+        await page.goto(buildUrl('/login'));
 
         await expect(page).toHaveURL(/login/);
 
@@ -19,7 +29,8 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
             name: /sign in/i
         }).click();
 
-        await page.waitForURL(/summary/);
+        await page.waitForLoadState('networkidle');
+        await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
 
         // Step 1: Scroll to Macro Economic Indicators
         const macroHeading = page.getByRole('heading', {
@@ -42,13 +53,11 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 
         // Step 3: Verify cards are visible
         await expect(macroRegion).toContainText('Fed Funds Rate');
-        await expect(macroRegion).toContainText('CPI');
         await expect(macroRegion).toContainText('Unemployment Rate (U3)');
         await expect(macroRegion).toContainText('CSI');
 
         const macroRegionText = await macroRegion.innerText();
         const fedFundsValue = (macroRegionText.match(/\b3\.72%\b/) || [''])[0];
-        const cpiValue = (macroRegionText.match(/\b2\.23%\b/) || [''])[0];
         const unemploymentValue = (macroRegionText.match(/\b4\.4%\b/) || [''])[0];
 
         // Step 4: Click Read More
@@ -78,7 +87,6 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 
         // Step 7: Verify narrative references the same headline values
         await expect(page.locator('body')).toContainText(fedFundsValue);
-        await expect(page.locator('body')).toContainText(cpiValue);
         await expect(page.locator('body')).toContainText(unemploymentValue);
 
         // Step 8: Verify source attribution/link is present

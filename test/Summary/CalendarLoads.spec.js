@@ -1,9 +1,21 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('Summary Module - Calendar', () => {
+	test.describe.configure({ timeout: 120000 });
+
 	test('TC002_VerifyCalendarLoadsAndDateSelection', async ({ page }) => {
-		const email = 'SZ_AutoQA@stratzen.ai';
-		const passwordValue = 'StratzenAutomation123';
+		const appBaseUrl = process.env.URL
+			|| process.env.APP_URL
+			|| process.env.BASE_URL
+			|| test.info().project.use.baseURL;
+
+		if (!appBaseUrl) {
+			throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
+		}
+
+		const buildUrl = (path) => new URL(path, appBaseUrl).toString();
+		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 		const today = new Date();
 		const currentMonthLabel = today.toLocaleString('en-US', {
 			month: 'long',
@@ -15,14 +27,15 @@ test.describe('Summary Module - Calendar', () => {
 			0,
 		).getDate();
 
-		await page.goto('https://demoapp.stratzen.ai/login');
+		await page.goto(buildUrl('/login'));
 		await expect(page).toHaveURL(/login/);
 
 		await page.locator('input[type="email"]').fill(email);
 		await page.locator('input[type="password"]').fill(passwordValue);
 		await page.getByRole('button', { name: /sign in/i }).click();
 
-		await page.waitForURL('https://demoapp.stratzen.ai/summary');
+		await page.waitForLoadState('networkidle');
+		await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
 
 		const calendarSection = page.locator('.summary-calendar-wrapper');
 		const monthHeader = calendarSection.locator('.calendar-month-year');
