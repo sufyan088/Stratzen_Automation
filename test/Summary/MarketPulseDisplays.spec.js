@@ -66,5 +66,8 @@ test.describe('Summary Module - Market Pulse', () => {
 		await expect(whatToWatchHeading).toBeVisible();
 		await expect(cacheTimestamp).toBeVisible();
 		await expect(marketPulseRegion).not.toContainText(/loading|refreshing/i);
+
+		await page.getByText('QA', { exact: true }).click();
+		await page.getByRole('menuitem', { name: 'Logout' }).click();
 	});
 });

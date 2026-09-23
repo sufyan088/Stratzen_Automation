@@ -102,5 +102,8 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 		await expect(detailDate).toHaveCount(0);
 		await expect(page.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
 		await expect(macroHeading).toBeVisible();
+
+		await page.getByText('QA', { exact: true }).click();
+		await page.getByRole('menuitem', { name: 'Logout' }).click();
 	});
 });
