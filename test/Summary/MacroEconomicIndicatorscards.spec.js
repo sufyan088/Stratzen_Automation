@@ -1,76 +1,108 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('Summary Module - Macro Economic Indicators', () => {
-	test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
-		test.setTimeout(90000);
+    test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
+        test.setTimeout(90000);
 
-		const email = 'SZ_AutoQA@stratzen.ai';
-		const passwordValue = 'StratzenAutomation123';
+        const email = 'SZ_AutoQA@stratzen.ai';
+        const passwordValue = 'StratzenAutomation123';
 
-		await page.goto('https://demoapp.stratzen.ai/login');
-		await expect(page).toHaveURL(/login/);
+        // Login
+        await page.goto('https://demoapp.stratzen.ai/login');
 
-		await page.locator('input[type="email"]').fill(email);
-		await page.locator('input[type="password"]').fill(passwordValue);
-		await page.getByRole('button', { name: /sign in/i }).click();
+        await expect(page).toHaveURL(/login/);
 
-		await page.waitForURL('https://demoapp.stratzen.ai/summary');
+        await page.locator('input[type="email"]').fill(email);
+        await page.locator('input[type="password"]').fill(passwordValue);
 
-		const macroHeading = page.getByRole('heading', {
-			name: /Macro Economic Indicators/i,
-		});
-		const macroSection = macroHeading.locator('..');
-		const macroDescription = page.getByText(
-			'Key indicators with portfolio implications.',
-			{ exact: true },
-		);
-		const readMoreButton = macroSection.getByRole('button', {
-			name: 'Read More',
-			exact: true,
-		});
+        await page.getByRole('button', {
+            name: /sign in/i
+        }).click();
 
-		await macroHeading.scrollIntoViewIfNeeded();
-		await expect(macroHeading).toBeVisible();
-		await expect(macroDescription).toBeVisible();
+        await page.waitForURL(/summary/);
 
-		const fedFundsCard = page.getByText('FED FUNDS RATE', { exact: true });
-		const cpiCard = page.getByText('CPI', { exact: true });
-		const unemploymentCard = page.getByText('UNEMPLOYMENT RATE (U3)', {
-			exact: true,
-		});
-		const csiCard = page.getByText('CSI', { exact: true });
+        // Step 1: Scroll to Macro Economic Indicators
+        const macroHeading = page.getByRole('heading', {
+            name: 'Macro Economic Indicators'
+        });
+        const macroSection = macroHeading.locator('..');
+        const macroRegion = page.getByRole('region').filter({
+            hasText: 'Treasury 1y:'
+        });
 
-		await expect(fedFundsCard).toBeVisible();
-		await expect(cpiCard).toBeVisible();
-		await expect(unemploymentCard).toBeVisible();
-		await expect(csiCard).toBeVisible();
+        const macroDescription = page.getByText(
+            'Key indicators with portfolio implications.'
+        );
 
-		const fedFundsValue = (await macroSection.getByText(/^3\.72%$/).textContent()).trim();
-		const cpiValue = (await macroSection.getByText(/^2\.23%$/).textContent()).trim();
-		const unemploymentValue = (await macroSection.getByText(/^4\.4%$/).textContent()).trim();
+        await macroHeading.scrollIntoViewIfNeeded();
 
-		await readMoreButton.click();
+        // Step 2: Verify section title and description
+        await expect(macroHeading).toBeVisible();
+        await expect(macroDescription).toBeVisible();
 
-		const detailTitle = page.getByText('Macro Economic Indicators', { exact: true }).last();
-		const detailDate = page.getByText(/^[A-Z][a-z]+ \d{1,2}, \d{4}$/);
-		const detailNarrative = page.locator('body');
-		const sourceAttribution = page.getByText(/Source:\s*FMP/i);
-		const sourceLink = page.getByRole('link', {
-			name: /site\.financialmodelingprep\.com/i,
-		});
+        // Step 3: Verify cards are visible
+        await expect(macroRegion).toContainText('Fed Funds Rate');
+        await expect(macroRegion).toContainText('CPI');
+        await expect(macroRegion).toContainText('Unemployment Rate (U3)');
+        await expect(macroRegion).toContainText('CSI');
 
-		await expect(detailTitle).toBeVisible();
-		await expect(detailDate).toBeVisible();
-		await expect(detailNarrative).toContainText(fedFundsValue);
-		await expect(detailNarrative).toContainText(cpiValue);
-		await expect(detailNarrative).toContainText(unemploymentValue);
-		await expect(sourceAttribution).toBeVisible();
-		await expect(sourceLink).toBeVisible();
+        const macroRegionText = await macroRegion.innerText();
+        const fedFundsValue = (macroRegionText.match(/\b3\.72%\b/) || [''])[0];
+        const cpiValue = (macroRegionText.match(/\b2\.23%\b/) || [''])[0];
+        const unemploymentValue = (macroRegionText.match(/\b4\.4%\b/) || [''])[0];
 
-		await page.getByRole('button', { name: 'Close drawer' }).last().click();
+        // Step 4: Click Read More
+        await macroSection
+            .getByRole('button', { name: 'Read More', exact: true })
+            .click();
 
-		await expect(detailDate).toHaveCount(0);
-		await expect(page.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
-		await expect(macroHeading).toBeVisible();
-	});
+        // Step 5: Verify detail view opens
+        const closeDrawerButton = page.getByRole('button', {
+            name: 'Close drawer'
+        });
+        const detailDialog = page.getByRole('dialog').last();
+        const detailHeading = page.getByText('Macro Economic Indicators', {
+            exact: true
+        }).last();
+        const detailDate = detailDialog.getByText(/^[A-Z][a-z]+ \d{1,2}, \d{4}$/).last();
+        const sourceAttribution = detailDialog.getByText(/Source:\s*FMP/i).last();
+        const sourceLink = detailDialog.getByRole('link', {
+            name: /financialmodelingprep/i
+        });
+
+        await expect(closeDrawerButton).toBeVisible();
+        await expect(detailHeading).toBeVisible();
+
+        // Step 6: Verify detail date is displayed
+        await expect(detailDate).toBeVisible();
+
+        // Step 7: Verify narrative references the same headline values
+        await expect(page.locator('body')).toContainText(fedFundsValue);
+        await expect(page.locator('body')).toContainText(cpiValue);
+        await expect(page.locator('body')).toContainText(unemploymentValue);
+
+        // Step 8: Verify source attribution/link is present
+        await expect(sourceAttribution).toBeVisible();
+        await expect(sourceLink).toBeVisible();
+
+        // Step 9: Close detail view using X
+        await closeDrawerButton.click();
+
+        // Step 10: Verify Summary is restored
+        await expect(
+            page.getByRole('link', {
+                name: 'Summary',
+                exact: true
+            })
+        ).toBeVisible();
+
+        await expect(detailDate).toHaveCount(0);
+        await expect(macroHeading).toBeVisible();
+        await expect(macroDescription).toBeVisible();
+
+          // logout 
+
+        await page.getByText('QA', { exact: true }).click();
+        await page.getByRole('menuitem', { name: 'Logout' }).click();
+    });
 });

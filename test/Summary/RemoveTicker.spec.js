@@ -51,5 +51,10 @@ test.describe('Research and Summary XLK Watchlist', () => {
     await expect(page.getByText('Stocks & ETFs', { exact: true })).toBeVisible(); 
     await expect(page.getByText('XLK', { exact: true })).not.toBeVisible();
 
+	  // logout 
+
+    await page.getByText('QA', { exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Logout' }).click();
+
 });
   });
