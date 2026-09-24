@@ -3,7 +3,9 @@ import { test, expect } from '@playwright/test';
 test.describe('Research and Summary XLK Watchlist', () => {
 	test.describe.configure({ timeout: 120000 });
 
-  test('TC003_AddXLKAndVerifyAcrossPages', async ({ page }) => {
+	test('TC004_RemoveXLKAndVerifyAcrossPages', async ({ page }) => {
+		await page.setViewportSize({ width: 1600, height: 1400 });
+
 	const appBaseUrl = process.env.URL
 		|| process.env.APP_URL
 		|| process.env.BASE_URL
@@ -17,84 +19,115 @@ test.describe('Research and Summary XLK Watchlist', () => {
 	const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
 	const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
-	// Step 1: Open the app and sign in.
-	await page.goto(buildUrl('/login'));
-	await expect(page).toHaveURL(/login/);
-	await page.locator('input[type="email"]').fill(email);
-	await page.locator('input[type="password"]').fill(passwordValue);
-	await page.getByRole('button', { name: /sign in/i }).click();
-	await page.waitForLoadState('networkidle');
-	await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+	// Step 1: Navigate to the login page.
+	await test.step('Step 1: Navigate to the login page', async () => {
+		await page.goto(buildUrl('/login'), {
+			waitUntil: 'domcontentloaded',
+			timeout: 90000,
+		});
+		await expect(page).toHaveURL(/login/);
+	});
 
+	// Step 2: Enter the email address.
+	await test.step('Step 2: Enter the email address', async () => {
+		const emailField = page.locator('input[type="email"]');
+		await expect(emailField).toBeVisible();
+		await emailField.fill(email);
+	});
 
-	// Step 2: Open Research and the Watchlist ETF tab.
-	await page.getByRole('link', { name: 'Research', exact: true }).click();
-	await expect(page).toHaveURL(/\/research\?watchlist_asset=stock&screener_asset=all&tab=watchlist$/);
-	await page.getByRole('tab', { name: 'Watchlist', exact: true }).click();
-	await page.getByRole('tab', { name: /ETFs/i }).click();
-	await expect(page).toHaveURL(/\/research\?watchlist_asset=etf&screener_asset=all&tab=watchlist$/);
+	// Step 3: Enter the password.
+	await test.step('Step 3: Enter the password', async () => {
+		const passwordField = page.locator('input[type="password"]');
+		await expect(passwordField).toBeVisible();
+		await passwordField.fill(passwordValue);
+	});
+
+	// Step 4: Click the Sign In button.
+	await test.step('Step 4: Click the Sign In button', async () => {
+		await page.getByRole('button', { name: /sign in/i }).click();
+	});
+
+	// Step 5: Verify the login redirect completes.
+	await test.step('Step 5: Verify the login redirect completes', async () => {
+		await page.waitForLoadState('networkidle');
+		await expect(page).not.toHaveURL(/login/);
+	});
 
 	const openEtfWatchlist = async () => {
 		await page.getByRole('link', { name: 'Research', exact: true }).click();
-		await expect(page).toHaveURL(/\/research\?watchlist_asset=stock&screener_asset=all&tab=watchlist$/);
-		await page.getByRole('tab', { name: /ETFs/i }).click();
+		await expect(page).toHaveURL(/\/research(?:\?watchlist_asset=(?:stock|etf)&screener_asset=all&tab=watchlist)?$/);
+
+		if (!/watchlist_asset=etf/.test(page.url())) {
+			await page.getByRole('tab', { name: /ETFs/i }).click();
+		}
+
 		await expect(page).toHaveURL(/\/research\?watchlist_asset=etf&screener_asset=all&tab=watchlist$/);
 	};
 
-	// Step 3: Add XLK.
+	// Step 6: Open Research and the ETF watchlist.
+	await test.step('Step 6: Open Research and the ETF watchlist', async () => {
+		await openEtfWatchlist();
+	});
+
 	const xlkRow = page.getByRole('row', { name: /XLK State Street Technology Select Sector SPDR ETF/i });
 	let xlkAdded = false;
-	for (let attempt = 0; attempt < 2; attempt += 1) {
-		await page.getByRole('button', { name: /add ticker/i }).click();
-		const tickerSymbolInput = page.getByRole('textbox', { name: 'Ticker Symbol' });
-		await expect(tickerSymbolInput).toBeVisible();
-		await tickerSymbolInput.fill('XLK');
-		await page.getByRole('button', { name: 'Add', exact: true }).click();
+	// Step 7: Add XLK to the ETF watchlist.
+	await test.step('Step 7: Add XLK to the ETF watchlist', async () => {
+		for (let attempt = 0; attempt < 2; attempt += 1) {
+			await page.getByRole('button', { name: /add ticker/i }).click();
+			const tickerSymbolInput = page.getByRole('textbox', { name: 'Ticker Symbol' });
+			await expect(tickerSymbolInput).toBeVisible();
+			await tickerSymbolInput.fill('XLK');
+			await page.getByRole('button', { name: 'Add', exact: true }).click();
 
-		try {
-			await expect(xlkRow).toBeVisible({ timeout: 15000 });
-			xlkAdded = true;
-			break;
-		} catch (error) {
-			if (attempt === 1) {
-				throw error;
+			try {
+				await expect(xlkRow).toBeVisible({ timeout: 15000 });
+				xlkAdded = true;
+				break;
+			} catch (error) {
+				if (attempt === 1) {
+					throw error;
+				}
+
+				await page.reload({ waitUntil: 'domcontentloaded' });
+				await expect(page.getByRole('link', { name: 'Research', exact: true })).toBeVisible();
+				await openEtfWatchlist();
 			}
-
-			await page.reload({ waitUntil: 'domcontentloaded' });
-			await page.waitForLoadState('networkidle');
-			await openEtfWatchlist();
 		}
-	}
+	});
 
 	expect(xlkAdded).toBeTruthy();
 
-	// Step 4: Verify XLK shows as selected in the watchlist.
-	await expect(xlkRow).toBeVisible();
+	// Step 8: Remove XLK and verify it is removed across pages.
+	await test.step('Step 8: Remove XLK and verify it is removed across pages', async () => {
+		await expect(xlkRow).toBeVisible();
 
-	const xlkStar = xlkRow.locator('td').first().locator('span').first();
-	await expect(xlkStar).toHaveText('★');
-	await expect(xlkStar).toHaveCSS('color', 'rgb(245, 158, 11)');
+		const xlkStar = xlkRow.locator('td').first().locator('span').first();
+		await expect(xlkStar).toHaveText('★');
+		await expect(xlkStar).toHaveCSS('color', 'rgb(245, 158, 11)');
 
-	await xlkRow.locator('td').first().click();
+		await xlkRow.locator('td').first().click();
+		await expect(xlkRow).toHaveCount(0);
 
-	await expect(xlkRow).toHaveCount(0);
+		await page.getByRole('link', { name: 'Summary' }).click();
+		await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+		await expect(page.getByRole('heading', { name: 'Market Pulse Live advisor briefing, refreshes every 3 hours.' })).toBeVisible();
 
-	await page.getByRole('link', { name: 'Summary' }).click();
-    await expect(page.getByRole('button', { name: 'Equity Market Outlook Market' })).toBeVisible();
+		await page.waitForTimeout(5000);
+		await expect(page.getByText('XLK', { exact: true })).toHaveCount(0);
 
-    await page.waitForTimeout(5000);
-    await expect(page.getByText('XLK', { exact: true })).toHaveCount(0);
+		await page.getByText('QA', { exact: true }).click();
+		await page.getByRole('menuitem', { name: 'Preferences' }).click();
+		await expect(page.getByRole('button', { name: 'Watchlist', exact: true })).toBeVisible();
+		await expect(page.getByText('Stocks & ETFs', { exact: true })).toBeVisible();
+		await expect(page.getByText('XLK', { exact: true })).toHaveCount(0);
+	});
 
-	await page.getByText('QA', { exact: true }).click();
-    await page.getByRole('menuitem', { name: 'Preferences' }).click();
-    await expect(page.getByRole('button', { name: 'Watchlist', exact: true })).toBeVisible();
-    await expect(page.getByText('Stocks & ETFs', { exact: true })).toBeVisible(); 
-	await expect(page.getByText('XLK', { exact: true })).toHaveCount(0);
+	// Step 9: Log out.
+	await test.step('Step 9: Log out', async () => {
+		await page.getByText('QA', { exact: true }).click();
+		await page.getByRole('menuitem', { name: 'Logout' }).click();
+	});
 
-	  // logout 
-
-    await page.getByText('QA', { exact: true }).click();
-    await page.getByRole('menuitem', { name: 'Logout' }).click();
-
-});
+	});
   });

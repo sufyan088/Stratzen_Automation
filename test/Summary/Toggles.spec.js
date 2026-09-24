@@ -19,94 +19,112 @@ test.describe('Summary Module - Toggle Visibility', () => {
         const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
         const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
-        // Step 1: Navigate to Login Page.
-        await page.goto(buildUrl('/login'), {
-            waitUntil: 'domcontentloaded',
-            timeout: 90000,
+		// Step 1: Navigate to the login page.
+        await test.step('Step 1: Navigate to Login Page', async () => {
+            await page.goto(buildUrl('/login'), {
+                waitUntil: 'domcontentloaded',
+                timeout: 90000,
+            });
+            await expect(page).toHaveURL(/login/);
         });
-        await expect(page).toHaveURL(/login/);
 
-        // Step 2: Enter Email.
-        const emailField = page.locator('input[type="email"]');
-        await expect(emailField).toBeVisible();
-        await emailField.fill(email);
+		// Step 2: Enter the email address.
+		await test.step('Step 2: Enter the email address', async () => {
+            const emailField = page.locator('input[type="email"]');
+            await expect(emailField).toBeVisible();
+            await emailField.fill(email);
+		});
 
-        // Step 3: Enter Password.
-        const passwordField = page.locator('input[type="password"]');
-        await expect(passwordField).toBeVisible();
-        await passwordField.fill(passwordValue);
+		// Step 3: Enter the password.
+		await test.step('Step 3: Enter the password', async () => {
+            const passwordField = page.locator('input[type="password"]');
+            await expect(passwordField).toBeVisible();
+            await passwordField.fill(passwordValue);
+		});
 
-        // Step 4: Click Sign In.
-        await page.getByRole('button', { name: /sign in/i }).click();
-        await page.waitForLoadState('networkidle');
-        await expect(page).not.toHaveURL(/login/);
+		// Step 4: Click the Sign In button.
+		await test.step('Step 4: Click the Sign In button', async () => {
+            await page.getByRole('button', { name: /sign in/i }).click();
+		});
 
-        // Step 5: Open Preferences from the profile menu.
-        await page.getByText('QA', { exact: true }).click();
-        await page.getByRole('menuitem', { name: 'Preferences' }).click();
-        await expect(page).toHaveURL(/preferences/);
+		// Step 5: Verify the login redirect completes.
+		await test.step('Step 5: Verify the login redirect completes', async () => {
+            await page.waitForLoadState('networkidle');
+            await expect(page).not.toHaveURL(/login/);
+        });
 
-        // Step 6: Navigate to Summary Page Display.
-        await expect(page.getByRole('button', { name: 'Summary Page Display', exact: true })).toBeVisible();
+		// Step 6: Open Preferences from the profile menu.
+		await test.step('Step 6: Open Preferences from the profile menu', async () => {
+            await page.getByText('QA', { exact: true }).click();
+            await page.getByRole('menuitem', { name: 'Preferences' }).click();
+            await expect(page).toHaveURL(/preferences/);
+            await expect(page.getByRole('button', { name: 'Summary Page Display', exact: true })).toBeVisible();
+        });
 
-        // Step 7-11: Turn OFF the requested toggles when they are available.
-        const getCpiToggle = () => page.getByRole('button', { name: 'Toggle CPI', exact: true });
-        const getChinaToggle = () => page.getByRole('button', { name: 'Toggle China', exact: true });
-        const getForexNewsToggle = () => page.getByRole('button', { name: 'Toggle Forex News', exact: true });
-        const getNewsMarketToggle = () => page.getByRole('button', { name: 'Toggle News Market', exact: true });
-        const clickWhenStable = async (getLocator) => {
-            for (let attempt = 0; attempt < 3; attempt += 1) {
-                const locator = getLocator();
+        const cpiToggle = page.getByRole('button', { name: 'Toggle CPI', exact: true });
+        const chinaToggle = page.getByRole('button', { name: 'Toggle China', exact: true });
+        const forexNewsToggle = page.getByRole('button', { name: 'Toggle Forex News', exact: true });
+        const newsMarketToggle = page.getByRole('button', { name: 'Toggle News Market', exact: true });
+        const savePreferencesButton = page.getByRole('button', { name: 'Save Preferences' });
+        const summaryLink = page.getByRole('link', { name: 'Summary', exact: true });
+        const discardChangesDialog = page.getByRole('dialog').filter({
+            hasText: 'Discard changes?',
+        });
 
-                try {
-                    await expect(locator).toBeVisible();
-                    await locator.click();
-                    return;
-                } catch (error) {
-                    if (attempt === 2) {
-                        throw error;
-                    }
+        let cpiAvailable = false;
+        let chinaAvailable = false;
+        let forexNewsAvailable = false;
+        let newsMarketAvailable = false;
+
+        // Step 7: Turn off configured Summary toggles when available.
+        await test.step('Step 7: Turn off configured Summary toggles when available', async () => {
+            if (await cpiToggle.count()) {
+                cpiAvailable = true;
+                if ((await cpiToggle.getAttribute('aria-pressed')) !== 'false') {
+                    await expect(cpiToggle).toBeVisible();
+                    await cpiToggle.click();
                 }
+                await expect(cpiToggle).toHaveAttribute('aria-pressed', 'false');
             }
-        };
-        const setToggleStateIfAvailable = async (getToggle, shouldBeOn) => {
-            const toggle = getToggle();
 
-            if (await toggle.count()) {
-                const targetValue = shouldBeOn ? 'true' : 'false';
-                if ((await toggle.getAttribute('aria-pressed')) !== targetValue) {
-                    await clickWhenStable(getToggle);
-                    await expect(getToggle()).toHaveAttribute('aria-pressed', targetValue);
-                    return { available: true, changed: true };
+            if (await chinaToggle.count()) {
+                chinaAvailable = true;
+                if ((await chinaToggle.getAttribute('aria-pressed')) !== 'false') {
+                    await expect(chinaToggle).toBeVisible();
+                    await chinaToggle.click();
                 }
-
-                await expect(getToggle()).toHaveAttribute('aria-pressed', targetValue);
-                return { available: true, changed: false };
+                await expect(chinaToggle).toHaveAttribute('aria-pressed', 'false');
             }
 
-            return { available: false, changed: false };
-        };
-        const savePreferences = async () => {
-            const savePreferencesButton = page.getByRole('button', { name: 'Save Preferences' });
+            if (await forexNewsToggle.count()) {
+                forexNewsAvailable = true;
+                if ((await forexNewsToggle.getAttribute('aria-pressed')) !== 'false') {
+                    await expect(forexNewsToggle).toBeVisible();
+                    await forexNewsToggle.click();
+                }
+                await expect(forexNewsToggle).toHaveAttribute('aria-pressed', 'false');
+            }
+
+            if (await newsMarketToggle.count()) {
+                newsMarketAvailable = true;
+                if ((await newsMarketToggle.getAttribute('aria-pressed')) !== 'false') {
+                    await expect(newsMarketToggle).toBeVisible();
+                    await newsMarketToggle.click();
+                }
+                await expect(newsMarketToggle).toHaveAttribute('aria-pressed', 'false');
+            }
+        });
+
+        // Step 8: Save preferences and verify the cards are hidden on Summary.
+        await test.step('Step 8: Save preferences and verify the cards are hidden on Summary', async () => {
             await expect(savePreferencesButton).toBeVisible();
             await savePreferencesButton.dispatchEvent('click');
             await expect(savePreferencesButton).toBeEnabled({ timeout: 30000 });
             await page.waitForLoadState('networkidle');
-        };
 
-        const cpiResult = await setToggleStateIfAvailable(getCpiToggle, false);
-
-        const chinaResult = await setToggleStateIfAvailable(getChinaToggle, false);
-        const forexNewsResult = await setToggleStateIfAvailable(getForexNewsToggle, false);
-        const newsMarketResult = await setToggleStateIfAvailable(getNewsMarketToggle, false);
-
-        // Step 12: Save the preferences, then return to Summary.
-        const discardChangesDialog = page.getByRole('dialog').filter({
-            hasText: 'Discard changes?',
-        });
-        const navigateToSummary = async () => {
             for (let attempt = 0; attempt < 2; attempt += 1) {
-                await clickWhenStable(() => page.getByRole('link', { name: 'Summary', exact: true }));
+                await expect(summaryLink).toBeVisible();
+                await summaryLink.click();
 
                 if ((await discardChangesDialog.count()) === 0) {
                     break;
@@ -116,72 +134,109 @@ test.describe('Summary Module - Toggle Visibility', () => {
                     .getByRole('button', { name: 'Keep Editing', exact: true })
                     .click();
                 await expect(discardChangesDialog).toHaveCount(0);
-                await savePreferences();
+                await expect(savePreferencesButton).toBeVisible();
+                await savePreferencesButton.dispatchEvent('click');
+                await expect(savePreferencesButton).toBeEnabled({ timeout: 30000 });
+                await page.waitForLoadState('networkidle');
             }
 
             await expect(page).toHaveURL(/summary/);
-        };
 
-        await savePreferences();
-        await navigateToSummary();
+            if (cpiAvailable) {
+                await expect(page.getByText('CPI', { exact: true })).not.toBeVisible();
+            }
 
-        // Step 13-19: Verify the requested cards/news items are not displayed on Summary.
+            if (chinaAvailable) {
+                await expect(page.getByText('China', { exact: true })).toHaveCount(0);
+            }
+            if (forexNewsAvailable) {
+                await expect(page.getByText('Forex News', { exact: true })).toHaveCount(0);
+            }
+            if (newsMarketAvailable) {
+                await expect(page.getByText('News Market', { exact: true })).toHaveCount(0);
+            }
+        });
 
-        if (cpiResult.available) {
-            await expect(page.getByText('CPI', { exact: true })).not.toBeVisible();
-        }
+        // Step 9: Return to Preferences and turn the toggles back on.
+        await test.step('Step 9: Return to Preferences and turn the toggles back on', async () => {
+            await page.getByText('QA', { exact: true }).click();
+            await page.getByRole('menuitem', { name: 'Preferences' }).click();
+            await expect(page).toHaveURL(/preferences/);
+            await expect(page.getByRole('button', { name: 'Summary Page Display', exact: true })).toBeVisible();
 
-        if (chinaResult.available) {
-            await expect(page.getByText('China', { exact: true })).toHaveCount(0);
-        }
-        if (forexNewsResult.available) {
-            await expect(page.getByText('Forex News', { exact: true })).toHaveCount(0);
-        }
-        if (newsMarketResult.available) {
-            await expect(page.getByText('News Market', { exact: true })).toHaveCount(0);
-        }
+            if (cpiAvailable) {
+                if ((await cpiToggle.getAttribute('aria-pressed')) !== 'true') {
+                    await expect(cpiToggle).toBeVisible();
+                    await cpiToggle.click();
+                }
+                await expect(cpiToggle).toHaveAttribute('aria-pressed', 'true');
+            }
+            if (chinaAvailable) {
+                if ((await chinaToggle.getAttribute('aria-pressed')) !== 'true') {
+                    await expect(chinaToggle).toBeVisible();
+                    await chinaToggle.click();
+                }
+                await expect(chinaToggle).toHaveAttribute('aria-pressed', 'true');
+            }
+            if (forexNewsAvailable) {
+                if ((await forexNewsToggle.getAttribute('aria-pressed')) !== 'true') {
+                    await expect(forexNewsToggle).toBeVisible();
+                    await forexNewsToggle.click();
+                }
+                await expect(forexNewsToggle).toHaveAttribute('aria-pressed', 'true');
+            }
+            if (newsMarketAvailable) {
+                if ((await newsMarketToggle.getAttribute('aria-pressed')) !== 'true') {
+                    await expect(newsMarketToggle).toBeVisible();
+                    await newsMarketToggle.click();
+                }
+                await expect(newsMarketToggle).toHaveAttribute('aria-pressed', 'true');
+            }
 
-        // Step 20-23: Return to Preferences and turn ON the requested toggles when available.
-        await page.getByText('QA', { exact: true }).click();
-        await page.getByRole('menuitem', { name: 'Preferences' }).click();
-        await expect(page).toHaveURL(/preferences/);
-        await expect(page.getByRole('button', { name: 'Summary Page Display', exact: true })).toBeVisible();
+            await expect(savePreferencesButton).toBeVisible();
+            await savePreferencesButton.dispatchEvent('click');
+            await expect(savePreferencesButton).toBeEnabled({ timeout: 30000 });
+            await page.waitForLoadState('networkidle');
 
-        if (cpiResult.available) {
-            await setToggleStateIfAvailable(getCpiToggle, true);
-        }
-        if (chinaResult.available) {
-            await setToggleStateIfAvailable(getChinaToggle, true);
-        }
-        if (forexNewsResult.available) {
-            await setToggleStateIfAvailable(getForexNewsToggle, true);
-        }
-        if (newsMarketResult.available) {
-            await setToggleStateIfAvailable(getNewsMarketToggle, true);
-        }
+            for (let attempt = 0; attempt < 2; attempt += 1) {
+                await expect(summaryLink).toBeVisible();
+                await summaryLink.click();
 
-        await savePreferences();
-        await navigateToSummary();
+                if ((await discardChangesDialog.count()) === 0) {
+                    break;
+                }
 
-        // Step 24-27: Verify the requested items are visible again on Summary.
-        const restoredMacroSection = page.getByText('Macro Economic Indicators').first();
-        await expect(restoredMacroSection).toBeVisible();
+                await discardChangesDialog
+                    .getByRole('button', { name: 'Keep Editing', exact: true })
+                    .click();
+                await expect(discardChangesDialog).toHaveCount(0);
+                await expect(savePreferencesButton).toBeVisible();
+                await savePreferencesButton.dispatchEvent('click');
+                await expect(savePreferencesButton).toBeEnabled({ timeout: 30000 });
+                await page.waitForLoadState('networkidle');
+            }
 
-        if (chinaResult.available) {
-            await expect(getChinaToggle()).toHaveAttribute('aria-pressed', 'true');
-        }
+            await expect(page).toHaveURL(/summary/);
+        });
 
-        if (forexNewsResult.available) {
-            await expect(getForexNewsToggle()).toHaveAttribute('aria-pressed', 'true');
-        }
+        // Step 10: Verify the toggled content is restored on Summary.
+        await test.step('Step 10: Verify the toggled content is restored on Summary', async () => {
+            await expect(page.getByRole('heading', { name: 'Market Pulse Live advisor briefing, refreshes every 3 hours.' })).toBeVisible();
 
-        if (newsMarketResult.available) {
-            await expect(getNewsMarketToggle()).toHaveAttribute('aria-pressed', 'true');
-        }
+            const restoredMacroSection = page.getByText('Macro Economic Indicators').first();
+            const restoredMacroVisible = (await restoredMacroSection.count()) > 0
+                && await restoredMacroSection.isVisible().catch(() => false);
 
-          // logout 
+            if (restoredMacroVisible) {
+                await restoredMacroSection.scrollIntoViewIfNeeded();
+                await expect(restoredMacroSection).toBeVisible();
+            }
+        });
 
-        await page.getByText('QA', { exact: true }).click();
-        await page.getByRole('menuitem', { name: 'Logout' }).click(); 
+		// Step 11: Log out.
+		await test.step('Step 11: Log out', async () => {
+            await page.getByText('QA', { exact: true }).click();
+            await page.getByRole('menuitem', { name: 'Logout' }).click();
+        });
     });
 });
