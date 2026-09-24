@@ -1,0 +1,1071 @@
+- generic [ref=e1]:
+  - generic [ref=e33]:
+    - generic [ref=e34]:
+      - generic [ref=e35]: Stratzen AI
+      - navigation [ref=e49]:
+        - link [ref=e1217] [cursor=pointer]:
+          - /url: /summary
+          - generic [ref=e53]: Summary
+        - generic [ref=e54]:
+          - generic [ref=e55]: PROSPECTING
+          - generic [ref=e56]:
+            - link [ref=e1218] [cursor=pointer]:
+              - /url: /rias
+              - generic [ref=e60]: RIAs
+            - link [ref=e1219] [cursor=pointer]:
+              - /url: /rias-watchlist
+              - generic [ref=e290]: RIAs Watchlist
+          - link [ref=e1220] [cursor=pointer]:
+            - /url: /401k
+            - generic [ref=e68]: 401K
+        - generic [ref=e72]:
+          - generic [ref=e73]: MANAGEMENT
+          - link [ref=e1221] [cursor=pointer]:
+            - /url: /individual-clients
+            - generic [ref=e78]: Individual Clients
+        - generic [ref=e79]:
+          - generic [ref=e80]: RESOURCES
+          - link [ref=e1222] [cursor=pointer]:
+            - /url: /research
+            - generic [ref=e86]: Research
+          - link [ref=e1223] [cursor=pointer]:
+            - /url: /support
+            - generic [ref=e91]: Support
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - generic [ref=e99]: Intelligent Wealth
+          - generic [ref=e100]: Infrastructure
+        - generic [ref=e101]: © Stratzen AI 2026
+    - banner [ref=e102]:
+      - generic [ref=e104] [cursor=pointer]:
+        - generic [ref=e105]:
+          - paragraph [ref=e106]: QA Automation Testing Service Account
+          - paragraph [ref=e107]: "Advisor: -"
+        - generic [ref=e108]: QA
+    - main [ref=e109]:
+      - generic [ref=e292]:
+        - generic [ref=e294]:
+          - generic [ref=e295]:
+            - heading [level=1] [ref=e1224]: Explore RIAs
+            - paragraph [ref=e298]: Find and compare Registered Investment Advisors
+            - button [ref=e1225] [cursor=pointer]: Saved Filters
+          - button [ref=e1226] [cursor=pointer]:
+            - generic [ref=e308]: Ad-Bot
+        - generic [ref=e309]:
+          - table [ref=e311]:
+            - rowgroup [ref=e312]:
+              - row [ref=e1227]:
+                - columnheader [ref=e1228]:
+                  - generic [ref=e316] [cursor=pointer]:
+                    - generic [ref=e317]: CRD
+                    - button [ref=e1230]
+                  - textbox [ref=e1233]:
+                    - /placeholder: Filter by CRD
+                - columnheader [ref=e1234]:
+                  - generic [ref=e330] [cursor=pointer]:
+                    - generic [ref=e331]: Business Name
+                    - button [ref=e1236]
+                  - textbox [ref=e1239]:
+                    - /placeholder: Filter by Business Name
+                - columnheader [ref=e1240]:
+                  - generic [ref=e344] [cursor=pointer]:
+                    - generic [ref=e345]: City
+                    - button [ref=e1242]
+                  - textbox [ref=e1245]:
+                    - /placeholder: Filter by City
+                - columnheader [ref=e1246]:
+                  - generic [ref=e358] [cursor=pointer]:
+                    - generic [ref=e359]: State
+                    - button [ref=e1248]
+                  - generic [ref=e368]:
+                    - combobox [ref=e369] [cursor=pointer]:
+                      - generic [ref=e370]: Filter
+                    - textbox [aria-hidden]
+                - columnheader [ref=e1251]:
+                  - generic [ref=e373] [cursor=pointer]:
+                    - generic [ref=e374]: AUM
+                    - button [ref=e1253]
+                  - generic [ref=e382]:
+                    - textbox [ref=e1256]:
+                      - /placeholder: Min
+                    - textbox [ref=e1257]:
+                      - /placeholder: Max
+                - columnheader [ref=e1258]:
+                  - generic [ref=e391] [cursor=pointer]:
+                    - generic [ref=e392]: Custodian
+                    - button [ref=e1260]
+                  - textbox [ref=e1263]:
+                    - /placeholder: Filter by Custodian
+                - columnheader [ref=e1264]:
+                  - generic [ref=e405] [cursor=pointer]:
+                    - generic [ref=e406]: Last Filing
+                    - button [ref=e1266]
+                  - textbox [ref=e1269]:
+                    - /placeholder: Filter by Last Filing
+                - columnheader [ref=e1270]:
+                  - generic [ref=e418]: Actions
+                  - generic [ref=e425]:
+                    - combobox [ref=e426] [cursor=pointer]:
+                      - generic [ref=e427]: Not Archived
+                    - textbox [aria-hidden]: Not Archived
+            - rowgroup [ref=e428]:
+              - row [ref=e1271] [cursor=pointer]:
+                - cell [ref=e1272]:
+                  - paragraph [ref=e431]: "324417"
+                - cell [ref=e1273]:
+                  - paragraph [ref=e433]: NOMURA CAPITAL MANAGEMENT LLC
+                - cell [ref=e1274]:
+                  - paragraph [ref=e435]: NEW YORK
+                - cell [ref=e1275]:
+                  - paragraph [ref=e437]: New York
+                - cell [ref=e1276]:
+                  - paragraph [ref=e439]: $420,750,787
+                - cell [ref=e1277]:
+                  - paragraph [ref=e441]: J.P. Morgan
+                - cell [ref=e1278]:
+                  - paragraph [ref=e443]: 2025-01-07
+                - cell [ref=e1279]:
+                  - generic [ref=e445]:
+                    - button [ref=e447]
+                    - button [ref=e451]
+              - row [ref=e1282] [cursor=pointer]:
+                - cell [ref=e1283]:
+                  - paragraph [ref=e456]: "300992"
+                - cell [ref=e1284]:
+                  - paragraph [ref=e458]: ENSPYRE WEALTH ADVISORS, INC.
+                - cell [ref=e1285]:
+                  - paragraph [ref=e460]: WOODBURY
+                - cell [ref=e1286]:
+                  - paragraph [ref=e462]: Minnesota
+                - cell [ref=e1287]:
+                  - paragraph [ref=e464]: $180,642,870
+                - cell [ref=e1288]:
+                  - paragraph [ref=e466]: Charles Schwab
+                - cell [ref=e1289]:
+                  - paragraph [ref=e468]: 2025-01-29
+                - cell [ref=e1290]:
+                  - generic [ref=e470]:
+                    - button [ref=e472]
+                    - button [ref=e476]
+              - row [ref=e1293] [cursor=pointer]:
+                - cell [ref=e1294]:
+                  - paragraph [ref=e481]: "288180"
+                - cell [ref=e1295]:
+                  - paragraph [ref=e483]: SAVICKI CAPITAL, LLC
+                - cell [ref=e1296]:
+                  - paragraph [ref=e485]: NEW HARTFORD
+                - cell [ref=e1297]:
+                  - paragraph [ref=e487]: New York
+                - cell [ref=e1298]:
+                  - paragraph [ref=e489]: $50,960,760
+                - cell [ref=e1299]:
+                  - paragraph [ref=e491]: Charles Schwab
+                - cell [ref=e1300]:
+                  - paragraph [ref=e493]: 2025-01-29
+                - cell [ref=e1301]:
+                  - generic [ref=e495]:
+                    - button [ref=e497]
+                    - button [ref=e501]
+              - row [ref=e1304] [cursor=pointer]:
+                - cell [ref=e1305]:
+                  - paragraph [ref=e506]: "312070"
+                - cell [ref=e1306]:
+                  - paragraph [ref=e508]: BOYD CAPITAL
+                - cell [ref=e1307]:
+                  - paragraph [ref=e510]: ROCHESTER
+                - cell [ref=e1308]:
+                  - paragraph [ref=e512]: New York
+                - cell [ref=e1309]:
+                  - paragraph [ref=e514]: $124,496,187
+                - cell [ref=e1310]:
+                  - paragraph [ref=e516]: Multiple Values
+                - cell [ref=e1311]:
+                  - paragraph [ref=e518]: 2025-01-03
+                - cell [ref=e1312]:
+                  - generic [ref=e520]:
+                    - button [ref=e522]
+                    - button [ref=e526]
+              - row [ref=e1315] [cursor=pointer]:
+                - cell [ref=e1316]:
+                  - paragraph [ref=e531]: "124462"
+                - cell [ref=e1317]:
+                  - paragraph [ref=e533]: WMBC
+                - cell [ref=e1318]:
+                  - paragraph [ref=e535]: IRVINE
+                - cell [ref=e1319]:
+                  - paragraph [ref=e537]: California
+                - cell [ref=e1320]:
+                  - paragraph [ref=e539]: $116,209,055
+                - cell [ref=e1321]:
+                  - paragraph [ref=e541]: Fidelity
+                - cell [ref=e1322]:
+                  - paragraph [ref=e543]: 2025-01-07
+                - cell [ref=e1323]:
+                  - generic [ref=e545]:
+                    - button [ref=e547]
+                    - button [ref=e551]
+              - row [ref=e1326] [cursor=pointer]:
+                - cell [ref=e1327]:
+                  - paragraph [ref=e556]: "169309"
+                - cell [ref=e1328]:
+                  - paragraph [ref=e558]: RUBIN OVERSEAS LTD.
+                - cell [ref=e1329]:
+                  - paragraph [ref=e560]: ZURICH
+                - cell [ref=e1330]:
+                  - paragraph [ref=e562]: "-"
+                - cell [ref=e1331]:
+                  - paragraph [ref=e564]: $84,850,024
+                - cell [ref=e1332]:
+                  - paragraph [ref=e566]: Multiple Values
+                - cell [ref=e1333]:
+                  - paragraph [ref=e568]: 2025-01-04
+                - cell [ref=e1334]:
+                  - generic [ref=e570]:
+                    - button [ref=e572]
+                    - button [ref=e576]
+              - row [ref=e1337] [cursor=pointer]:
+                - cell [ref=e1338]:
+                  - paragraph [ref=e581]: "154400"
+                - cell [ref=e1339]:
+                  - paragraph [ref=e583]: GRAND STRATEGY CAPITAL, LLC
+                - cell [ref=e1340]:
+                  - paragraph [ref=e585]: CHARLOTTESVILLE
+                - cell [ref=e1341]:
+                  - paragraph [ref=e587]: Virginia
+                - cell [ref=e1342]:
+                  - paragraph [ref=e589]: $137,741,182
+                - cell [ref=e1343]:
+                  - paragraph [ref=e591]: Multiple Values
+                - cell [ref=e1344]:
+                  - paragraph [ref=e593]: 2025-01-15
+                - cell [ref=e1345]:
+                  - generic [ref=e595]:
+                    - button [ref=e597]
+                    - button [ref=e601]
+              - row [ref=e1348] [cursor=pointer]:
+                - cell [ref=e1349]:
+                  - paragraph [ref=e606]: "311002"
+                - cell [ref=e1350]:
+                  - paragraph [ref=e608]: PURE PORTFOLIOS
+                - cell [ref=e1351]:
+                  - paragraph [ref=e610]: LAKE OSWEGO
+                - cell [ref=e1352]:
+                  - paragraph [ref=e612]: Oregon
+                - cell [ref=e1353]:
+                  - paragraph [ref=e614]: $360,472,868
+                - cell [ref=e1354]:
+                  - paragraph [ref=e616]: Multiple Values
+                - cell [ref=e1355]:
+                  - paragraph [ref=e618]: 2025-01-30
+                - cell [ref=e1356]:
+                  - generic [ref=e620]:
+                    - button [ref=e622]
+                    - button [ref=e626]
+              - row [ref=e1359] [cursor=pointer]:
+                - cell [ref=e1360]:
+                  - paragraph [ref=e631]: "105168"
+                - cell [ref=e1361]:
+                  - paragraph [ref=e633]: MARSHALL & SULLIVAN, INC.
+                - cell [ref=e1362]:
+                  - paragraph [ref=e635]: SEATTLE
+                - cell [ref=e1363]:
+                  - paragraph [ref=e637]: Washington
+                - cell [ref=e1364]:
+                  - paragraph [ref=e639]: $473,367,635
+                - cell [ref=e1365]:
+                  - paragraph [ref=e641]: Charles Schwab
+                - cell [ref=e1366]:
+                  - paragraph [ref=e643]: 2025-01-17
+                - cell [ref=e1367]:
+                  - generic [ref=e645]:
+                    - button [ref=e647]
+                    - button [ref=e651]
+              - row [ref=e1370] [cursor=pointer]:
+                - cell [ref=e1371]:
+                  - paragraph [ref=e656]: "164232"
+                - cell [ref=e1372]:
+                  - paragraph [ref=e658]: DAVID WEALTH MANAGEMENT, LLC
+                - cell [ref=e1373]:
+                  - paragraph [ref=e660]: FAIRFAX
+                - cell [ref=e1374]:
+                  - paragraph [ref=e662]: Virginia
+                - cell [ref=e1375]:
+                  - paragraph [ref=e664]: $239,308,951
+                - cell [ref=e1376]:
+                  - paragraph [ref=e666]: Charles Schwab
+                - cell [ref=e1377]:
+                  - paragraph [ref=e668]: 2025-01-31
+                - cell [ref=e1378]:
+                  - generic [ref=e670]:
+                    - button [ref=e672]
+                    - button [ref=e676]
+              - row [ref=e1381] [cursor=pointer]:
+                - cell [ref=e1382]:
+                  - paragraph [ref=e681]: "291883"
+                - cell [ref=e1383]:
+                  - paragraph [ref=e683]: AMORE AMBRO, LLC
+                - cell [ref=e1384]:
+                  - paragraph [ref=e685]: "-"
+                - cell [ref=e1385]:
+                  - paragraph [ref=e687]: "-"
+                - cell [ref=e1386]:
+                  - paragraph [ref=e689]: $194,444,444
+                - cell [ref=e1387]:
+                  - paragraph [ref=e691]: Charles Schwab
+                - cell [ref=e1388]:
+                  - paragraph [ref=e693]: 2025-01-31
+                - cell [ref=e1389]:
+                  - generic [ref=e695]:
+                    - button [ref=e697]
+                    - button [ref=e701]
+              - row [ref=e1392] [cursor=pointer]:
+                - cell [ref=e1393]:
+                  - paragraph [ref=e706]: "108559"
+                - cell [ref=e1394]:
+                  - paragraph [ref=e708]: J.P. MORGAN PRIVATE WEALTH ADVISORS LLC
+                - cell [ref=e1395]:
+                  - paragraph [ref=e710]: SAN FRANCISCO
+                - cell [ref=e1396]:
+                  - paragraph [ref=e712]: California
+                - cell [ref=e1397]:
+                  - paragraph [ref=e714]: $86,270,585,130
+                - cell [ref=e1398]:
+                  - paragraph [ref=e716]: Pershing
+                - cell [ref=e1399]:
+                  - paragraph [ref=e718]: 2025-01-10
+                - cell [ref=e1400]:
+                  - generic [ref=e720]:
+                    - button [ref=e722]
+                    - button [ref=e726]
+              - row [ref=e1403] [cursor=pointer]:
+                - cell [ref=e1404]:
+                  - paragraph [ref=e731]: "291453"
+                - cell [ref=e1405]:
+                  - paragraph [ref=e733]: WEALTH COVENANT GROUP LLC
+                - cell [ref=e1406]:
+                  - paragraph [ref=e735]: HOUSTON
+                - cell [ref=e1407]:
+                  - paragraph [ref=e737]: Texas
+                - cell [ref=e1408]:
+                  - paragraph [ref=e739]: $290,733,000
+                - cell [ref=e1409]:
+                  - paragraph [ref=e741]: Fidelity
+                - cell [ref=e1410]:
+                  - paragraph [ref=e743]: 2025-01-10
+                - cell [ref=e1411]:
+                  - generic [ref=e745]:
+                    - button [ref=e747]
+                    - button [ref=e751]
+              - row [ref=e1414] [cursor=pointer]:
+                - cell [ref=e1415]:
+                  - paragraph [ref=e756]: "304462"
+                - cell [ref=e1416]:
+                  - paragraph [ref=e758]: UNIONVIEW WEALTH PARTNERS
+                - cell [ref=e1417]:
+                  - paragraph [ref=e760]: SEATTLE
+                - cell [ref=e1418]:
+                  - paragraph [ref=e762]: Washington
+                - cell [ref=e1419]:
+                  - paragraph [ref=e764]: $291,471,753
+                - cell [ref=e1420]:
+                  - paragraph [ref=e766]: Fidelity
+                - cell [ref=e1421]:
+                  - paragraph [ref=e768]: 2025-01-31
+                - cell [ref=e1422]:
+                  - generic [ref=e770]:
+                    - button [ref=e772]
+                    - button [ref=e776]
+              - row [ref=e1425] [cursor=pointer]:
+                - cell [ref=e1426]:
+                  - paragraph [ref=e781]: "318725"
+                - cell [ref=e1427]:
+                  - paragraph [ref=e783]: RICHR MONEY LLC
+                - cell [ref=e1428]:
+                  - paragraph [ref=e785]: MIAMI
+                - cell [ref=e1429]:
+                  - paragraph [ref=e787]: Florida
+                - cell [ref=e1430]:
+                  - paragraph [ref=e789]: $186,824
+                - cell [ref=e1431]:
+                  - paragraph [ref=e791]: Interactive Brokers
+                - cell [ref=e1432]:
+                  - paragraph [ref=e793]: 2025-01-22
+                - cell [ref=e1433]:
+                  - generic [ref=e795]:
+                    - button [ref=e797]
+                    - button [ref=e801]
+              - row [ref=e1436] [cursor=pointer]:
+                - cell [ref=e1437]:
+                  - paragraph [ref=e806]: "136045"
+                - cell [ref=e1438]:
+                  - paragraph [ref=e808]: MAGNETAR FINANCIAL LLC
+                - cell [ref=e1439]:
+                  - paragraph [ref=e810]: EVANSTON
+                - cell [ref=e1440]:
+                  - paragraph [ref=e812]: Illinois
+                - cell [ref=e1441]:
+                  - paragraph [ref=e814]: $23,106,396,704
+                - cell [ref=e1442]:
+                  - paragraph [ref=e816]: Multiple Values
+                - cell [ref=e1443]:
+                  - paragraph [ref=e818]: 2025-01-24
+                - cell [ref=e1444]:
+                  - generic [ref=e820]:
+                    - button [ref=e822]
+                    - button [ref=e826]
+              - row [ref=e1447] [cursor=pointer]:
+                - cell [ref=e1448]:
+                  - paragraph [ref=e831]: "3870"
+                - cell [ref=e1449]:
+                  - paragraph [ref=e833]: OSAIC FS, INC.
+                - cell [ref=e1450]:
+                  - paragraph [ref=e835]: FORT WAYNE
+                - cell [ref=e1451]:
+                  - paragraph [ref=e837]: Indiana
+                - cell [ref=e1452]:
+                  - paragraph [ref=e839]: $4,483,164,358
+                - cell [ref=e1453]:
+                  - paragraph [ref=e841]: NATIONAL FINANCIAL SERVICES
+                - cell [ref=e1454]:
+                  - paragraph [ref=e843]: 2025-01-13
+                - cell [ref=e1455]:
+                  - generic [ref=e845]:
+                    - button [ref=e847]
+                    - button [ref=e851]
+              - row [ref=e1458] [cursor=pointer]:
+                - cell [ref=e1459]:
+                  - paragraph [ref=e856]: "3978"
+                - cell [ref=e1460]:
+                  - paragraph [ref=e858]: OSAIC FA, INC.
+                - cell [ref=e1461]:
+                  - paragraph [ref=e860]: FORT WAYNE
+                - cell [ref=e1462]:
+                  - paragraph [ref=e862]: Indiana
+                - cell [ref=e1463]:
+                  - paragraph [ref=e864]: $37,133,957,466
+                - cell [ref=e1464]:
+                  - paragraph [ref=e866]: NATIONAL FINANCIAL SERVICES
+                - cell [ref=e1465]:
+                  - paragraph [ref=e868]: 2025-01-13
+                - cell [ref=e1466]:
+                  - generic [ref=e870]:
+                    - button [ref=e872]
+                    - button [ref=e876]
+              - row [ref=e1469] [cursor=pointer]:
+                - cell [ref=e1470]:
+                  - paragraph [ref=e881]: "281767"
+                - cell [ref=e1471]:
+                  - paragraph [ref=e883]: XO WEALTH MANAGEMENT
+                - cell [ref=e1472]:
+                  - paragraph [ref=e885]: DALLAS
+                - cell [ref=e1473]:
+                  - paragraph [ref=e887]: Texas
+                - cell [ref=e1474]:
+                  - paragraph [ref=e889]: $707,806,879
+                - cell [ref=e1475]:
+                  - paragraph [ref=e891]: Raymond James
+                - cell [ref=e1476]:
+                  - paragraph [ref=e893]: 2025-01-16
+                - cell [ref=e1477]:
+                  - generic [ref=e895]:
+                    - button [ref=e897]
+                    - button [ref=e901]
+              - row [ref=e1480] [cursor=pointer]:
+                - cell [ref=e1481]:
+                  - paragraph [ref=e906]: "335243"
+                - cell [ref=e1482]:
+                  - paragraph [ref=e908]: JOSEPH GRIER LLC
+                - cell [ref=e1483]:
+                  - paragraph [ref=e910]: "-"
+                - cell [ref=e1484]:
+                  - paragraph [ref=e912]: "-"
+                - cell [ref=e1485]:
+                  - paragraph [ref=e914]: $100,000
+                - cell [ref=e1486]:
+                  - paragraph [ref=e916]: Fidelity
+                - cell [ref=e1487]:
+                  - paragraph [ref=e918]: 2025-02-28
+                - cell [ref=e1488]:
+                  - generic [ref=e920]:
+                    - button [ref=e922]
+                    - button [ref=e926]
+              - row [ref=e1491] [cursor=pointer]:
+                - cell [ref=e1492]:
+                  - paragraph [ref=e931]: "112743"
+                - cell [ref=e1493]:
+                  - paragraph [ref=e933]: DIVERSIFIED ASSET MANAGEMENT, INC.
+                - cell [ref=e1494]:
+                  - paragraph [ref=e935]: BOULDER
+                - cell [ref=e1495]:
+                  - paragraph [ref=e937]: Colorado
+                - cell [ref=e1496]:
+                  - paragraph [ref=e939]: $126,368,720
+                - cell [ref=e1497]:
+                  - paragraph [ref=e941]: Charles Schwab
+                - cell [ref=e1498]:
+                  - paragraph [ref=e943]: 2025-01-25
+                - cell [ref=e1499]:
+                  - generic [ref=e945]:
+                    - button [ref=e947]
+                    - button [ref=e951]
+              - row [ref=e1502] [cursor=pointer]:
+                - cell [ref=e1503]:
+                  - paragraph [ref=e956]: "120593"
+                - cell [ref=e1504]:
+                  - paragraph [ref=e958]: AHL INVESTMENT MANAGEMENT, INC.
+                - cell [ref=e1505]:
+                  - paragraph [ref=e960]: WINTER PARK
+                - cell [ref=e1506]:
+                  - paragraph [ref=e962]: Florida
+                - cell [ref=e1507]:
+                  - paragraph [ref=e964]: $200,041,338
+                - cell [ref=e1508]:
+                  - paragraph [ref=e966]: Charles Schwab
+                - cell [ref=e1509]:
+                  - paragraph [ref=e968]: 2025-01-31
+                - cell [ref=e1510]:
+                  - generic [ref=e970]:
+                    - button [ref=e972]
+                    - button [ref=e976]
+              - row [ref=e1513] [cursor=pointer]:
+                - cell [ref=e1514]:
+                  - paragraph [ref=e981]: "327854"
+                - cell [ref=e1515]:
+                  - paragraph [ref=e983]: LAKE WATER ADVISORY, LLC
+                - cell [ref=e1516]:
+                  - paragraph [ref=e985]: "-"
+                - cell [ref=e1517]:
+                  - paragraph [ref=e987]: "-"
+                - cell [ref=e1518]:
+                  - paragraph [ref=e989]: $40,004,280
+                - cell [ref=e1519]:
+                  - paragraph [ref=e991]: Altruist
+                - cell [ref=e1520]:
+                  - paragraph [ref=e993]: 2025-01-21
+                - cell [ref=e1521]:
+                  - generic [ref=e995]:
+                    - button [ref=e997]
+                    - button [ref=e1001]
+              - row [ref=e1524] [cursor=pointer]:
+                - cell [ref=e1525]:
+                  - paragraph [ref=e1006]: "333468"
+                - cell [ref=e1526]:
+                  - paragraph [ref=e1008]: SANKOTA CAPITAL LLC
+                - cell [ref=e1527]:
+                  - paragraph [ref=e1010]: "-"
+                - cell [ref=e1528]:
+                  - paragraph [ref=e1012]: "-"
+                - cell [ref=e1529]:
+                  - paragraph [ref=e1014]: $26,000,000
+                - cell [ref=e1530]:
+                  - paragraph [ref=e1016]: Charles Schwab
+                - cell [ref=e1531]:
+                  - paragraph [ref=e1018]: 2025-01-21
+                - cell [ref=e1532]:
+                  - generic [ref=e1020]:
+                    - button [ref=e1022]
+                    - button [ref=e1026]
+              - row [ref=e1535] [cursor=pointer]:
+                - cell [ref=e1536]:
+                  - paragraph [ref=e1031]: "310439"
+                - cell [ref=e1537]:
+                  - paragraph [ref=e1033]: MARYGOLD & CO. ADVISORY SERVICES, LLC
+                - cell [ref=e1538]:
+                  - paragraph [ref=e1035]: WALNUT CREEK
+                - cell [ref=e1539]:
+                  - paragraph [ref=e1037]: California
+                - cell [ref=e1540]:
+                  - paragraph [ref=e1039]: $30,725
+                - cell [ref=e1541]:
+                  - paragraph [ref=e1041]: DriveWealth
+                - cell [ref=e1542]:
+                  - paragraph [ref=e1043]: 2025-01-24
+                - cell [ref=e1543]:
+                  - generic [ref=e1045]:
+                    - button [ref=e1047]
+                    - button [ref=e1051]
+              - row [ref=e1546] [cursor=pointer]:
+                - cell [ref=e1547]:
+                  - paragraph [ref=e1056]: "116057"
+                - cell [ref=e1548]:
+                  - paragraph [ref=e1058]: MILLENNIUM ADVISORY SERVICES, INC.
+                - cell [ref=e1549]:
+                  - paragraph [ref=e1060]: GLEN ALLEN
+                - cell [ref=e1550]:
+                  - paragraph [ref=e1062]: Virginia
+                - cell [ref=e1551]:
+                  - paragraph [ref=e1064]: $707,519,606
+                - cell [ref=e1552]:
+                  - paragraph [ref=e1066]: Multiple Values
+                - cell [ref=e1553]:
+                  - paragraph [ref=e1068]: 2025-01-27
+                - cell [ref=e1554]:
+                  - generic [ref=e1070]:
+                    - button [ref=e1072]
+                    - button [ref=e1076]
+              - row [ref=e1557] [cursor=pointer]:
+                - cell [ref=e1558]:
+                  - paragraph [ref=e1081]: "105477"
+                - cell [ref=e1559]:
+                  - paragraph [ref=e1083]: GUGGENHEIM INVESTMENTS
+                - cell [ref=e1560]:
+                  - paragraph [ref=e1085]: NEW YORK
+                - cell [ref=e1561]:
+                  - paragraph [ref=e1087]: New York
+                - cell [ref=e1562]:
+                  - paragraph [ref=e1089]: $11,255,391,581
+                - cell [ref=e1563]:
+                  - paragraph [ref=e1091]: Morgan Stanley
+                - cell [ref=e1564]:
+                  - paragraph [ref=e1093]: 2025-01-30
+                - cell [ref=e1565]:
+                  - generic [ref=e1095]:
+                    - button [ref=e1097]
+                    - button [ref=e1101]
+              - row [ref=e1568] [cursor=pointer]:
+                - cell [ref=e1569]:
+                  - paragraph [ref=e1106]: "42578"
+                - cell [ref=e1570]:
+                  - paragraph [ref=e1108]: LIEBLONG & ASSOCIATES, INC.
+                - cell [ref=e1571]:
+                  - paragraph [ref=e1110]: LITTLE ROCK
+                - cell [ref=e1572]:
+                  - paragraph [ref=e1112]: Arkansas
+                - cell [ref=e1573]:
+                  - paragraph [ref=e1114]: $174,237,704
+                - cell [ref=e1574]:
+                  - paragraph [ref=e1116]: Wells Fargo
+                - cell [ref=e1575]:
+                  - paragraph [ref=e1118]: 2025-01-02
+                - cell [ref=e1576]:
+                  - generic [ref=e1120]:
+                    - button [ref=e1122]
+                    - button [ref=e1126]
+              - row [ref=e1579] [cursor=pointer]:
+                - cell [ref=e1580]:
+                  - paragraph [ref=e1131]: "300709"
+                - cell [ref=e1581]:
+                  - paragraph [ref=e1133]: HOLDUN FAMILY OFFICE LLC
+                - cell [ref=e1582]:
+                  - paragraph [ref=e1135]: MIAMI
+                - cell [ref=e1583]:
+                  - paragraph [ref=e1137]: Florida
+                - cell [ref=e1584]:
+                  - paragraph [ref=e1139]: $114,531,871
+                - cell [ref=e1585]:
+                  - paragraph [ref=e1141]: Multiple Values
+                - cell [ref=e1586]:
+                  - paragraph [ref=e1143]: 2025-02-13
+                - cell [ref=e1587]:
+                  - generic [ref=e1145]:
+                    - button [ref=e1147]
+                    - button [ref=e1151]
+              - row [ref=e1590] [cursor=pointer]:
+                - cell [ref=e1591]:
+                  - paragraph [ref=e1156]: "169679"
+                - cell [ref=e1592]:
+                  - paragraph [ref=e1158]: ASTOR INVESTMENT MANAGEMENT LLC
+                - cell [ref=e1593]:
+                  - paragraph [ref=e1160]: CHICAGO
+                - cell [ref=e1594]:
+                  - paragraph [ref=e1162]: Illinois
+                - cell [ref=e1595]:
+                  - paragraph [ref=e1164]: $198,424,930
+                - cell [ref=e1596]:
+                  - paragraph [ref=e1166]: Multiple Values
+                - cell [ref=e1597]:
+                  - paragraph [ref=e1168]: 2025-02-10
+                - cell [ref=e1598]:
+                  - generic [ref=e1170]:
+                    - button [ref=e1172]
+                    - button [ref=e1176]
+          - generic [ref=e1180]:
+            - generic [ref=e1181]:
+              - button [ref=e1601] [cursor=pointer]: Columns
+              - button [ref=e1602] [cursor=pointer]: Filters
+              - button [ref=e1603] [cursor=pointer]: Density
+              - button [ref=e1604] [cursor=pointer]: Export
+            - generic [ref=e1199]:
+              - generic [ref=e1200]:
+                - generic [ref=e1201]: Rows per page
+                - generic [ref=e1202]:
+                  - combobox [ref=e1605] [cursor=pointer]: "30"
+                  - textbox [aria-hidden]: "30"
+              - generic [ref=e1204]: 1-30 of 12,017
+              - generic [ref=e1205]:
+                - generic [ref=e1606]:
+                  - button [disabled]
+                - generic [ref=e1607]:
+                  - button [disabled]
+                - button [ref=e1609] [cursor=pointer]
+                - button [ref=e1611] [cursor=pointer]
+  - dialog [ref=e1613]:
+    - generic [ref=e1614]:
+      - generic [ref=e1615]:
+        - generic [ref=e1617]:
+          - heading "NOMURA CAPITAL MANAGEMENT LLC" [level=2] [ref=e1618]
+          - generic [ref=e1620]:
+            - paragraph [ref=e1622]: "CRD: 324417"
+            - generic [ref=e1623]:
+              - link "Call 212-667-9996" [ref=e1625] [cursor=pointer]:
+                - /url: tel:2126679996
+              - generic [ref=e1628]:
+                - link "Open https://nomuracapitalmanagement.com/" [ref=e1629] [cursor=pointer]:
+                  - /url: https://nomuracapitalmanagement.com/
+                - link "Open https://www.linkedin.com/company/nomura-capital-management/" [ref=e1632] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/nomura-capital-management/
+        - button "Close window" [ref=e1635] [cursor=pointer]
+      - generic [ref=e1639]:
+        - generic [ref=e1640]:
+          - heading [level=3] [ref=e1641]:
+            - button [expanded] [ref=e1642] [cursor=pointer]:
+              - heading "Notes" [level=6] [ref=e1647]
+          - region [ref=e1655]:
+            - generic [ref=e1656]:
+              - separator [ref=e1657]
+              - generic [ref=e1658]:
+                - generic [ref=e1659]: 5 notes
+                - generic [ref=e1660]:
+                  - generic [ref=e2054]:
+                    - generic [ref=e2056]:
+                      - textbox "Type your note content here..." [active] [ref=e2057]: RIA QA test note 1790268912493
+                      - group [aria-hidden]
+                    - generic [ref=e2058]:
+                      - button [ref=e2059] [cursor=pointer]
+                      - button [ref=e2062] [cursor=pointer]
+                    - generic [ref=e2065]: Ctrl+Enter to save · Esc to cancel
+                  - generic [ref=e1678]:
+                    - button [ref=e1679] [cursor=pointer]
+                    - button [ref=e1682] [cursor=pointer]
+                    - generic [ref=e1685]:
+                      - generic [ref=e1686]: Today, 12:54 PM
+                      - generic "QA Automation Testing Service Account" [ref=e1693]
+                    - paragraph [ref=e1694]: RIA QA test note 1790268823493
+                  - generic [ref=e1695]:
+                    - button [ref=e1696] [cursor=pointer]
+                    - button [ref=e1699] [cursor=pointer]
+                    - generic [ref=e1702]:
+                      - generic [ref=e1703]: Today, 12:36 PM
+                      - generic "QA Automation Testing Service Account" [ref=e1710]
+                    - paragraph [ref=e1711]: RIA QA test note 1790267718585
+                  - generic [ref=e1712]:
+                    - button [ref=e1713] [cursor=pointer]
+                    - button [ref=e1716] [cursor=pointer]
+                    - generic [ref=e1719]:
+                      - generic [ref=e1720]: Today, 12:08 PM
+                      - generic "QA Automation Testing Service Account" [ref=e1727]
+                    - paragraph [ref=e1728]: RIA QA test note 1790266006200
+                  - generic [ref=e1729]:
+                    - button [ref=e1730] [cursor=pointer]
+                    - button [ref=e1733] [cursor=pointer]
+                    - generic [ref=e1736]:
+                      - generic [ref=e1737]: Today, 12:03 PM
+                      - generic "QA Automation Testing Service Account" [ref=e1744]
+                    - paragraph [ref=e1745]: RIA QA test note 1790265752620
+                - separator [ref=e1746]
+                - generic [ref=e1748]:
+                  - textbox "Type your note content here..." [ref=e1749]
+                  - generic [ref=e1750]:
+                    - button "Save (Ctrl+Enter)" [disabled]
+                  - group [aria-hidden]
+        - generic [ref=e1751]:
+          - heading "Profile Detail" [level=3] [ref=e1752]
+          - generic [ref=e1753]:
+            - generic [ref=e1754]:
+              - generic [ref=e1755]: "Adv Filing Date:"
+              - generic [ref=e1756]: 2026-06-29
+            - generic [ref=e1757]:
+              - generic [ref=e1758]: "Legal Name:"
+              - generic [ref=e1759]: NOMURA CAPITAL MANAGEMENT LLC
+            - generic [ref=e1760]:
+              - generic [ref=e1761]: "Legal Sec:"
+              - generic [ref=e1762]: "#801-127179"
+            - generic [ref=e1763]:
+              - generic [ref=e1764]: "Main St1:"
+              - generic [ref=e1765]: 309 WEST 49TH STREET
+            - generic [ref=e1766]:
+              - generic [ref=e1767]: "Main City:"
+              - generic [ref=e1768]: NEW YORK
+            - generic [ref=e1769]:
+              - generic [ref=e1770]: "Main State:"
+              - generic [ref=e1771]: New York
+            - generic [ref=e1772]:
+              - generic [ref=e1773]: "Main Postal:"
+              - generic [ref=e1774]: "10019"
+            - generic [ref=e1775]:
+              - generic [ref=e1776]: "Main Tel:"
+              - generic [ref=e1777]: 212-667-9996
+            - generic [ref=e1778]:
+              - generic [ref=e1779]: "Websites:"
+              - generic [ref=e1780]:
+                - link "https://nomuracapitalmanagement.com/" [ref=e1782] [cursor=pointer]:
+                  - /url: https://nomuracapitalmanagement.com/
+                - link "https://www.linkedin.com/company/nomura-capital-management/" [ref=e1785] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/nomura-capital-management/
+        - generic [ref=e1787]:
+          - heading "Custodian" [level=3] [ref=e1788]
+          - generic [ref=e1789]:
+            - generic [ref=e1790]:
+              - generic [ref=e1791]: "Business Name:"
+              - generic [ref=e1792]: CHASE BANK
+            - generic [ref=e1793]:
+              - generic [ref=e1794]: "Address State:"
+              - generic [ref=e1795]: NY
+            - generic [ref=e1796]:
+              - generic [ref=e1797]: "Custodian Alias:"
+              - generic [ref=e1798]: J.P. Morgan
+            - generic [ref=e1799]:
+              - generic [ref=e1800]: "Related To Firm:"
+              - generic [ref=e1801]: "No"
+            - generic [ref=e1802]:
+              - generic [ref=e1803]: "AUM Custodian:"
+              - generic [ref=e1804]: $108,535,979
+        - generic [ref=e1805]:
+          - heading "Owner 1" [level=3] [ref=e1806]
+          - generic [ref=e1807]:
+            - generic [ref=e1808]:
+              - generic [ref=e1809]: "Full Legal Name:"
+              - generic [ref=e1810]: NOMURA HOLDING AMERICA, INC.
+            - generic [ref=e1811]:
+              - generic [ref=e1812]: "Owner Type:"
+              - generic [ref=e1813]: Domestic Entity
+            - generic [ref=e1814]:
+              - generic [ref=e1815]: "Title Or Status:"
+              - generic [ref=e1816]: OWNER
+            - generic [ref=e1817]:
+              - generic [ref=e1818]: "Acquired Date:"
+              - generic [ref=e1819]: 2022-10-01
+            - generic [ref=e1820]:
+              - generic [ref=e1821]: "Ownership %:"
+              - generic [ref=e1822]: 75% or more
+            - generic [ref=e1823]:
+              - generic [ref=e1824]: "Control Person:"
+              - generic [ref=e1825]: "Yes"
+            - generic [ref=e1826]:
+              - generic [ref=e1827]: "Public Reporting:"
+              - generic [ref=e1828]: "No"
+            - generic [ref=e1829]:
+              - generic [ref=e1830]: "Owner Type Description:"
+              - generic [ref=e1831]: Domestic Entity
+            - generic [ref=e1832]:
+              - generic [ref=e1833]: "Owner Classification:"
+              - generic [ref=e1834]: Direct Owner
+        - generic [ref=e1835]:
+          - heading "Owner 2" [level=3] [ref=e1836]
+          - generic [ref=e1837]:
+            - generic [ref=e1838]:
+              - generic [ref=e1839]: "Full Legal Name:"
+              - generic [ref=e1840]: Pallai, Matthew, Gian
+            - generic [ref=e1841]:
+              - generic [ref=e1842]: "Owner Type:"
+              - generic [ref=e1843]: Individual
+            - generic [ref=e1844]:
+              - generic [ref=e1845]: "Title Or Status:"
+              - generic [ref=e1846]: CHIEF INVESTMENT OFFICER
+            - generic [ref=e1847]:
+              - generic [ref=e1848]: "Acquired Date:"
+              - generic [ref=e1849]: 2022-10-01
+            - generic [ref=e1850]:
+              - generic [ref=e1851]: "Control Person:"
+              - generic [ref=e1852]: "Yes"
+            - generic [ref=e1853]:
+              - generic [ref=e1854]: "Public Reporting:"
+              - generic [ref=e1855]: "No"
+            - generic [ref=e1856]:
+              - generic [ref=e1857]: "Owner Type Description:"
+              - generic [ref=e1858]: Individual
+            - generic [ref=e1859]:
+              - generic [ref=e1860]: "Owner Classification:"
+              - generic [ref=e1861]: Direct Owner
+        - generic [ref=e1862]:
+          - heading "Owner 3" [level=3] [ref=e1863]
+          - generic [ref=e1864]:
+            - generic [ref=e1865]:
+              - generic [ref=e1866]: "Full Legal Name:"
+              - generic [ref=e1867]: STARK, ROBERT, NMN
+            - generic [ref=e1868]:
+              - generic [ref=e1869]: "Owner Type:"
+              - generic [ref=e1870]: Individual
+            - generic [ref=e1871]:
+              - generic [ref=e1872]: "Title Or Status:"
+              - generic [ref=e1873]: CHIEF EXECUTIVE OFFICER
+            - generic [ref=e1874]:
+              - generic [ref=e1875]: "Acquired Date:"
+              - generic [ref=e1876]: 2022-10-01
+            - generic [ref=e1877]:
+              - generic [ref=e1878]: "Control Person:"
+              - generic [ref=e1879]: "Yes"
+            - generic [ref=e1880]:
+              - generic [ref=e1881]: "Public Reporting:"
+              - generic [ref=e1882]: "No"
+            - generic [ref=e1883]:
+              - generic [ref=e1884]: "Owner Type Description:"
+              - generic [ref=e1885]: Individual
+            - generic [ref=e1886]:
+              - generic [ref=e1887]: "Owner Classification:"
+              - generic [ref=e1888]: Direct Owner
+        - generic [ref=e1889]:
+          - heading "Owner 4" [level=3] [ref=e1890]
+          - generic [ref=e1891]:
+            - generic [ref=e1892]:
+              - generic [ref=e1893]: "Full Legal Name:"
+              - generic [ref=e1894]: NELSON, MATTHEW, JAMES
+            - generic [ref=e1895]:
+              - generic [ref=e1896]: "Owner Type:"
+              - generic [ref=e1897]: Individual
+            - generic [ref=e1898]:
+              - generic [ref=e1899]: "Title Or Status:"
+              - generic [ref=e1900]: CHIEF OPERATING OFFICER
+            - generic [ref=e1901]:
+              - generic [ref=e1902]: "Acquired Date:"
+              - generic [ref=e1903]: 2022-10-01
+            - generic [ref=e1904]:
+              - generic [ref=e1905]: "Control Person:"
+              - generic [ref=e1906]: "Yes"
+            - generic [ref=e1907]:
+              - generic [ref=e1908]: "Public Reporting:"
+              - generic [ref=e1909]: "No"
+            - generic [ref=e1910]:
+              - generic [ref=e1911]: "Owner Type Description:"
+              - generic [ref=e1912]: Individual
+            - generic [ref=e1913]:
+              - generic [ref=e1914]: "Owner Classification:"
+              - generic [ref=e1915]: Direct Owner
+        - generic [ref=e1916]:
+          - heading "Owner 5" [level=3] [ref=e1917]
+          - generic [ref=e1918]:
+            - generic [ref=e1919]:
+              - generic [ref=e1920]: "Full Legal Name:"
+              - generic [ref=e1921]: NOMURA HOLDINGS, INC.
+            - generic [ref=e1922]:
+              - generic [ref=e1923]: "Owner Type:"
+              - generic [ref=e1924]: Foreign Entity
+            - generic [ref=e1925]:
+              - generic [ref=e1926]: "Title Or Status:"
+              - generic [ref=e1927]: SHAREHOLDER
+            - generic [ref=e1928]:
+              - generic [ref=e1929]: "Acquired Date:"
+              - generic [ref=e1930]: 2001-10-01
+            - generic [ref=e1931]:
+              - generic [ref=e1932]: "Ownership %:"
+              - generic [ref=e1933]: 75% or more
+            - generic [ref=e1934]:
+              - generic [ref=e1935]: "Control Person:"
+              - generic [ref=e1936]: "Yes"
+            - generic [ref=e1937]:
+              - generic [ref=e1938]: "Public Reporting:"
+              - generic [ref=e1939]: "Yes"
+            - generic [ref=e1940]:
+              - generic [ref=e1941]: "Owner Type Description:"
+              - generic [ref=e1942]: Foreign Entity
+            - generic [ref=e1943]:
+              - generic [ref=e1944]: "Owner Classification:"
+              - generic [ref=e1945]: Indirect Owner
+        - generic [ref=e1946]:
+          - heading "Owner 6" [level=3] [ref=e1947]
+          - generic [ref=e1948]:
+            - generic [ref=e1949]:
+              - generic [ref=e1950]: "Full Legal Name:"
+              - generic [ref=e1951]: CHIULLI, EUGENE, JAMES
+            - generic [ref=e1952]:
+              - generic [ref=e1953]: "Owner Type:"
+              - generic [ref=e1954]: Individual
+            - generic [ref=e1955]:
+              - generic [ref=e1956]: "Title Or Status:"
+              - generic [ref=e1957]: CHIEF FINANCIAL OFFICER
+            - generic [ref=e1958]:
+              - generic [ref=e1959]: "Acquired Date:"
+              - generic [ref=e1960]: 2024-03-01
+            - generic [ref=e1961]:
+              - generic [ref=e1962]: "Control Person:"
+              - generic [ref=e1963]: "Yes"
+            - generic [ref=e1964]:
+              - generic [ref=e1965]: "Public Reporting:"
+              - generic [ref=e1966]: "No"
+            - generic [ref=e1967]:
+              - generic [ref=e1968]: "Owner Type Description:"
+              - generic [ref=e1969]: Individual
+            - generic [ref=e1970]:
+              - generic [ref=e1971]: "Owner Classification:"
+              - generic [ref=e1972]: Direct Owner
+        - generic [ref=e1973]:
+          - heading "Owner 7" [level=3] [ref=e1974]
+          - generic [ref=e1975]:
+            - generic [ref=e1976]:
+              - generic [ref=e1977]: "Full Legal Name:"
+              - generic [ref=e1978]: Aloupis, Steven, Nicholas
+            - generic [ref=e1979]:
+              - generic [ref=e1980]: "Owner Type:"
+              - generic [ref=e1981]: Individual
+            - generic [ref=e1982]:
+              - generic [ref=e1983]: "Title Or Status:"
+              - generic [ref=e1984]: MANAGER
+            - generic [ref=e1985]:
+              - generic [ref=e1986]: "Acquired Date:"
+              - generic [ref=e1987]: 2022-06-01
+            - generic [ref=e1988]:
+              - generic [ref=e1989]: "Control Person:"
+              - generic [ref=e1990]: "Yes"
+            - generic [ref=e1991]:
+              - generic [ref=e1992]: "Public Reporting:"
+              - generic [ref=e1993]: "No"
+            - generic [ref=e1994]:
+              - generic [ref=e1995]: "Owner Type Description:"
+              - generic [ref=e1996]: Individual
+            - generic [ref=e1997]:
+              - generic [ref=e1998]: "Owner Classification:"
+              - generic [ref=e1999]: Direct Owner
+        - generic [ref=e2000]:
+          - heading "Owner 8" [level=3] [ref=e2001]
+          - generic [ref=e2002]:
+            - generic [ref=e2003]:
+              - generic [ref=e2004]: "Full Legal Name:"
+              - generic [ref=e2005]: Namura, Yoshihiro
+            - generic [ref=e2006]:
+              - generic [ref=e2007]: "Owner Type:"
+              - generic [ref=e2008]: Individual
+            - generic [ref=e2009]:
+              - generic [ref=e2010]: "Title Or Status:"
+              - generic [ref=e2011]: MANAGER
+            - generic [ref=e2012]:
+              - generic [ref=e2013]: "Acquired Date:"
+              - generic [ref=e2014]: 2022-10-01
+            - generic [ref=e2015]:
+              - generic [ref=e2016]: "Control Person:"
+              - generic [ref=e2017]: "Yes"
+            - generic [ref=e2018]:
+              - generic [ref=e2019]: "Public Reporting:"
+              - generic [ref=e2020]: "No"
+            - generic [ref=e2021]:
+              - generic [ref=e2022]: "Owner Type Description:"
+              - generic [ref=e2023]: Individual
+            - generic [ref=e2024]:
+              - generic [ref=e2025]: "Owner Classification:"
+              - generic [ref=e2026]: Direct Owner
+        - generic [ref=e2027]:
+          - heading "Owner 9" [level=3] [ref=e2028]
+          - generic [ref=e2029]:
+            - generic [ref=e2030]:
+              - generic [ref=e2031]: "Full Legal Name:"
+              - generic [ref=e2032]: DANIELE, NEIL, ANTHONY
+            - generic [ref=e2033]:
+              - generic [ref=e2034]: "Owner Type:"
+              - generic [ref=e2035]: Individual
+            - generic [ref=e2036]:
+              - generic [ref=e2037]: "Title Or Status:"
+              - generic [ref=e2038]: CHIEF COMPLIANCE OFFICER, MANAGING DIRECTOR
+            - generic [ref=e2039]:
+              - generic [ref=e2040]: "Acquired Date:"
+              - generic [ref=e2041]: 2024-12-01
+            - generic [ref=e2042]:
+              - generic [ref=e2043]: "Control Person:"
+              - generic [ref=e2044]: "Yes"
+            - generic [ref=e2045]:
+              - generic [ref=e2046]: "Public Reporting:"
+              - generic [ref=e2047]: "No"
+            - generic [ref=e2048]:
+              - generic [ref=e2049]: "Owner Type Description:"
+              - generic [ref=e2050]: Individual
+            - generic [ref=e2051]:
+              - generic [ref=e2052]: "Owner Classification:"
+              - generic [ref=e2053]: Direct Owner

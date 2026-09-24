@@ -1,0 +1,763 @@
+- generic [ref=e33]:
+  - generic [ref=e34]:
+    - generic [ref=e41]:
+      - img "Stratzen AI logo" [ref=e42]
+      - generic [ref=e43]: Stratzen AI
+    - navigation [ref=e49]:
+      - link "Summary" [ref=e50] [cursor=pointer]:
+        - /url: /summary
+      - generic [ref=e54]:
+        - generic [ref=e55]: PROSPECTING
+        - generic [ref=e56]:
+          - link "RIAs" [active] [ref=e57] [cursor=pointer]:
+            - /url: /rias
+          - link "RIAs Watchlist" [ref=e287] [cursor=pointer]:
+            - /url: /rias-watchlist
+        - link "401K" [ref=e65] [cursor=pointer]:
+          - /url: /401k
+      - generic [ref=e72]:
+        - generic [ref=e73]: MANAGEMENT
+        - link "Individual Clients" [ref=e75] [cursor=pointer]:
+          - /url: /individual-clients
+      - generic [ref=e79]:
+        - generic [ref=e80]: RESOURCES
+        - link "Research" [ref=e82] [cursor=pointer]:
+          - /url: /research
+        - link "Support" [ref=e88] [cursor=pointer]:
+          - /url: /support
+    - generic [ref=e97]:
+      - generic [ref=e98]:
+        - generic [ref=e99]: Intelligent Wealth
+        - generic [ref=e100]: Infrastructure
+      - generic [ref=e101]: © Stratzen AI 2026
+  - banner [ref=e102]:
+    - generic [ref=e104] [cursor=pointer]:
+      - generic [ref=e105]:
+        - paragraph [ref=e106]: QA Automation Testing Service Account
+        - paragraph [ref=e107]: "Advisor: -"
+      - generic [ref=e108]: QA
+  - main [ref=e109]:
+    - generic [ref=e292]:
+      - generic [ref=e294]:
+        - generic [ref=e295]:
+          - heading "Explore RIAs" [level=1] [ref=e296]
+          - paragraph [ref=e298]: Find and compare Registered Investment Advisors
+          - button [ref=e301] [cursor=pointer]
+        - button "Open chat help" [ref=e305] [cursor=pointer]:
+          - generic [ref=e308]: Ad-Bot
+      - generic [ref=e309]:
+        - table [ref=e311]:
+          - rowgroup [ref=e312]:
+            - row [ref=e313]:
+              - columnheader "CRD Sort by CRD descending" [ref=e314]:
+                - generic [ref=e316] [cursor=pointer]:
+                  - generic [ref=e317]: CRD
+                  - generic "Sort by CRD descending" [ref=e318]:
+                    - button "Sort by CRD descending" [ref=e319]
+                    - generic: "0"
+                - textbox "Filter by CRD" [ref=e327]
+              - columnheader "Business Name Sort by Business Name ascending" [ref=e328]:
+                - generic [ref=e330] [cursor=pointer]:
+                  - generic [ref=e331]: Business Name
+                  - generic "Sort by Business Name ascending" [ref=e332]:
+                    - button "Sort by Business Name ascending" [ref=e333]
+                    - generic: "0"
+                - textbox "Filter by Business Name" [ref=e341]
+              - columnheader "City Sort by City ascending" [ref=e342]:
+                - generic [ref=e344] [cursor=pointer]:
+                  - generic [ref=e345]: City
+                  - generic "Sort by City ascending" [ref=e346]:
+                    - button "Sort by City ascending" [ref=e347]
+                    - generic: "0"
+                - textbox "Filter by City" [ref=e355]
+              - columnheader "State Sort by State ascending" [ref=e356]:
+                - generic [ref=e358] [cursor=pointer]:
+                  - generic [ref=e359]: State
+                  - generic "Sort by State ascending" [ref=e360]:
+                    - button "Sort by State ascending" [ref=e361]
+                    - generic: "0"
+                - generic [ref=e368]:
+                  - combobox [ref=e369] [cursor=pointer]:
+                    - generic [ref=e370]: Filter
+                  - textbox [aria-hidden]
+              - columnheader "AUM Sort by AUM descending" [ref=e371]:
+                - generic [ref=e373] [cursor=pointer]:
+                  - generic [ref=e374]: AUM
+                  - generic "Sort by AUM descending" [ref=e375]:
+                    - button "Sort by AUM descending" [ref=e376]
+                    - generic: "0"
+                - generic [ref=e382]:
+                  - textbox "Min" [ref=e385]
+                  - textbox "Max" [ref=e388]
+              - columnheader "Custodian Sort by Custodian ascending" [ref=e389]:
+                - generic [ref=e391] [cursor=pointer]:
+                  - generic [ref=e392]: Custodian
+                  - generic "Sort by Custodian ascending" [ref=e393]:
+                    - button "Sort by Custodian ascending" [ref=e394]
+                    - generic: "0"
+                - textbox "Filter by Custodian" [ref=e402]
+              - columnheader "Last Filing Sort by Last Filing ascending" [ref=e403]:
+                - generic [ref=e405] [cursor=pointer]:
+                  - generic [ref=e406]: Last Filing
+                  - generic "Sort by Last Filing ascending" [ref=e407]:
+                    - button "Sort by Last Filing ascending" [ref=e408]
+                    - generic: "0"
+                - textbox "Filter by Last Filing" [ref=e416]
+              - columnheader "Actions" [ref=e417]:
+                - generic [ref=e425]:
+                  - combobox [ref=e426] [cursor=pointer]:
+                    - generic [ref=e427]: Not Archived
+                  - textbox [aria-hidden]: Not Archived
+          - rowgroup [ref=e428]:
+            - row [ref=e429] [cursor=pointer]:
+              - cell [ref=e430]:
+                - paragraph [ref=e431]: "324417"
+              - cell [ref=e432]:
+                - paragraph [ref=e433]: NOMURA CAPITAL MANAGEMENT LLC
+              - cell [ref=e434]:
+                - paragraph [ref=e435]: NEW YORK
+              - cell [ref=e436]:
+                - paragraph [ref=e437]: New York
+              - cell [ref=e438]:
+                - paragraph [ref=e439]: $420,750,787
+              - cell [ref=e440]:
+                - paragraph [ref=e441]: J.P. Morgan
+              - cell [ref=e442]:
+                - paragraph [ref=e443]: 2025-01-07
+              - cell [ref=e444]:
+                - generic [ref=e445]:
+                  - generic "Remove from watchlist" [ref=e446]:
+                    - button [ref=e447]
+                  - generic "Archive RIA" [ref=e450]:
+                    - button [ref=e451]
+            - row [ref=e454] [cursor=pointer]:
+              - cell [ref=e455]:
+                - paragraph [ref=e456]: "300992"
+              - cell [ref=e457]:
+                - paragraph [ref=e458]: ENSPYRE WEALTH ADVISORS, INC.
+              - cell [ref=e459]:
+                - paragraph [ref=e460]: WOODBURY
+              - cell [ref=e461]:
+                - paragraph [ref=e462]: Minnesota
+              - cell [ref=e463]:
+                - paragraph [ref=e464]: $180,642,870
+              - cell [ref=e465]:
+                - paragraph [ref=e466]: Charles Schwab
+              - cell [ref=e467]:
+                - paragraph [ref=e468]: 2025-01-29
+              - cell [ref=e469]:
+                - generic [ref=e470]:
+                  - generic "Remove from watchlist" [ref=e471]:
+                    - button [ref=e472]
+                  - generic "Archive RIA" [ref=e475]:
+                    - button [ref=e476]
+            - row [ref=e479] [cursor=pointer]:
+              - cell [ref=e480]:
+                - paragraph [ref=e481]: "288180"
+              - cell [ref=e482]:
+                - paragraph [ref=e483]: SAVICKI CAPITAL, LLC
+              - cell [ref=e484]:
+                - paragraph [ref=e485]: NEW HARTFORD
+              - cell [ref=e486]:
+                - paragraph [ref=e487]: New York
+              - cell [ref=e488]:
+                - paragraph [ref=e489]: $50,960,760
+              - cell [ref=e490]:
+                - paragraph [ref=e491]: Charles Schwab
+              - cell [ref=e492]:
+                - paragraph [ref=e493]: 2025-01-29
+              - cell [ref=e494]:
+                - generic [ref=e495]:
+                  - generic "Add to watchlist" [ref=e496]:
+                    - button [ref=e497]
+                  - generic "Archive RIA" [ref=e500]:
+                    - button [ref=e501]
+            - row [ref=e504] [cursor=pointer]:
+              - cell [ref=e505]:
+                - paragraph [ref=e506]: "312070"
+              - cell [ref=e507]:
+                - paragraph [ref=e508]: BOYD CAPITAL
+              - cell [ref=e509]:
+                - paragraph [ref=e510]: ROCHESTER
+              - cell [ref=e511]:
+                - paragraph [ref=e512]: New York
+              - cell [ref=e513]:
+                - paragraph [ref=e514]: $124,496,187
+              - cell [ref=e515]:
+                - paragraph [ref=e516]: Multiple Values
+              - cell [ref=e517]:
+                - paragraph [ref=e518]: 2025-01-03
+              - cell [ref=e519]:
+                - generic [ref=e520]:
+                  - generic "Remove from watchlist" [ref=e521]:
+                    - button [ref=e522]
+                  - generic "Archive RIA" [ref=e525]:
+                    - button [ref=e526]
+            - row [ref=e529] [cursor=pointer]:
+              - cell [ref=e530]:
+                - paragraph [ref=e531]: "124462"
+              - cell [ref=e532]:
+                - paragraph [ref=e533]: WMBC
+              - cell [ref=e534]:
+                - paragraph [ref=e535]: IRVINE
+              - cell [ref=e536]:
+                - paragraph [ref=e537]: California
+              - cell [ref=e538]:
+                - paragraph [ref=e539]: $116,209,055
+              - cell [ref=e540]:
+                - paragraph [ref=e541]: Fidelity
+              - cell [ref=e542]:
+                - paragraph [ref=e543]: 2025-01-07
+              - cell [ref=e544]:
+                - generic [ref=e545]:
+                  - generic "Add to watchlist" [ref=e546]:
+                    - button [ref=e547]
+                  - generic "Archive RIA" [ref=e550]:
+                    - button [ref=e551]
+            - row [ref=e554] [cursor=pointer]:
+              - cell [ref=e555]:
+                - paragraph [ref=e556]: "169309"
+              - cell [ref=e557]:
+                - paragraph [ref=e558]: RUBIN OVERSEAS LTD.
+              - cell [ref=e559]:
+                - paragraph [ref=e560]: ZURICH
+              - cell [ref=e561]:
+                - paragraph [ref=e562]: "-"
+              - cell [ref=e563]:
+                - paragraph [ref=e564]: $84,850,024
+              - cell [ref=e565]:
+                - paragraph [ref=e566]: Multiple Values
+              - cell [ref=e567]:
+                - paragraph [ref=e568]: 2025-01-04
+              - cell [ref=e569]:
+                - generic [ref=e570]:
+                  - generic "Add to watchlist" [ref=e571]:
+                    - button [ref=e572]
+                  - generic "Archive RIA" [ref=e575]:
+                    - button [ref=e576]
+            - row [ref=e579] [cursor=pointer]:
+              - cell [ref=e580]:
+                - paragraph [ref=e581]: "154400"
+              - cell [ref=e582]:
+                - paragraph [ref=e583]: GRAND STRATEGY CAPITAL, LLC
+              - cell [ref=e584]:
+                - paragraph [ref=e585]: CHARLOTTESVILLE
+              - cell [ref=e586]:
+                - paragraph [ref=e587]: Virginia
+              - cell [ref=e588]:
+                - paragraph [ref=e589]: $137,741,182
+              - cell [ref=e590]:
+                - paragraph [ref=e591]: Multiple Values
+              - cell [ref=e592]:
+                - paragraph [ref=e593]: 2025-01-15
+              - cell [ref=e594]:
+                - generic [ref=e595]:
+                  - generic "Add to watchlist" [ref=e596]:
+                    - button [ref=e597]
+                  - generic "Archive RIA" [ref=e600]:
+                    - button [ref=e601]
+            - row [ref=e604] [cursor=pointer]:
+              - cell [ref=e605]:
+                - paragraph [ref=e606]: "311002"
+              - cell [ref=e607]:
+                - paragraph [ref=e608]: PURE PORTFOLIOS
+              - cell [ref=e609]:
+                - paragraph [ref=e610]: LAKE OSWEGO
+              - cell [ref=e611]:
+                - paragraph [ref=e612]: Oregon
+              - cell [ref=e613]:
+                - paragraph [ref=e614]: $360,472,868
+              - cell [ref=e615]:
+                - paragraph [ref=e616]: Multiple Values
+              - cell [ref=e617]:
+                - paragraph [ref=e618]: 2025-01-30
+              - cell [ref=e619]:
+                - generic [ref=e620]:
+                  - generic "Add to watchlist" [ref=e621]:
+                    - button [ref=e622]
+                  - generic "Archive RIA" [ref=e625]:
+                    - button [ref=e626]
+            - row [ref=e629] [cursor=pointer]:
+              - cell [ref=e630]:
+                - paragraph [ref=e631]: "105168"
+              - cell [ref=e632]:
+                - paragraph [ref=e633]: MARSHALL & SULLIVAN, INC.
+              - cell [ref=e634]:
+                - paragraph [ref=e635]: SEATTLE
+              - cell [ref=e636]:
+                - paragraph [ref=e637]: Washington
+              - cell [ref=e638]:
+                - paragraph [ref=e639]: $473,367,635
+              - cell [ref=e640]:
+                - paragraph [ref=e641]: Charles Schwab
+              - cell [ref=e642]:
+                - paragraph [ref=e643]: 2025-01-17
+              - cell [ref=e644]:
+                - generic [ref=e645]:
+                  - generic "Add to watchlist" [ref=e646]:
+                    - button [ref=e647]
+                  - generic "Archive RIA" [ref=e650]:
+                    - button [ref=e651]
+            - row [ref=e654] [cursor=pointer]:
+              - cell [ref=e655]:
+                - paragraph [ref=e656]: "164232"
+              - cell [ref=e657]:
+                - paragraph [ref=e658]: DAVID WEALTH MANAGEMENT, LLC
+              - cell [ref=e659]:
+                - paragraph [ref=e660]: FAIRFAX
+              - cell [ref=e661]:
+                - paragraph [ref=e662]: Virginia
+              - cell [ref=e663]:
+                - paragraph [ref=e664]: $239,308,951
+              - cell [ref=e665]:
+                - paragraph [ref=e666]: Charles Schwab
+              - cell [ref=e667]:
+                - paragraph [ref=e668]: 2025-01-31
+              - cell [ref=e669]:
+                - generic [ref=e670]:
+                  - generic "Add to watchlist" [ref=e671]:
+                    - button [ref=e672]
+                  - generic "Archive RIA" [ref=e675]:
+                    - button [ref=e676]
+            - row [ref=e679] [cursor=pointer]:
+              - cell [ref=e680]:
+                - paragraph [ref=e681]: "291883"
+              - cell [ref=e682]:
+                - paragraph [ref=e683]: AMORE AMBRO, LLC
+              - cell [ref=e684]:
+                - paragraph [ref=e685]: "-"
+              - cell [ref=e686]:
+                - paragraph [ref=e687]: "-"
+              - cell [ref=e688]:
+                - paragraph [ref=e689]: $194,444,444
+              - cell [ref=e690]:
+                - paragraph [ref=e691]: Charles Schwab
+              - cell [ref=e692]:
+                - paragraph [ref=e693]: 2025-01-31
+              - cell [ref=e694]:
+                - generic [ref=e695]:
+                  - generic "Add to watchlist" [ref=e696]:
+                    - button [ref=e697]
+                  - generic "Archive RIA" [ref=e700]:
+                    - button [ref=e701]
+            - row [ref=e704] [cursor=pointer]:
+              - cell [ref=e705]:
+                - paragraph [ref=e706]: "108559"
+              - cell [ref=e707]:
+                - paragraph [ref=e708]: J.P. MORGAN PRIVATE WEALTH ADVISORS LLC
+              - cell [ref=e709]:
+                - paragraph [ref=e710]: SAN FRANCISCO
+              - cell [ref=e711]:
+                - paragraph [ref=e712]: California
+              - cell [ref=e713]:
+                - paragraph [ref=e714]: $86,270,585,130
+              - cell [ref=e715]:
+                - paragraph [ref=e716]: Pershing
+              - cell [ref=e717]:
+                - paragraph [ref=e718]: 2025-01-10
+              - cell [ref=e719]:
+                - generic [ref=e720]:
+                  - generic "Add to watchlist" [ref=e721]:
+                    - button [ref=e722]
+                  - generic "Archive RIA" [ref=e725]:
+                    - button [ref=e726]
+            - row [ref=e729] [cursor=pointer]:
+              - cell [ref=e730]:
+                - paragraph [ref=e731]: "291453"
+              - cell [ref=e732]:
+                - paragraph [ref=e733]: WEALTH COVENANT GROUP LLC
+              - cell [ref=e734]:
+                - paragraph [ref=e735]: HOUSTON
+              - cell [ref=e736]:
+                - paragraph [ref=e737]: Texas
+              - cell [ref=e738]:
+                - paragraph [ref=e739]: $290,733,000
+              - cell [ref=e740]:
+                - paragraph [ref=e741]: Fidelity
+              - cell [ref=e742]:
+                - paragraph [ref=e743]: 2025-01-10
+              - cell [ref=e744]:
+                - generic [ref=e745]:
+                  - generic "Add to watchlist" [ref=e746]:
+                    - button [ref=e747]
+                  - generic "Archive RIA" [ref=e750]:
+                    - button [ref=e751]
+            - row [ref=e754] [cursor=pointer]:
+              - cell [ref=e755]:
+                - paragraph [ref=e756]: "304462"
+              - cell [ref=e757]:
+                - paragraph [ref=e758]: UNIONVIEW WEALTH PARTNERS
+              - cell [ref=e759]:
+                - paragraph [ref=e760]: SEATTLE
+              - cell [ref=e761]:
+                - paragraph [ref=e762]: Washington
+              - cell [ref=e763]:
+                - paragraph [ref=e764]: $291,471,753
+              - cell [ref=e765]:
+                - paragraph [ref=e766]: Fidelity
+              - cell [ref=e767]:
+                - paragraph [ref=e768]: 2025-01-31
+              - cell [ref=e769]:
+                - generic [ref=e770]:
+                  - generic "Add to watchlist" [ref=e771]:
+                    - button [ref=e772]
+                  - generic "Archive RIA" [ref=e775]:
+                    - button [ref=e776]
+            - row [ref=e779] [cursor=pointer]:
+              - cell [ref=e780]:
+                - paragraph [ref=e781]: "318725"
+              - cell [ref=e782]:
+                - paragraph [ref=e783]: RICHR MONEY LLC
+              - cell [ref=e784]:
+                - paragraph [ref=e785]: MIAMI
+              - cell [ref=e786]:
+                - paragraph [ref=e787]: Florida
+              - cell [ref=e788]:
+                - paragraph [ref=e789]: $186,824
+              - cell [ref=e790]:
+                - paragraph [ref=e791]: Interactive Brokers
+              - cell [ref=e792]:
+                - paragraph [ref=e793]: 2025-01-22
+              - cell [ref=e794]:
+                - generic [ref=e795]:
+                  - generic "Add to watchlist" [ref=e796]:
+                    - button [ref=e797]
+                  - generic "Archive RIA" [ref=e800]:
+                    - button [ref=e801]
+            - row [ref=e804] [cursor=pointer]:
+              - cell [ref=e805]:
+                - paragraph [ref=e806]: "136045"
+              - cell [ref=e807]:
+                - paragraph [ref=e808]: MAGNETAR FINANCIAL LLC
+              - cell [ref=e809]:
+                - paragraph [ref=e810]: EVANSTON
+              - cell [ref=e811]:
+                - paragraph [ref=e812]: Illinois
+              - cell [ref=e813]:
+                - paragraph [ref=e814]: $23,106,396,704
+              - cell [ref=e815]:
+                - paragraph [ref=e816]: Multiple Values
+              - cell [ref=e817]:
+                - paragraph [ref=e818]: 2025-01-24
+              - cell [ref=e819]:
+                - generic [ref=e820]:
+                  - generic "Add to watchlist" [ref=e821]:
+                    - button [ref=e822]
+                  - generic "Archive RIA" [ref=e825]:
+                    - button [ref=e826]
+            - row [ref=e829] [cursor=pointer]:
+              - cell [ref=e830]:
+                - paragraph [ref=e831]: "3870"
+              - cell [ref=e832]:
+                - paragraph [ref=e833]: OSAIC FS, INC.
+              - cell [ref=e834]:
+                - paragraph [ref=e835]: FORT WAYNE
+              - cell [ref=e836]:
+                - paragraph [ref=e837]: Indiana
+              - cell [ref=e838]:
+                - paragraph [ref=e839]: $4,483,164,358
+              - cell [ref=e840]:
+                - paragraph [ref=e841]: NATIONAL FINANCIAL SERVICES
+              - cell [ref=e842]:
+                - paragraph [ref=e843]: 2025-01-13
+              - cell [ref=e844]:
+                - generic [ref=e845]:
+                  - generic "Add to watchlist" [ref=e846]:
+                    - button [ref=e847]
+                  - generic "Archive RIA" [ref=e850]:
+                    - button [ref=e851]
+            - row [ref=e854] [cursor=pointer]:
+              - cell [ref=e855]:
+                - paragraph [ref=e856]: "3978"
+              - cell [ref=e857]:
+                - paragraph [ref=e858]: OSAIC FA, INC.
+              - cell [ref=e859]:
+                - paragraph [ref=e860]: FORT WAYNE
+              - cell [ref=e861]:
+                - paragraph [ref=e862]: Indiana
+              - cell [ref=e863]:
+                - paragraph [ref=e864]: $37,133,957,466
+              - cell [ref=e865]:
+                - paragraph [ref=e866]: NATIONAL FINANCIAL SERVICES
+              - cell [ref=e867]:
+                - paragraph [ref=e868]: 2025-01-13
+              - cell [ref=e869]:
+                - generic [ref=e870]:
+                  - generic "Add to watchlist" [ref=e871]:
+                    - button [ref=e872]
+                  - generic "Archive RIA" [ref=e875]:
+                    - button [ref=e876]
+            - row [ref=e879] [cursor=pointer]:
+              - cell [ref=e880]:
+                - paragraph [ref=e881]: "281767"
+              - cell [ref=e882]:
+                - paragraph [ref=e883]: XO WEALTH MANAGEMENT
+              - cell [ref=e884]:
+                - paragraph [ref=e885]: DALLAS
+              - cell [ref=e886]:
+                - paragraph [ref=e887]: Texas
+              - cell [ref=e888]:
+                - paragraph [ref=e889]: $707,806,879
+              - cell [ref=e890]:
+                - paragraph [ref=e891]: Raymond James
+              - cell [ref=e892]:
+                - paragraph [ref=e893]: 2025-01-16
+              - cell [ref=e894]:
+                - generic [ref=e895]:
+                  - generic "Add to watchlist" [ref=e896]:
+                    - button [ref=e897]
+                  - generic "Archive RIA" [ref=e900]:
+                    - button [ref=e901]
+            - row [ref=e904] [cursor=pointer]:
+              - cell [ref=e905]:
+                - paragraph [ref=e906]: "335243"
+              - cell [ref=e907]:
+                - paragraph [ref=e908]: JOSEPH GRIER LLC
+              - cell [ref=e909]:
+                - paragraph [ref=e910]: "-"
+              - cell [ref=e911]:
+                - paragraph [ref=e912]: "-"
+              - cell [ref=e913]:
+                - paragraph [ref=e914]: $100,000
+              - cell [ref=e915]:
+                - paragraph [ref=e916]: Fidelity
+              - cell [ref=e917]:
+                - paragraph [ref=e918]: 2025-02-28
+              - cell [ref=e919]:
+                - generic [ref=e920]:
+                  - generic "Add to watchlist" [ref=e921]:
+                    - button [ref=e922]
+                  - generic "Archive RIA" [ref=e925]:
+                    - button [ref=e926]
+            - row [ref=e929] [cursor=pointer]:
+              - cell [ref=e930]:
+                - paragraph [ref=e931]: "112743"
+              - cell [ref=e932]:
+                - paragraph [ref=e933]: DIVERSIFIED ASSET MANAGEMENT, INC.
+              - cell [ref=e934]:
+                - paragraph [ref=e935]: BOULDER
+              - cell [ref=e936]:
+                - paragraph [ref=e937]: Colorado
+              - cell [ref=e938]:
+                - paragraph [ref=e939]: $126,368,720
+              - cell [ref=e940]:
+                - paragraph [ref=e941]: Charles Schwab
+              - cell [ref=e942]:
+                - paragraph [ref=e943]: 2025-01-25
+              - cell [ref=e944]:
+                - generic [ref=e945]:
+                  - generic "Add to watchlist" [ref=e946]:
+                    - button [ref=e947]
+                  - generic "Archive RIA" [ref=e950]:
+                    - button [ref=e951]
+            - row [ref=e954] [cursor=pointer]:
+              - cell [ref=e955]:
+                - paragraph [ref=e956]: "120593"
+              - cell [ref=e957]:
+                - paragraph [ref=e958]: AHL INVESTMENT MANAGEMENT, INC.
+              - cell [ref=e959]:
+                - paragraph [ref=e960]: WINTER PARK
+              - cell [ref=e961]:
+                - paragraph [ref=e962]: Florida
+              - cell [ref=e963]:
+                - paragraph [ref=e964]: $200,041,338
+              - cell [ref=e965]:
+                - paragraph [ref=e966]: Charles Schwab
+              - cell [ref=e967]:
+                - paragraph [ref=e968]: 2025-01-31
+              - cell [ref=e969]:
+                - generic [ref=e970]:
+                  - generic "Add to watchlist" [ref=e971]:
+                    - button [ref=e972]
+                  - generic "Archive RIA" [ref=e975]:
+                    - button [ref=e976]
+            - row [ref=e979] [cursor=pointer]:
+              - cell [ref=e980]:
+                - paragraph [ref=e981]: "327854"
+              - cell [ref=e982]:
+                - paragraph [ref=e983]: LAKE WATER ADVISORY, LLC
+              - cell [ref=e984]:
+                - paragraph [ref=e985]: "-"
+              - cell [ref=e986]:
+                - paragraph [ref=e987]: "-"
+              - cell [ref=e988]:
+                - paragraph [ref=e989]: $40,004,280
+              - cell [ref=e990]:
+                - paragraph [ref=e991]: Altruist
+              - cell [ref=e992]:
+                - paragraph [ref=e993]: 2025-01-21
+              - cell [ref=e994]:
+                - generic [ref=e995]:
+                  - generic "Add to watchlist" [ref=e996]:
+                    - button [ref=e997]
+                  - generic "Archive RIA" [ref=e1000]:
+                    - button [ref=e1001]
+            - row [ref=e1004] [cursor=pointer]:
+              - cell [ref=e1005]:
+                - paragraph [ref=e1006]: "333468"
+              - cell [ref=e1007]:
+                - paragraph [ref=e1008]: SANKOTA CAPITAL LLC
+              - cell [ref=e1009]:
+                - paragraph [ref=e1010]: "-"
+              - cell [ref=e1011]:
+                - paragraph [ref=e1012]: "-"
+              - cell [ref=e1013]:
+                - paragraph [ref=e1014]: $26,000,000
+              - cell [ref=e1015]:
+                - paragraph [ref=e1016]: Charles Schwab
+              - cell [ref=e1017]:
+                - paragraph [ref=e1018]: 2025-01-21
+              - cell [ref=e1019]:
+                - generic [ref=e1020]:
+                  - generic "Add to watchlist" [ref=e1021]:
+                    - button [ref=e1022]
+                  - generic "Archive RIA" [ref=e1025]:
+                    - button [ref=e1026]
+            - row [ref=e1029] [cursor=pointer]:
+              - cell [ref=e1030]:
+                - paragraph [ref=e1031]: "310439"
+              - cell [ref=e1032]:
+                - paragraph [ref=e1033]: MARYGOLD & CO. ADVISORY SERVICES, LLC
+              - cell [ref=e1034]:
+                - paragraph [ref=e1035]: WALNUT CREEK
+              - cell [ref=e1036]:
+                - paragraph [ref=e1037]: California
+              - cell [ref=e1038]:
+                - paragraph [ref=e1039]: $30,725
+              - cell [ref=e1040]:
+                - paragraph [ref=e1041]: DriveWealth
+              - cell [ref=e1042]:
+                - paragraph [ref=e1043]: 2025-01-24
+              - cell [ref=e1044]:
+                - generic [ref=e1045]:
+                  - generic "Add to watchlist" [ref=e1046]:
+                    - button [ref=e1047]
+                  - generic "Archive RIA" [ref=e1050]:
+                    - button [ref=e1051]
+            - row [ref=e1054] [cursor=pointer]:
+              - cell [ref=e1055]:
+                - paragraph [ref=e1056]: "116057"
+              - cell [ref=e1057]:
+                - paragraph [ref=e1058]: MILLENNIUM ADVISORY SERVICES, INC.
+              - cell [ref=e1059]:
+                - paragraph [ref=e1060]: GLEN ALLEN
+              - cell [ref=e1061]:
+                - paragraph [ref=e1062]: Virginia
+              - cell [ref=e1063]:
+                - paragraph [ref=e1064]: $707,519,606
+              - cell [ref=e1065]:
+                - paragraph [ref=e1066]: Multiple Values
+              - cell [ref=e1067]:
+                - paragraph [ref=e1068]: 2025-01-27
+              - cell [ref=e1069]:
+                - generic [ref=e1070]:
+                  - generic "Add to watchlist" [ref=e1071]:
+                    - button [ref=e1072]
+                  - generic "Archive RIA" [ref=e1075]:
+                    - button [ref=e1076]
+            - row [ref=e1079] [cursor=pointer]:
+              - cell [ref=e1080]:
+                - paragraph [ref=e1081]: "105477"
+              - cell [ref=e1082]:
+                - paragraph [ref=e1083]: GUGGENHEIM INVESTMENTS
+              - cell [ref=e1084]:
+                - paragraph [ref=e1085]: NEW YORK
+              - cell [ref=e1086]:
+                - paragraph [ref=e1087]: New York
+              - cell [ref=e1088]:
+                - paragraph [ref=e1089]: $11,255,391,581
+              - cell [ref=e1090]:
+                - paragraph [ref=e1091]: Morgan Stanley
+              - cell [ref=e1092]:
+                - paragraph [ref=e1093]: 2025-01-30
+              - cell [ref=e1094]:
+                - generic [ref=e1095]:
+                  - generic "Add to watchlist" [ref=e1096]:
+                    - button [ref=e1097]
+                  - generic "Archive RIA" [ref=e1100]:
+                    - button [ref=e1101]
+            - row [ref=e1104] [cursor=pointer]:
+              - cell [ref=e1105]:
+                - paragraph [ref=e1106]: "42578"
+              - cell [ref=e1107]:
+                - paragraph [ref=e1108]: LIEBLONG & ASSOCIATES, INC.
+              - cell [ref=e1109]:
+                - paragraph [ref=e1110]: LITTLE ROCK
+              - cell [ref=e1111]:
+                - paragraph [ref=e1112]: Arkansas
+              - cell [ref=e1113]:
+                - paragraph [ref=e1114]: $174,237,704
+              - cell [ref=e1115]:
+                - paragraph [ref=e1116]: Wells Fargo
+              - cell [ref=e1117]:
+                - paragraph [ref=e1118]: 2025-01-02
+              - cell [ref=e1119]:
+                - generic [ref=e1120]:
+                  - generic "Add to watchlist" [ref=e1121]:
+                    - button [ref=e1122]
+                  - generic "Archive RIA" [ref=e1125]:
+                    - button [ref=e1126]
+            - row [ref=e1129] [cursor=pointer]:
+              - cell [ref=e1130]:
+                - paragraph [ref=e1131]: "300709"
+              - cell [ref=e1132]:
+                - paragraph [ref=e1133]: HOLDUN FAMILY OFFICE LLC
+              - cell [ref=e1134]:
+                - paragraph [ref=e1135]: MIAMI
+              - cell [ref=e1136]:
+                - paragraph [ref=e1137]: Florida
+              - cell [ref=e1138]:
+                - paragraph [ref=e1139]: $114,531,871
+              - cell [ref=e1140]:
+                - paragraph [ref=e1141]: Multiple Values
+              - cell [ref=e1142]:
+                - paragraph [ref=e1143]: 2025-02-13
+              - cell [ref=e1144]:
+                - generic [ref=e1145]:
+                  - generic "Add to watchlist" [ref=e1146]:
+                    - button [ref=e1147]
+                  - generic "Archive RIA" [ref=e1150]:
+                    - button [ref=e1151]
+            - row [ref=e1154] [cursor=pointer]:
+              - cell [ref=e1155]:
+                - paragraph [ref=e1156]: "169679"
+              - cell [ref=e1157]:
+                - paragraph [ref=e1158]: ASTOR INVESTMENT MANAGEMENT LLC
+              - cell [ref=e1159]:
+                - paragraph [ref=e1160]: CHICAGO
+              - cell [ref=e1161]:
+                - paragraph [ref=e1162]: Illinois
+              - cell [ref=e1163]:
+                - paragraph [ref=e1164]: $198,424,930
+              - cell [ref=e1165]:
+                - paragraph [ref=e1166]: Multiple Values
+              - cell [ref=e1167]:
+                - paragraph [ref=e1168]: 2025-02-10
+              - cell [ref=e1169]:
+                - generic [ref=e1170]:
+                  - generic "Add to watchlist" [ref=e1171]:
+                    - button [ref=e1172]
+                  - generic "Archive RIA" [ref=e1175]:
+                    - button [ref=e1176]
+        - generic [ref=e1180]:
+          - generic [ref=e1181]:
+            - button [ref=e1182] [cursor=pointer]
+            - button [ref=e1186] [cursor=pointer]
+            - button [ref=e1190] [cursor=pointer]
+            - button "Export first 1000 rows to Excel with current filters" [ref=e1194] [cursor=pointer]: Export
+          - generic [ref=e1199]:
+            - generic [ref=e1200]:
+              - generic [ref=e1201]: Rows per page
+              - generic [ref=e1202]:
+                - combobox "Rows per page" [ref=e1203] [cursor=pointer]: "30"
+                - textbox [aria-hidden]: "30"
+            - generic [ref=e1204]: 1-30 of 12,017
+            - generic [ref=e1205]:
+              - generic "Go to first page" [ref=e1206]:
+                - button "Go to first page" [disabled]
+              - generic "Go to previous page" [ref=e1207]:
+                - button "Go to previous page" [disabled]
+              - generic "Go to next page" [ref=e1208]:
+                - button "Go to next page" [ref=e1209] [cursor=pointer]
+              - generic "Go to last page" [ref=e1212]:
+                - button "Go to last page" [ref=e1213] [cursor=pointer]
