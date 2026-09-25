@@ -1,21 +1,22 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Summary Module - Toggle Visibility', () => {
-	test.describe.configure({ timeout: 120000 });
+test.setTimeout(120000);
 
+test.describe('Summary Module - Toggle Visibility', () => {
 	test('TC002_SummaryPageDisplay_ToggleCardsOff', async ({ page }) => {
 		await page.setViewportSize({ width: 1600, height: 1400 });
 
-		const appBaseUrl = process.env.URL
+		const baseUrl = process.env.URL
 			|| process.env.APP_URL
 			|| process.env.BASE_URL
-			|| test.info().project.use.baseURL;
+			|| test.info().project.use.baseURL
+			|| 'https://demoapp.stratzen.ai';
 
-		if (!appBaseUrl) {
-			throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
-		}
-
-		const buildUrl = (path) => new URL(path, appBaseUrl).toString();
+		const buildUrl = (path) => {
+			const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
+			const cleanPath = path.startsWith('/') ? path : `/${path}`;
+			return `${cleanBaseUrl}${cleanPath}`;
+		};
 		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
 		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
@@ -24,18 +25,20 @@ test.describe('Summary Module - Toggle Visibility', () => {
 				waitUntil: 'domcontentloaded',
 				timeout: 90000,
 			});
-			await expect(page).toHaveURL(/login/);
+			await expect(page.getByRole('heading', { name: 'Welcome Back' })).toBeVisible({
+				timeout: 30000,
+			});
 		});
 
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.locator('input[type="email"]');
-			await expect(emailField).toBeVisible();
+			const emailField = page.getByRole('textbox', { name: 'Email Address' });
+			await expect(emailField).toBeVisible({ timeout: 10000 });
 			await emailField.fill(email);
 		});
 
 		await test.step('Step 3: Enter the password', async () => {
-			const passwordField = page.locator('input[type="password"]');
-			await expect(passwordField).toBeVisible();
+			const passwordField = page.getByRole('textbox', { name: 'Password' });
+			await expect(passwordField).toBeVisible({ timeout: 10000 });
 			await passwordField.fill(passwordValue);
 		});
 
