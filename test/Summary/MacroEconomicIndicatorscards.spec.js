@@ -20,6 +20,7 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
 		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
+		// Step 1: Navigate to the login page.
 		await test.step('Step 1: Navigate to login page', async () => {
 			await page.goto(buildUrl('/login'), {
 				waitUntil: 'domcontentloaded',
@@ -30,27 +31,32 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 			});
 		});
 
+		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
 			const emailField = page.getByRole('textbox', { name: 'Email Address' });
 			await expect(emailField).toBeVisible({ timeout: 10000 });
 			await emailField.fill(email);
 		});
 
+		// Step 3: Enter the password.
 		await test.step('Step 3: Enter the password', async () => {
 			const passwordField = page.getByRole('textbox', { name: 'Password' });
 			await expect(passwordField).toBeVisible({ timeout: 10000 });
 			await passwordField.fill(passwordValue);
 		});
 
+		// Step 4: Click the Sign In button.
 		await test.step('Step 4: Click the Sign In button', async () => {
 			await page.getByRole('button', { name: /sign in/i }).click();
 		});
 
+		// Step 5: Verify the login redirect completes.
 		await test.step('Step 5: Verify the login redirect completes', async () => {
 			await page.waitForLoadState('networkidle');
 			await expect(page).not.toHaveURL(/login/);
 		});
 
+		// Step 6: Ensure macro indicator cards are enabled.
 		const ensureMacroCardsEnabled = async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Preferences' }).click();
@@ -97,6 +103,7 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 			]);
 		};
 
+		// Step 6: Ensure macro indicator cards are enabled.
 		await test.step('Step 6: Ensure macro indicator cards are enabled', async () => {
 			await ensureMacroCardsEnabled();
 			await expect(page).toHaveURL(/summary/);
@@ -121,6 +128,7 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 			exact: true,
 		});
 
+		// Step 7: Verify the Macro Economic Indicators card content.
 		await test.step('Step 7: Verify the Macro Economic Indicators card content', async () => {
 			await macroHeading.scrollIntoViewIfNeeded();
 			await expect(macroHeading).toBeVisible();
@@ -132,6 +140,7 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 			await expect(macroRegion).toContainText(/CSI/i);
 		});
 
+		// Step 8: Open the macro indicators detail drawer and verify its content.
 		await test.step('Step 8: Open the macro indicators detail drawer and verify its content', async () => {
 			await readMoreButton.click();
 
@@ -158,6 +167,7 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 			await expect(macroHeading).toBeVisible();
 		});
 
+		// Step 9: Log out.
 		await test.step('Step 9: Log out', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
