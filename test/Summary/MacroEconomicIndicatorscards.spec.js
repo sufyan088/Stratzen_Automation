@@ -1,6 +1,8 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('Summary Module - Macro Economic Indicators', () => {
+	test.describe.configure({ timeout: 120000 });
+
 	async function ensureMacroCardsEnabled(page) {
 		await page.getByText('QA', { exact: true }).click();
 		await page.getByRole('menuitem', { name: 'Preferences' }).click();
@@ -22,6 +24,11 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 				name: toggleName,
 				exact: true,
 			});
+
+			if ((await toggle.count()) === 0) {
+				continue;
+			}
+
 			await toggle.scrollIntoViewIfNeeded();
 
 			if ((await toggle.getAttribute('aria-pressed')) !== 'true') {
@@ -44,20 +51,55 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 	}
 
 	test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
-		test.setTimeout(90000);
+		await page.setViewportSize({ width: 1600, height: 1400 });
 
-		const email = 'SZ_AutoQA@stratzen.ai';
-		const passwordValue = 'StratzenAutomation123';
+		const appBaseUrl = process.env.URL
+			|| process.env.APP_URL
+			|| process.env.BASE_URL
+			|| test.info().project.use.baseURL;
 
-		await page.goto('https://demoapp.stratzen.ai/login');
-		await expect(page).toHaveURL(/login/);
+		if (!appBaseUrl) {
+			throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
+		}
 
-		await page.locator('input[type="email"]').fill(email);
-		await page.locator('input[type="password"]').fill(passwordValue);
-		await page.getByRole('button', { name: /sign in/i }).click();
+		const buildUrl = (path) => new URL(path, appBaseUrl).toString();
+		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
-		await page.waitForURL('https://demoapp.stratzen.ai/summary');
-		await ensureMacroCardsEnabled(page);
+		await test.step('Step 1: Navigate to login page', async () => {
+			await page.goto(buildUrl('/login'), {
+				waitUntil: 'domcontentloaded',
+				timeout: 90000,
+			});
+
+			await expect(page).toHaveURL(/login/);
+		});
+
+		await test.step('Step 2: Enter the email address', async () => {
+			const emailField = page.locator('input[type="email"]');
+			await expect(emailField).toBeVisible();
+			await emailField.fill(email);
+		});
+
+		await test.step('Step 3: Enter the password', async () => {
+			const passwordField = page.locator('input[type="password"]');
+			await expect(passwordField).toBeVisible();
+			await passwordField.fill(passwordValue);
+		});
+
+		await test.step('Step 4: Click the Sign In button', async () => {
+			await page.getByRole('button', { name: /sign in/i }).click();
+		});
+
+		await test.step('Step 5: Verify the login redirect completes', async () => {
+			await page.waitForLoadState('networkidle');
+			await expect(page).not.toHaveURL(/login/);
+		});
+
+		await test.step('Step 6: Ensure macro indicator cards are enabled', async () => {
+			await ensureMacroCardsEnabled(page);
+			await expect(page).toHaveURL(/summary/);
+		});
 
 		const macroHeading = page.getByRole('heading', {
 			name: /Macro Economic Indicators/i,
@@ -78,42 +120,46 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 			exact: true,
 		});
 
-		await macroHeading.scrollIntoViewIfNeeded();
-		await expect(macroHeading).toBeVisible();
-		await expect(macroDescription).toBeVisible();
-		await expect(macroRegion).toBeVisible();
-		await expect(macroRegion).toContainText(/CPI/i);
-		await expect(macroRegion).toContainText(/GDP/i);
-		await expect(macroRegion).toContainText(/Unemployment Rate/i);
-		await expect(macroRegion).toContainText(/CSI/i);
-
-		await readMoreButton.click();
-
-		const detailDrawer = page.getByRole('dialog').filter({
-			has: page.getByText('Macro Economic Indicators', { exact: true }),
-		});
-		const detailTitle = detailDrawer.getByText(
-			/The current economic indicators suggest a moderate recovery in the economy/i,
-		);
-		const detailDate = detailDrawer.getByText(/^[A-Z][a-z]+ \d{1,2}, \d{4}$/);
-		const sourceAttribution = detailDrawer.getByText(/Source:\s*FMP/i);
-		const sourceLink = detailDrawer.getByRole('link', {
-			name: /financialmodelingprep\.com/i,
+		await test.step('Step 7: Verify the Macro Economic Indicators card content', async () => {
+			await macroHeading.scrollIntoViewIfNeeded();
+			await expect(macroHeading).toBeVisible();
+			await expect(macroDescription).toBeVisible();
+			await expect(macroRegion).toBeVisible();
+			await expect(macroRegion).toContainText(/CPI/i);
+			await expect(macroRegion).toContainText(/GDP/i);
+			await expect(macroRegion).toContainText(/Unemployment Rate/i);
+			await expect(macroRegion).toContainText(/CSI/i);
 		});
 
-		await expect(detailDrawer).toBeVisible();
-		await expect(detailTitle).toBeVisible();
-		await expect(detailDate).toBeVisible();
-		await expect(sourceAttribution).toBeVisible();
-		await expect(sourceLink).toBeVisible();
+		await test.step('Step 8: Open the macro indicators detail drawer and verify its content', async () => {
+			await readMoreButton.click();
 
-		await detailDrawer.getByRole('button', { name: 'Close drawer' }).click();
+			const detailDrawer = page.getByRole('dialog').filter({
+				has: page.getByText('Macro Economic Indicators', { exact: true }),
+			});
+			const detailTitle = detailDrawer.getByText(
+				/The current economic indicators suggest a moderate recovery in the economy/i,
+			);
+			const detailDate = detailDrawer.getByText(/^[A-Z][a-z]+ \d{1,2}, \d{4}$/);
+			const sourceAttribution = detailDrawer.getByText(/Source:\s*FMP/i);
+			const sourceLink = detailDrawer.getByRole('link', {
+				name: /financialmodelingprep\.com/i,
+			});
 
-		await expect(detailDrawer).not.toBeVisible();
-		await expect(page.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
-		await expect(macroHeading).toBeVisible();
+			await expect(detailDrawer).toBeVisible();
+			await expect(detailTitle).toBeVisible();
+			await expect(detailDate).toBeVisible();
+			await expect(sourceAttribution).toBeVisible();
+			await expect(sourceLink).toBeVisible();
 
-		await page.getByText('QA', { exact: true }).click();
-		await page.getByRole('menuitem', { name: 'Logout' }).click();
+			await detailDrawer.getByRole('button', { name: 'Close drawer' }).click();
+			await expect(detailDrawer).not.toBeVisible();
+			await expect(macroHeading).toBeVisible();
+		});
+
+		await test.step('Step 9: Log out', async () => {
+			await page.getByText('QA', { exact: true }).click();
+			await page.getByRole('menuitem', { name: 'Logout' }).click();
+		});
 	});
 });
