@@ -1,108 +1,167 @@
 import { test, expect } from '@playwright/test';
 
+test.setTimeout(120000);
+
 test.describe('Summary Module - Macro Economic Indicators', () => {
-		test.describe.configure({ timeout: 120000 });
+	async function ensureMacroCardsEnabled(page) {
+		await page.getByText('QA', { exact: true }).click();
+		await page.getByRole('menuitem', { name: 'Preferences' }).click();
+		await expect(page).toHaveURL(/preferences/);
 
-    test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
-        await page.setViewportSize({ width: 1600, height: 1400 });
+		const savePreferencesButton = page.getByRole('button', {
+			name: 'Save Preferences',
+		});
+		const toggleNames = [
+			'Toggle CPI',
+			'Toggle GDP',
+			'Toggle Unemployment Rate',
+			'Toggle Consumer Sentiment Index',
+		];
+		let hasChanges = false;
 
-        const appBaseUrl = process.env.URL
-            || process.env.APP_URL
-            || process.env.BASE_URL
-            || test.info().project.use.baseURL;
+		for (const toggleName of toggleNames) {
+			const toggle = page.getByRole('button', {
+				name: toggleName,
+				exact: true,
+			});
 
-        if (!appBaseUrl) {
-            throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
-        }
+			if ((await toggle.count()) === 0) {
+				continue;
+			}
 
-        const buildUrl = (path) => new URL(path, appBaseUrl).toString();
-        const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
-        const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
+			await toggle.scrollIntoViewIfNeeded();
 
-		// Step 1: Navigate to the login page.
-        await test.step('Step 1: Navigate to login page', async () => {
-            await page.goto(buildUrl('/login'), {
-                waitUntil: 'domcontentloaded',
-                timeout: 90000,
-            });
+			if ((await toggle.getAttribute('aria-pressed')) !== 'true') {
+				await toggle.click();
+				await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+				hasChanges = true;
+			}
+		}
 
-            await expect(page).toHaveURL(/login/);
-        });
+		if (hasChanges) {
+			await expect(savePreferencesButton).toBeVisible();
+			await savePreferencesButton.click();
+			await expect(savePreferencesButton).toBeHidden({ timeout: 10000 });
+		}
 
-		// Step 2: Enter the email address.
+		await Promise.all([
+			page.waitForURL(/summary/),
+			page.getByRole('link', { name: 'Summary', exact: true }).click(),
+		]);
+	}
+
+	test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
+		await page.setViewportSize({ width: 1600, height: 1400 });
+
+		const baseUrl = process.env.URL
+			|| process.env.APP_URL
+			|| process.env.BASE_URL
+			|| test.info().project.use.baseURL
+			|| 'https://demoapp.stratzen.ai';
+
+		const buildUrl = (path) => {
+			const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
+			const cleanPath = path.startsWith('/') ? path : `/${path}`;
+			return `${cleanBaseUrl}${cleanPath}`;
+		};
+		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
+
+		await test.step('Step 1: Navigate to login page', async () => {
+			await page.goto(buildUrl('/login'), {
+				waitUntil: 'domcontentloaded',
+				timeout: 90000,
+			});
+			await expect(page.getByRole('heading', { name: 'Welcome Back' })).toBeVisible({
+				timeout: 30000,
+			});
+		});
+
 		await test.step('Step 2: Enter the email address', async () => {
-            const emailField = page.locator('input[type="email"]');
-            await expect(emailField).toBeVisible();
-            await emailField.fill(email);
+			const emailField = page.getByRole('textbox', { name: 'Email Address' });
+			await expect(emailField).toBeVisible({ timeout: 10000 });
+			await emailField.fill(email);
 		});
 
-		// Step 3: Enter the password.
 		await test.step('Step 3: Enter the password', async () => {
-            const passwordField = page.locator('input[type="password"]');
-            await expect(passwordField).toBeVisible();
-            await passwordField.fill(passwordValue);
+			const passwordField = page.getByRole('textbox', { name: 'Password' });
+			await expect(passwordField).toBeVisible({ timeout: 10000 });
+			await passwordField.fill(passwordValue);
 		});
 
-		// Step 4: Click the Sign In button.
 		await test.step('Step 4: Click the Sign In button', async () => {
-            await page.getByRole('button', {
-                name: /sign in/i
-            }).click();
+			await page.getByRole('button', { name: /sign in/i }).click();
 		});
 
-		// Step 5: Verify the login redirect completes.
 		await test.step('Step 5: Verify the login redirect completes', async () => {
-            await page.waitForLoadState('networkidle');
+			await page.waitForLoadState('networkidle');
 			await expect(page).not.toHaveURL(/login/);
-        });
+		});
 
-		// Step 6: Prepare the Macro Economic Indicators section locator.
-        const macroHeading = page.getByText('Macro Economic Indicators', {
-            exact: true
-        }).first();
+		await test.step('Step 6: Ensure macro indicator cards are enabled', async () => {
+			await ensureMacroCardsEnabled(page);
+			await expect(page).toHaveURL(/summary/);
+		});
 
-        const macroSectionVisible = (await macroHeading.count()) > 0
-            && await macroHeading.isVisible().catch(() => false);
+		const macroHeading = page.getByRole('heading', {
+			name: /Macro Economic Indicators/i,
+		});
+		const macroCardHeader = page.getByRole('heading', {
+			name: /^Macro Economic Indicators Key indicators with portfolio implications\. Read More$/i,
+		});
+		const macroCard = macroCardHeader.locator(
+			'xpath=ancestor::*[.//*[@role="region"]][1]',
+		);
+		const macroDescription = page.getByText(
+			'Key indicators with portfolio implications.',
+			{ exact: true },
+		);
+		const macroRegion = macroCard.getByRole('region');
+		const readMoreButton = macroCard.getByRole('button', {
+			name: 'Read More',
+			exact: true,
+		});
 
-		// Step 6: Verify the Macro Economic Indicators detail flow when available.
-		await test.step('Step 6: Verify the Macro Economic Indicators detail flow when available', async () => {
-            if (macroSectionVisible) {
-                const macroSection = macroHeading.locator('xpath=ancestor::*[self::section or self::div][1]');
-                const readMoreButton = macroSection.getByRole('button', { name: 'Read More', exact: true });
+		await test.step('Step 7: Verify the Macro Economic Indicators card content', async () => {
+			await macroHeading.scrollIntoViewIfNeeded();
+			await expect(macroHeading).toBeVisible();
+			await expect(macroDescription).toBeVisible();
+			await expect(macroRegion).toBeVisible();
+			await expect(macroRegion).toContainText(/CPI/i);
+			await expect(macroRegion).toContainText(/GDP/i);
+			await expect(macroRegion).toContainText(/Unemployment Rate/i);
+			await expect(macroRegion).toContainText(/CSI/i);
+		});
 
-                await macroHeading.scrollIntoViewIfNeeded();
-                await expect(macroHeading).toBeVisible();
-                await expect(readMoreButton).toBeVisible();
+		await test.step('Step 8: Open the macro indicators detail drawer and verify its content', async () => {
+			await readMoreButton.click();
 
-                await readMoreButton.click();
+			const detailDrawer = page.getByRole('dialog').filter({
+				has: page.getByText('Macro Economic Indicators', { exact: true }),
+			});
+			const detailTitle = detailDrawer.getByText(
+				/The current economic indicators suggest a moderate recovery in the economy/i,
+			);
+			const detailDate = detailDrawer.getByText(/^[A-Z][a-z]+ \d{1,2}, \d{4}$/);
+			const sourceAttribution = detailDrawer.getByText(/Source:\s*FMP/i);
+			const sourceLink = detailDrawer.getByRole('link', {
+				name: /financialmodelingprep\.com/i,
+			});
 
-                const closeDrawerButton = page.getByRole('button', {
-                    name: 'Close drawer'
-                });
-                const detailDialog = page.getByRole('dialog').last();
+			await expect(detailDrawer).toBeVisible();
+			await expect(detailTitle).toBeVisible();
+			await expect(detailDate).toBeVisible();
+			await expect(sourceAttribution).toBeVisible();
+			await expect(sourceLink).toBeVisible();
 
-                await expect(closeDrawerButton).toBeVisible();
-                await expect(detailDialog.getByText('Macro Economic Indicators', {
-                    exact: true
-                }).last()).toBeVisible();
+			await detailDrawer.getByRole('button', { name: 'Close drawer' }).click();
+			await expect(detailDrawer).not.toBeVisible();
+			await expect(macroHeading).toBeVisible();
+		});
 
-                const sourceAttribution = detailDialog.getByText(/Source:/i).last();
-                if (await sourceAttribution.count()) {
-                    await expect(sourceAttribution).toBeVisible();
-                }
-
-                await closeDrawerButton.click();
-                await expect(detailDialog).toHaveCount(0);
-                await expect(macroHeading).toBeVisible();
-            } else {
-                await expect(page.getByRole('heading', { name: 'Market Pulse Live advisor briefing, refreshes every 3 hours.' })).toBeVisible();
-            }
-        });
-
-		// Step 7: Log out.
-		await test.step('Step 7: Log out', async () => {
-            await page.getByText('QA', { exact: true }).dispatchEvent('click');
-            await page.getByRole('menuitem', { name: 'Logout' }).click();
-        });
-    });
+		await test.step('Step 9: Log out', async () => {
+			await page.getByText('QA', { exact: true }).click();
+			await page.getByRole('menuitem', { name: 'Logout' }).click();
+		});
+	});
 });
