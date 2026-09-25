@@ -41,9 +41,8 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 				const isAlreadyInWatchlist =
 					actionMarkup.includes('remove from watchlist') ||
 					(await actionsCell.locator('[aria-label*="Remove from watchlist" i], [title*="Remove from watchlist" i]').count()) > 0;
-				const visibleActionButtonCount = await visibleActionButtons.count();
 
-				if (!crd || !businessName || visibleActionButtonCount < 2) {
+				if (!crd || !businessName) {
 					continue;
 				}
 
