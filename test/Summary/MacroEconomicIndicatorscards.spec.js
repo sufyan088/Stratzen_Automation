@@ -62,17 +62,21 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 		const macroHeading = page.getByRole('heading', {
 			name: /Macro Economic Indicators/i,
 		});
+		const macroCardHeader = page.getByRole('heading', {
+			name: /^Macro Economic Indicators Key indicators with portfolio implications\. Read More$/i,
+		});
+		const macroCard = macroCardHeader.locator(
+			'xpath=ancestor::*[.//*[@role="region"]][1]',
+		);
 		const macroDescription = page.getByText(
 			'Key indicators with portfolio implications.',
 			{ exact: true },
 		);
-		const macroRegion = page.getByRole('region').filter({
-			hasText: /CPI/i,
-		});
-		const readMoreButton = page.getByRole('button', {
+		const macroRegion = macroCard.getByRole('region');
+		const readMoreButton = macroCard.getByRole('button', {
 			name: 'Read More',
 			exact: true,
-		}).nth(1);
+		});
 
 		await macroHeading.scrollIntoViewIfNeeded();
 		await expect(macroHeading).toBeVisible();
@@ -85,21 +89,27 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 
 		await readMoreButton.click();
 
-		const detailTitle = page.getByText('Macro Economic Indicators', { exact: true }).last();
-		const detailDate = page.getByText(/^[A-Z][a-z]+ \d{1,2}, \d{4}$/);
-		const sourceAttribution = page.getByText(/Source:\s*FMP/i);
-		const sourceLink = page.getByRole('link', {
-			name: /site\.financialmodelingprep\.com/i,
+		const detailDrawer = page.getByRole('dialog').filter({
+			has: page.getByText('Macro Economic Indicators', { exact: true }),
+		});
+		const detailTitle = detailDrawer.getByText(
+			/The current economic indicators suggest a moderate recovery in the economy/i,
+		);
+		const detailDate = detailDrawer.getByText(/^[A-Z][a-z]+ \d{1,2}, \d{4}$/);
+		const sourceAttribution = detailDrawer.getByText(/Source:\s*FMP/i);
+		const sourceLink = detailDrawer.getByRole('link', {
+			name: /financialmodelingprep\.com/i,
 		});
 
+		await expect(detailDrawer).toBeVisible();
 		await expect(detailTitle).toBeVisible();
 		await expect(detailDate).toBeVisible();
 		await expect(sourceAttribution).toBeVisible();
 		await expect(sourceLink).toBeVisible();
 
-		await page.getByRole('button', { name: 'Close drawer' }).last().click();
+		await detailDrawer.getByRole('button', { name: 'Close drawer' }).click();
 
-		await expect(detailDate).toHaveCount(0);
+		await expect(detailDrawer).not.toBeVisible();
 		await expect(page.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
 		await expect(macroHeading).toBeVisible();
 
