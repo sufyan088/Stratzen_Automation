@@ -124,11 +124,9 @@ test.describe('Research and Summary XLK Watchlist', () => {
       await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
       await expect(page.getByRole('heading', { name: 'Market Pulse Live advisor briefing, refreshes every 3 hours.' })).toBeVisible();
 
-      await page.waitForTimeout(5000);
       const summaryTicker = page.getByText(xlkTickerSymbol, { exact: true }).first();
-      if (await summaryTicker.isVisible().catch(() => false)) {
-        await expect(summaryTicker).toBeVisible();
-      }
+      await expect.poll(async () => await summaryTicker.count(), { timeout: 15000 }).toBeGreaterThan(0);
+      await expect(summaryTicker).toBeVisible();
 
       await page.getByText('QA', { exact: true }).click();
       await page.getByRole('menuitem', { name: 'Preferences' }).click();

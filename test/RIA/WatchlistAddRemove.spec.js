@@ -3,24 +3,55 @@ const { test, expect } = require('@playwright/test');
 test.describe('RIA Module - Watchlist Add / Remove', () => {
 	test('TC_VerifyWatchlistAddAndRemoveControlsFromRiaList', async ({ page }) => {
 		test.setTimeout(120000);
+		await page.setViewportSize({ width: 1600, height: 1400 });
 
-		const email = 'SZ_AutoQA@stratzen.ai';
-		const passwordValue = 'StratzenAutomation123';
+		const appBaseUrl = process.env.URL
+			|| process.env.APP_URL
+			|| process.env.BASE_URL
+			|| test.info().project.use.baseURL;
+
+		if (!appBaseUrl) {
+			throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
+		}
+
+		const buildUrl = (path) => new URL(path, appBaseUrl).toString();
+		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 		const riasLink = page.getByRole('link', { name: 'RIAs', exact: true });
 		const riasWatchlistLink = page.getByRole('link', { name: 'RIAs Watchlist', exact: true });
 		const summaryHeading = page.getByRole('heading', { name: /summary/i }).first();
-		await page.goto('https://demoapp.stratzen.ai/login');
-		await expect(page).toHaveURL(/login/);
 
-		await page.locator('input[type="email"]').fill(email);
-		await page.locator('input[type="password"]').fill(passwordValue);
-		await page.getByRole('button', { name: /sign in/i }).click();
+		await test.step('Step 1: Navigate to the login page', async () => {
+			await page.goto(buildUrl('/login'), {
+				waitUntil: 'domcontentloaded',
+				timeout: 90000,
+			});
+			await expect(page).toHaveURL(/login/);
+		});
 
-		await page.waitForURL('https://demoapp.stratzen.ai/summary');
-		await expect(summaryHeading).toBeVisible({ timeout: 15000 });
-		await expect(riasLink).toBeVisible({ timeout: 15000 });
-		await riasLink.click();
-		await expect(page).toHaveURL(/\/rias$/);
+		await test.step('Step 2: Enter the email address', async () => {
+			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			await expect(emailField).toBeVisible();
+			await emailField.fill(email);
+		});
+
+		await test.step('Step 3: Enter the password', async () => {
+			const passwordField = page.locator('input[type="password"]').first();
+			await expect(passwordField).toBeVisible();
+			await passwordField.fill(passwordValue);
+		});
+
+		await test.step('Step 4: Click the Sign In button', async () => {
+			await page.getByRole('button', { name: /sign in/i }).click();
+		});
+
+		await test.step('Step 5: Open the RIAs page', async () => {
+			await page.waitForLoadState('networkidle');
+			await expect(summaryHeading).toBeVisible({ timeout: 15000 });
+			await expect(riasLink).toBeVisible({ timeout: 15000 });
+			await riasLink.click();
+			await expect(page).toHaveURL(/\/rias$/);
+		});
 
 		const exploreTable = page.locator('table').first();
 		const exploreRows = exploreTable.locator('tbody tr');
@@ -73,75 +104,83 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 			return null;
 		};
 
-		await expect(exploreTable).toBeVisible();
-		await expect(exploreRows.first()).toBeVisible();
+		await test.step('Step 6: Add one RIA to the watchlist and verify it appears there', async () => {
+			await expect(exploreTable).toBeVisible();
+			await expect(exploreRows.first()).toBeVisible();
 
-		await expect.poll(getFirstRowWithWatchlistAction).not.toBeNull();
-		const candidateRow = await getFirstRowWithWatchlistAction();
-		if (!candidateRow) {
-			throw new Error('Expected at least one populated RIA row with a watchlist action.');
-		}
+			await expect.poll(getFirstRowWithWatchlistAction).not.toBeNull();
+			const candidateRow = await getFirstRowWithWatchlistAction();
+			if (!candidateRow) {
+				throw new Error('Expected at least one populated RIA row with a watchlist action.');
+			}
 
-		const {
-			row: targetRow,
-			crd: targetCrd,
-			businessName: targetBusinessName,
-			actionsCell: targetActionsCell,
-			watchlistButton,
-		} = candidateRow;
+			const {
+				row: targetRow,
+				crd: targetCrd,
+				businessName: targetBusinessName,
+				actionsCell: targetActionsCell,
+				watchlistButton,
+			} = candidateRow;
 
-		await expect(targetRow).toBeVisible();
-		await expect(targetActionsCell).toBeVisible();
-		await expect(watchlistButton).toBeVisible();
-		await watchlistButton.click();
+			await expect(targetRow).toBeVisible();
+			await expect(targetActionsCell).toBeVisible();
+			await expect(watchlistButton).toBeVisible();
+			await watchlistButton.click();
 
-		const removeWatchlistButtonInExplore = targetActionsCell.locator('button').first();
-		await expect(removeWatchlistButtonInExplore).toBeVisible({ timeout: 15000 });
+			const removeWatchlistButtonInExplore = targetActionsCell.locator('button').first();
+			await expect(removeWatchlistButtonInExplore).toBeVisible({ timeout: 15000 });
 
-		await expect(riasWatchlistLink).toBeVisible({ timeout: 15000 });
-		await riasWatchlistLink.click();
-		await expect(page).toHaveURL(/\/rias-watchlist$/);
+			await expect(riasWatchlistLink).toBeVisible({ timeout: 15000 });
+			await riasWatchlistLink.click();
+			await expect(page).toHaveURL(/\/rias-watchlist$/);
 
-		const watchlistHeading = page.getByRole('heading', { name: 'RIAs Watchlist', exact: true });
-		const watchlistTargetCard = page
-			.locator('.kanban-card')
-			.filter({ has: page.getByText(targetBusinessName, { exact: false }) })
-			.filter({ has: page.getByText(targetCrd, { exact: false }) })
-			.first();
+			const watchlistHeading = page.getByRole('heading', { name: 'RIAs Watchlist', exact: true });
+			const watchlistTargetCard = page
+				.locator('.kanban-card')
+				.filter({ has: page.getByText(targetBusinessName, { exact: false }) })
+				.filter({ has: page.getByText(targetCrd, { exact: false }) })
+				.first();
 
-		await expect(watchlistHeading).toBeVisible();
-		await expect(watchlistTargetCard).toBeVisible({ timeout: 15000 });
+			await expect(watchlistHeading).toBeVisible();
+			await expect(watchlistTargetCard).toBeVisible({ timeout: 15000 });
 
-		const removeFromWatchlistButton = watchlistTargetCard.getByRole('button', {
-			name: /remove from watchlist/i,
+			const removeFromWatchlistButton = watchlistTargetCard.getByRole('button', {
+				name: /remove from watchlist/i,
+			});
+			await expect(removeFromWatchlistButton).toBeVisible();
+			await removeFromWatchlistButton.click({ force: true });
+			await expect(watchlistTargetCard).not.toBeVisible({ timeout: 15000 });
+
+			await expect(riasLink).toBeVisible({ timeout: 15000 });
+			await riasLink.click();
+			await expect(page).toHaveURL(/\/rias$/);
+
+			await expect(exploreTable).toBeVisible();
+			await expect(exploreBusinessNameFilterField).toBeVisible({ timeout: 15000 });
+			await exploreBusinessNameFilterField.fill('');
+			await exploreBusinessNameFilterField.fill(targetBusinessName);
+			await exploreBusinessNameFilterField.press('Enter');
+			await expect(exploreBusinessNameFilterField).toHaveValue(targetBusinessName);
+
+			await expect.poll(async () => findRowByBusinessName(targetBusinessName)).not.toBeNull();
+			const restoredExploreRow = await findRowByBusinessName(targetBusinessName);
+			if (!restoredExploreRow) {
+				throw new Error(`Expected to find a RIA row with business name "${targetBusinessName}" after watchlist removal.`);
+			}
+
+			await expect(restoredExploreRow).toBeVisible({ timeout: 15000 });
+			await expect(restoredExploreRow.locator('td').nth(1)).toContainText(targetBusinessName);
+
+			const restoredActionsCell = restoredExploreRow.locator('td').last();
+			const watchlistButtonAgain = restoredActionsCell.locator('button').first();
+			await expect(watchlistButtonAgain).toBeVisible({ timeout: 15000 });
+			await expect(watchlistButtonAgain).toBeEnabled();
 		});
-		await expect(removeFromWatchlistButton).toBeVisible();
-		await removeFromWatchlistButton.click({ force: true });
-		await expect(watchlistTargetCard).not.toBeVisible({ timeout: 15000 });
 
-		await expect(riasLink).toBeVisible({ timeout: 15000 });
-		await riasLink.click();
-		await expect(page).toHaveURL(/\/rias$/);
-
-		await expect(exploreTable).toBeVisible();
-		await expect(exploreBusinessNameFilterField).toBeVisible({ timeout: 15000 });
-		await exploreBusinessNameFilterField.fill('');
-		await exploreBusinessNameFilterField.fill(targetBusinessName);
-		await exploreBusinessNameFilterField.press('Enter');
-		await expect(exploreBusinessNameFilterField).toHaveValue(targetBusinessName);
-
-		await expect.poll(async () => findRowByBusinessName(targetBusinessName)).not.toBeNull();
-		const restoredExploreRow = await findRowByBusinessName(targetBusinessName);
-		if (!restoredExploreRow) {
-			throw new Error(`Expected to find a RIA row with business name "${targetBusinessName}" after watchlist removal.`);
-		}
-
-		await expect(restoredExploreRow).toBeVisible({ timeout: 15000 });
-		await expect(restoredExploreRow.locator('td').nth(1)).toContainText(targetBusinessName);
-
-		const restoredActionsCell = restoredExploreRow.locator('td').last();
-		const watchlistButtonAgain = restoredActionsCell.locator('button').first();
-		await expect(watchlistButtonAgain).toBeVisible({ timeout: 15000 });
-		await expect(watchlistButtonAgain).toBeEnabled();
+		await test.step('Step 7: Log out so the test remains independent', async () => {
+			await page.getByText('QA', { exact: true }).click();
+			await page.getByRole('menuitem', { name: 'Logout' }).click();
+			await expect(page).toHaveURL(/login/);
+		});
 	});
 });
