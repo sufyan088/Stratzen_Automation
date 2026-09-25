@@ -224,3 +224,306 @@ Before considering a generated script complete, verify:
 - Is the script readable by a QA engineer without opening other files?
 
 If any of these conditions are not satisfied, improve the script before finalizing it.
+
+---
+
+## Executable Template
+
+The following template can be used when a script needs to be directly executable in Test Max with minimal setup.
+
+```javascript
+import { test, expect } from '@playwright/test';
+
+test.setTimeout(120000);
+
+test('Verify ETF ticker synchronization across Research, Summary and Preferences', async ({ page }) => {
+	const username = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
+	const password = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
+	const ticker = 'XLK';
+
+	// ============================================================
+	// APPLICATION URL
+	// Priority:
+	// 1. process.env.URL
+	// 2. process.env.APP_URL
+	// 3. process.env.BASE_URL
+	// 4. fallback URL
+	// ============================================================
+
+	const baseUrl = process.env.URL
+		|| process.env.APP_URL
+		|| process.env.BASE_URL
+		|| 'https://demoapp.stratzen.ai';
+
+	const buildUrl = (path) => {
+		const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
+		const cleanPath = path.startsWith('/') ? path : `/${path}`;
+		return `${cleanBaseUrl}${cleanPath}`;
+	};
+
+	const loginUrl = buildUrl('/login');
+
+	// ============================================================
+	// 1. NAVIGATE TO LOGIN PAGE
+	// ============================================================
+
+	await test.step('Navigate to login page', async () => {
+		await page.goto(loginUrl, {
+			waitUntil: 'domcontentloaded',
+			timeout: 30000,
+		});
+
+		await expect(
+			page.getByRole('heading', { name: 'Welcome Back' }),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 2. ENTER EMAIL
+	// ============================================================
+
+	await test.step('Enter email address', async () => {
+		const emailInput = page.getByRole('textbox', {
+			name: 'Email Address',
+		});
+
+		await expect(emailInput).toBeVisible({ timeout: 10000 });
+		await emailInput.fill(username);
+	});
+
+	// ============================================================
+	// 3. ENTER PASSWORD
+	// ============================================================
+
+	await test.step('Enter password', async () => {
+		const passwordInput = page.getByRole('textbox', {
+			name: 'Password',
+		});
+
+		await expect(passwordInput).toBeVisible({ timeout: 10000 });
+		await passwordInput.fill(password);
+	});
+
+	// ============================================================
+	// 4. SIGN IN
+	// ============================================================
+
+	await test.step('Click Sign In', async () => {
+		const signInButton = page.getByRole('button', {
+			name: 'Sign In',
+		});
+
+		await expect(signInButton).toBeVisible({ timeout: 10000 });
+		await signInButton.click();
+	});
+
+	// ============================================================
+	// 5. VERIFY LOGIN SUCCESS
+	// ============================================================
+
+	await test.step('Verify login completed successfully', async () => {
+		await expect(
+			page.getByRole('link', { name: 'Summary' }),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 6. OPEN RESEARCH
+	// ============================================================
+
+	await test.step('Open Research page', async () => {
+		const researchLink = page.getByRole('link', {
+			name: 'Research',
+		});
+
+		await expect(researchLink).toBeVisible({ timeout: 30000 });
+		await researchLink.click();
+
+		await expect(
+			page.getByRole('tab', { name: 'Watchlist' }),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 7. OPEN WATCHLIST
+	// ============================================================
+
+	await test.step('Open Watchlist', async () => {
+		const watchlistTab = page.getByRole('tab', {
+			name: 'Watchlist',
+		});
+
+		await expect(watchlistTab).toBeVisible({ timeout: 30000 });
+		await watchlistTab.click();
+	});
+
+	// ============================================================
+	// 8. OPEN ETFs CATEGORY
+	// ============================================================
+
+	const etfTab = page.getByRole('tab', {
+		name: /ETFs/i,
+	});
+
+	await test.step('Open ETFs category', async () => {
+		await expect(etfTab).toBeVisible({ timeout: 30000 });
+		await etfTab.click();
+	});
+
+	// ============================================================
+	// 9. ADD ETF TICKER
+	// ============================================================
+
+	await test.step(`Add ETF ticker ${ticker}`, async () => {
+		const addTickerButton = page.getByRole('button', {
+			name: 'Add Ticker',
+		});
+
+		await expect(addTickerButton).toBeVisible({ timeout: 30000 });
+		await addTickerButton.click();
+
+		const tickerInput = page.getByRole('textbox', {
+			name: 'Ticker Symbol',
+		});
+
+		await expect(tickerInput).toBeVisible({ timeout: 10000 });
+		await tickerInput.fill(ticker);
+
+		const addButton = page.getByRole('button', {
+			name: 'Add',
+			exact: true,
+		});
+
+		await expect(addButton).toBeVisible({ timeout: 10000 });
+		await addButton.click();
+	});
+
+	// ============================================================
+	// 10. VERIFY ETF IN RESEARCH
+	// ============================================================
+
+	await test.step(`Verify ${ticker} appears in Research Watchlist`, async () => {
+		await expect(
+			page.getByText(ticker, { exact: true }).first(),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 11. NAVIGATE TO SUMMARY
+	// ============================================================
+
+	await test.step('Navigate to Summary', async () => {
+		const summaryLink = page.getByRole('link', {
+			name: 'Summary',
+		});
+
+		await expect(summaryLink).toBeVisible({ timeout: 30000 });
+		await summaryLink.click();
+
+		await expect(page).toHaveURL(/\/summary(?:\/|$|\?)/, {
+			timeout: 30000,
+		});
+	});
+
+	// ============================================================
+	// 12. VERIFY EQUITY MARKET OUTLOOK
+	// ============================================================
+
+	await test.step('Verify Equity Market Outlook is visible', async () => {
+		await expect(
+			page.getByText('Equity Market Outlook', { exact: true }),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 13. VERIFY EQUITIES SECTION
+	// ============================================================
+
+	await test.step('Verify EQUITIES section is visible', async () => {
+		await expect(
+			page.getByText('EQUITIES', { exact: true }),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 14. VERIFY ETF ON SUMMARY
+	// ============================================================
+
+	await test.step(`Verify ${ticker} appears on Summary`, async () => {
+		await expect(
+			page.getByText(ticker, { exact: true }).first(),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 15. OPEN PROFILE
+	// ============================================================
+
+	await test.step('Open user profile', async () => {
+		const profile = page.getByText('QA', {
+			exact: true,
+		});
+
+		await expect(profile).toBeVisible({ timeout: 30000 });
+		await profile.click();
+	});
+
+	// ============================================================
+	// 16. OPEN PREFERENCES
+	// ============================================================
+
+	await test.step('Open Preferences', async () => {
+		const preferences = page.getByText('Preferences', {
+			exact: true,
+		});
+
+		await expect(preferences).toBeVisible({ timeout: 10000 });
+		await preferences.click();
+	});
+
+	// ============================================================
+	// 17. VERIFY WATCHLIST SECTION
+	// ============================================================
+
+	await test.step('Verify Watchlist section is visible', async () => {
+		await expect(
+			page.getByText('Watchlist', { exact: true }),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	// ============================================================
+	// 18. OPEN STOCKS & ETFs
+	// ============================================================
+
+	await test.step('Open Stocks & ETFs', async () => {
+		const stocksEtfs = page.getByText('Stocks & ETFs', {
+			exact: true,
+		});
+
+		await expect(stocksEtfs).toBeVisible({ timeout: 30000 });
+		await stocksEtfs.click();
+	});
+
+	// ============================================================
+	// 19. VERIFY ETF IN PREFERENCES
+	// ============================================================
+
+	await test.step(`Verify ${ticker} appears in Preferences`, async () => {
+		await expect(
+			page.getByText(ticker, { exact: true }).first(),
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	console.log(
+		`ETF ticker ${ticker} successfully verified in Research, Summary and Preferences.`,
+	);
+});
+```
+
+Use this template when a scenario needs:
+
+- Top-level timeout configuration
+- Explicit base URL fallback behavior
+- Linear `test.step()` flow
+- Role-first semantic locators
+- Direct execution without extra helper layers
