@@ -3,53 +3,6 @@ import { test, expect } from '@playwright/test';
 test.setTimeout(120000);
 
 test.describe('Summary Module - Macro Economic Indicators', () => {
-	async function ensureMacroCardsEnabled(page) {
-		await page.getByText('QA', { exact: true }).click();
-		await page.getByRole('menuitem', { name: 'Preferences' }).click();
-		await expect(page).toHaveURL(/preferences/);
-
-		const savePreferencesButton = page.getByRole('button', {
-			name: 'Save Preferences',
-		});
-		const toggleNames = [
-			'Toggle CPI',
-			'Toggle GDP',
-			'Toggle Unemployment Rate',
-			'Toggle Consumer Sentiment Index',
-		];
-		let hasChanges = false;
-
-		for (const toggleName of toggleNames) {
-			const toggle = page.getByRole('button', {
-				name: toggleName,
-				exact: true,
-			});
-
-			if ((await toggle.count()) === 0) {
-				continue;
-			}
-
-			await toggle.scrollIntoViewIfNeeded();
-
-			if ((await toggle.getAttribute('aria-pressed')) !== 'true') {
-				await toggle.click();
-				await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-				hasChanges = true;
-			}
-		}
-
-		if (hasChanges) {
-			await expect(savePreferencesButton).toBeVisible();
-			await savePreferencesButton.click();
-			await expect(savePreferencesButton).toBeHidden({ timeout: 10000 });
-		}
-
-		await Promise.all([
-			page.waitForURL(/summary/),
-			page.getByRole('link', { name: 'Summary', exact: true }).click(),
-		]);
-	}
-
 	test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
 		await page.setViewportSize({ width: 1600, height: 1400 });
 
@@ -98,8 +51,54 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 			await expect(page).not.toHaveURL(/login/);
 		});
 
+		const ensureMacroCardsEnabled = async () => {
+			await page.getByText('QA', { exact: true }).click();
+			await page.getByRole('menuitem', { name: 'Preferences' }).click();
+			await expect(page).toHaveURL(/preferences/);
+
+			const savePreferencesButton = page.getByRole('button', {
+				name: 'Save Preferences',
+			});
+			const toggleNames = [
+				'Toggle CPI',
+				'Toggle GDP',
+				'Toggle Unemployment Rate',
+				'Toggle Consumer Sentiment Index',
+			];
+			let hasChanges = false;
+
+			for (const toggleName of toggleNames) {
+				const toggle = page.getByRole('button', {
+					name: toggleName,
+					exact: true,
+				});
+
+				if ((await toggle.count()) === 0) {
+					continue;
+				}
+
+				await toggle.scrollIntoViewIfNeeded();
+				if ((await toggle.getAttribute('aria-pressed')) !== 'true') {
+					await toggle.click();
+					await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+					hasChanges = true;
+				}
+			}
+
+			if (hasChanges) {
+				await expect(savePreferencesButton).toBeVisible();
+				await savePreferencesButton.click();
+				await expect(savePreferencesButton).toBeHidden({ timeout: 10000 });
+			}
+
+			await Promise.all([
+				page.waitForURL(/summary/),
+				page.getByRole('link', { name: 'Summary', exact: true }).click(),
+			]);
+		};
+
 		await test.step('Step 6: Ensure macro indicator cards are enabled', async () => {
-			await ensureMacroCardsEnabled(page);
+			await ensureMacroCardsEnabled();
 			await expect(page).toHaveURL(/summary/);
 		});
 
