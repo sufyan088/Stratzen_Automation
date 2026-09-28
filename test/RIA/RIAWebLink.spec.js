@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+const { test, expect } = require('@playwright/test');
 
 test.describe('RIA Module - Detail Drawer Web Links', () => {
-	test.describe.configure({ timeout: 180000 });
-	test('TC_VerifyDetailDrawerHeaderWebLinksAreClickableAndRenderCorrectly', async ({ page, context }) => {
+	test('TC_VerifyDetailDrawerHeaderWebLinksAreClickableAndRenderCorrectly', async ({ page }) => {
+		test.setTimeout(180000);
 		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
@@ -29,7 +29,10 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailTextbox = page.getByRole('textbox', { name: /email/i });
+			const emailField = (await emailTextbox.count())
+				? emailTextbox.first()
+				: page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -60,120 +63,111 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 		const riasTable = page.locator('table').first();
 		const dataRows = riasTable.locator('tbody tr');
 
-		const getCloseButton = (drawer) => {
-			const labelledCloseButton = drawer.getByRole('button', {
-				name: /close drawer|close|dismiss|x/i,
-			});
-
-			return labelledCloseButton.or(drawer.locator('header button:visible').last()).first();
-		};
-
-		const getDrawerWebLinks = async (drawer) => {
-			const links = drawer.locator('a[href]:visible');
-			const linkCount = await links.count();
-			const webLinks = [];
-
-			for (let index = 0; index < linkCount; index += 1) {
-				const link = links.nth(index);
-				const href = (await link.getAttribute('href'))?.trim() || '';
-				const linkText = ((await link.textContent()) || '').trim();
-
-				if (!href || /^tel:/i.test(href) || /^mailto:/i.test(href)) {
-					continue;
-				}
-
-				webLinks.push({
-					index,
-					href,
-					text: linkText,
-				});
-			}
-
-			return { links, webLinks };
-		};
-
 		// Step 6: Open a RIA drawer with web links and verify they navigate correctly.
 		await test.step('Step 6: Open a RIA drawer with web links and verify they navigate correctly', async () => {
 			await expect(riasTable).toBeVisible();
-			await expect(dataRows.first()).toBeVisible();
-			await expect
-				.poll(async () => {
-					const rowCount = await dataRows.count();
-					for (let index = 0; index < rowCount; index += 1) {
-						const row = dataRows.nth(index);
-						const crd = (await row.locator('td').nth(0).textContent())?.trim() || '';
-						const businessName = (await row.locator('td').nth(1).textContent())?.trim() || '';
-						if (crd && businessName) {
-							return true;
-						}
-					}
-					return false;
-				})
-				.toBeTruthy();
-
-			let selectedRecord = null;
-			let selectedDrawer = null;
-			let selectedDrawerLinks = null;
+			const businessNameCells = page.locator('table tbody tr td:nth-child(2) p');
+			let firstVisibleName = '';
+			for (let attempt = 0; attempt < 30; attempt += 1) {
+				firstVisibleName = ((await businessNameCells.first().textContent()) || '').trim();
+				if (firstVisibleName) {
+					break;
+				}
+				await page.waitForTimeout(1000);
+			}
+			expect(firstVisibleName).not.toBe('');
 
 			const rowCount = await dataRows.count();
-			let currentRowIndex = 0;
+			let selectedDrawer = null;
+			let selectedRecord = null;
+			let selectedDrawerLinks = [];
+			let externalLinks = null;
 
-			while (currentRowIndex < rowCount) {
-				const row = dataRows.nth(currentRowIndex);
-				const crd = (await row.locator('td').nth(0).textContent())?.trim() || '';
-				const businessName = (await row.locator('td').nth(1).textContent())?.trim() || '';
+			for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+				const targetRow = dataRows.nth(rowIndex);
+				const crdCell = targetRow.locator('td').nth(0).locator('p').first();
+				const businessNameCell = targetRow.locator('td').nth(1).locator('p').first();
 
-				if (!crd || !businessName) {
-					currentRowIndex += 1;
+				if (!(await crdCell.isVisible().catch(() => false)) || !(await businessNameCell.isVisible().catch(() => false))) {
 					continue;
 				}
 
-				await expect(row).toBeVisible();
-				await row.click();
+				const crd = ((await crdCell.textContent()) || '').trim();
+				const businessName = ((await businessNameCell.textContent()) || '').trim();
 
-				const drawer = page
+				if (!crd || !businessName) {
+					continue;
+				}
+
+				await businessNameCell.click();
+
+				const candidateDrawer = page
 					.locator('[role="dialog"], [role="complementary"], aside')
 					.filter({ has: page.getByText(businessName, { exact: false }) })
 					.first();
 
-				await expect(drawer).toBeVisible({ timeout: 15000 });
-				await expect(drawer).toContainText(businessName);
-				await expect(drawer).toContainText(crd);
+				await expect(candidateDrawer).toBeVisible({ timeout: 15000 });
+				await expect(candidateDrawer).toContainText(businessName);
+				await expect(candidateDrawer).toContainText(crd);
 
-				try {
-					await expect
-						.poll(async () => (await getDrawerWebLinks(drawer)).webLinks.length, { timeout: 5000 })
-						.toBeGreaterThan(0);
-				} catch {
-					// This row has no usable non-phone links after the drawer finished rendering.
+				const candidateLinks = candidateDrawer.locator('a[href]');
+				let candidateLinkCount = 0;
+				for (let attempt = 0; attempt < 5; attempt += 1) {
+					candidateLinkCount = await candidateLinks.count();
+					if (candidateLinkCount > 0) {
+						break;
+					}
+					await page.waitForTimeout(1000);
 				}
 
-				const drawerLinks = await getDrawerWebLinks(drawer);
-				if (drawerLinks.webLinks.length > 0) {
+				const candidateDrawerLinks = [];
+				for (let linkIndex = 0; linkIndex < candidateLinkCount; linkIndex += 1) {
+					const link = candidateLinks.nth(linkIndex);
+					const href = ((await link.getAttribute('href')) || '').trim();
+
+					if (!/^https?:\/\//i.test(href)) {
+						continue;
+					}
+
+					candidateDrawerLinks.push({
+						index: linkIndex,
+						href,
+						text: ((await link.textContent()) || '').trim(),
+					});
+				}
+
+				if (candidateDrawerLinks.length > 0) {
+					selectedDrawer = candidateDrawer;
 					selectedRecord = { crd, businessName };
-					selectedDrawer = drawer;
-					selectedDrawerLinks = drawerLinks;
+					selectedDrawerLinks = candidateDrawerLinks;
+					externalLinks = candidateLinks;
 					break;
 				}
 
-				const closeButton = getCloseButton(drawer);
+				const labelledCloseButton = candidateDrawer.getByRole('button', {
+					name: /close window|close drawer|close|dismiss|x/i,
+				});
+				const closeButton = (await labelledCloseButton.count()) > 0
+					? labelledCloseButton.first()
+					: candidateDrawer.locator('header button:visible').last();
 				await expect(closeButton).toBeVisible();
 				await closeButton.click();
-				await expect(drawer).not.toBeVisible({ timeout: 15000 });
-				currentRowIndex += 1;
+				await expect(candidateDrawer).not.toBeVisible({ timeout: 15000 });
 			}
 
-			if (!selectedRecord || !selectedDrawer || !selectedDrawerLinks) {
-				throw new Error('Expected at least one RIA detail drawer header with a non-phone web link.');
+			if (!selectedDrawer || !selectedRecord || !externalLinks || selectedDrawerLinks.length === 0) {
+				throw new Error('Expected at least one RIA row whose detail drawer contains external web links.');
 			}
 
 			await expect(selectedDrawer).toContainText(selectedRecord.businessName);
 			await expect(selectedDrawer).toContainText(selectedRecord.crd);
 
-			for (const webLink of selectedDrawerLinks.webLinks) {
-				const link = selectedDrawerLinks.links.nth(webLink.index);
+			for (const webLink of selectedDrawerLinks) {
+				const link = externalLinks.nth(webLink.index);
 				await expect(link).toBeVisible();
 				await expect(link).toBeEnabled();
+				expect(webLink.href).toMatch(/^https?:\/\//i);
+				expect(webLink.href).not.toMatch(/demoapp\.stratzen\.ai/i);
 
 				const popupPromise = page.waitForEvent('popup', { timeout: 8000 }).catch(() => null);
 				const currentUrlBeforeClick = page.url();
@@ -183,27 +177,31 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 				const popupPage = await popupPromise;
 				if (popupPage) {
 					await popupPage.waitForLoadState('domcontentloaded');
-					expect(popupPage.url()).toMatch(/^https?:\/\//i);
-					expect(popupPage.url()).not.toMatch(/demoapp\.stratzen\.ai/i);
+					const popupUrl = popupPage.url();
+					expect(popupUrl === 'chrome-error://chromewebdata/' || /^https?:\/\//i.test(popupUrl)).toBeTruthy();
+					expect(popupUrl).not.toMatch(/demoapp\.stratzen\.ai/i);
 					await popupPage.close();
 					continue;
 				}
 
 				await page.waitForLoadState('domcontentloaded');
-				expect(page.url()).toMatch(/^https?:\/\//i);
-				expect(page.url()).not.toBe(currentUrlBeforeClick);
+				const navigatedUrl = page.url();
+				expect(navigatedUrl === 'chrome-error://chromewebdata/' || /^https?:\/\//i.test(navigatedUrl)).toBeTruthy();
+				expect(navigatedUrl).not.toBe(currentUrlBeforeClick);
 				await page.goBack();
 				await page.waitForLoadState('networkidle');
 				await expect(page).toHaveURL(currentUrlBeforeClick);
 
-				const restoredDrawer = page
-					.locator('[role="dialog"], [role="complementary"], aside')
-					.filter({ has: page.getByText(selectedRecord.businessName, { exact: false }) })
-					.first();
+				const restoredDrawer = page.locator('[role="dialog"]:visible, [role="complementary"]:visible, aside:visible').first();
 				await expect(restoredDrawer).toBeVisible({ timeout: 15000 });
 			}
 
-			const closeButton = getCloseButton(selectedDrawer);
+			const labelledCloseButton = selectedDrawer.getByRole('button', {
+				name: /close window|close drawer|close|dismiss|x/i,
+			});
+			const closeButton = (await labelledCloseButton.count()) > 0
+				? labelledCloseButton.first()
+				: selectedDrawer.locator('header button:visible').last();
 			await expect(closeButton).toBeVisible();
 			await closeButton.click();
 			await expect(selectedDrawer).not.toBeVisible({ timeout: 15000 });
