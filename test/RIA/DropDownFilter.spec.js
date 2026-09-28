@@ -1,8 +1,8 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('RIA Module - Dropdown Filters', () => {
+	test.describe.configure({ timeout: 90000 });
 	test('TC_VerifyStateFilterDropdownAndSelection', async ({ page }) => {
-		test.setTimeout(90000);
 		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
@@ -19,6 +19,7 @@ test.describe('RIA Module - Dropdown Filters', () => {
 		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 		const targetState = 'New York';
 
+		// Step 1: Navigate to the login page.
 		await test.step('Step 1: Navigate to the login page', async () => {
 			await page.goto(buildUrl('/login'), {
 				waitUntil: 'domcontentloaded',
@@ -27,22 +28,26 @@ test.describe('RIA Module - Dropdown Filters', () => {
 			await expect(page).toHaveURL(/login/);
 		});
 
+		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
 			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
 
+		// Step 3: Enter the password.
 		await test.step('Step 3: Enter the password', async () => {
 			const passwordField = page.locator('input[type="password"]').first();
 			await expect(passwordField).toBeVisible();
 			await passwordField.fill(passwordValue);
 		});
 
+		// Step 4: Click the Sign In button.
 		await test.step('Step 4: Click the Sign In button', async () => {
 			await page.getByRole('button', { name: /sign in/i }).click();
 		});
 
+		// Step 5: Open the RIAs page.
 		await test.step('Step 5: Open the RIAs page', async () => {
 			await page.waitForLoadState('networkidle');
 			await expect(page).toHaveURL(/summary/);
@@ -61,6 +66,7 @@ test.describe('RIA Module - Dropdown Filters', () => {
 			});
 		const getTargetStateCheckbox = () => getTargetStateOption().getByRole('checkbox');
 
+		// Step 6: Apply the state dropdown filter and verify the rows.
 		await test.step('Step 6: Apply the state dropdown filter and verify the rows', async () => {
 			await expect(getRiasTable()).toBeVisible();
 			expect(await getDataRows().count()).toBeGreaterThan(1);
@@ -83,6 +89,7 @@ test.describe('RIA Module - Dropdown Filters', () => {
 			}
 		});
 
+		// Step 7: Clear the state dropdown filter and verify rows reset.
 		await test.step('Step 7: Clear the state dropdown filter and verify rows reset', async () => {
 			if (!(await getStateFilterList().isVisible())) {
 				await expect(getStateFilterControl()).toBeVisible();
@@ -113,6 +120,7 @@ test.describe('RIA Module - Dropdown Filters', () => {
 				.toBe(true);
 		});
 
+		// Step 8: Log out so the test remains independent.
 		await test.step('Step 8: Log out so the test remains independent', async () => {
 			if (await getStateFilterList().isVisible().catch(() => false)) {
 				await page.keyboard.press('Escape');

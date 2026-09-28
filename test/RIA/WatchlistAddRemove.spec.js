@@ -1,8 +1,8 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('RIA Module - Watchlist Add / Remove', () => {
+	test.describe.configure({ timeout: 120000 });
 	test('TC_VerifyWatchlistAddAndRemoveControlsFromRiaList', async ({ page }) => {
-		test.setTimeout(120000);
 		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
@@ -21,6 +21,7 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 		const riasWatchlistLink = page.getByRole('link', { name: 'RIAs Watchlist', exact: true });
 		const summaryHeading = page.getByRole('heading', { name: /summary/i }).first();
 
+		// Step 1: Navigate to the login page.
 		await test.step('Step 1: Navigate to the login page', async () => {
 			await page.goto(buildUrl('/login'), {
 				waitUntil: 'domcontentloaded',
@@ -29,22 +30,26 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 			await expect(page).toHaveURL(/login/);
 		});
 
+		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
 			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
 
+		// Step 3: Enter the password.
 		await test.step('Step 3: Enter the password', async () => {
 			const passwordField = page.locator('input[type="password"]').first();
 			await expect(passwordField).toBeVisible();
 			await passwordField.fill(passwordValue);
 		});
 
+		// Step 4: Click the Sign In button.
 		await test.step('Step 4: Click the Sign In button', async () => {
 			await page.getByRole('button', { name: /sign in/i }).click();
 		});
 
+		// Step 5: Open the RIAs page.
 		await test.step('Step 5: Open the RIAs page', async () => {
 			await page.waitForLoadState('networkidle');
 			await expect(summaryHeading).toBeVisible({ timeout: 15000 });
@@ -91,6 +96,7 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 			return null;
 		};
 
+		// Step 6: Add one RIA to the watchlist and verify it appears there.
 		await test.step('Step 6: Add one RIA to the watchlist and verify it appears there', async () => {
 			await expect(exploreTable).toBeVisible();
 			await expect(exploreRows.first()).toBeVisible();
@@ -163,6 +169,7 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 			await expect(watchlistButtonAgain).toBeEnabled();
 		});
 
+		// Step 7: Log out so the test remains independent.
 		await test.step('Step 7: Log out so the test remains independent', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
