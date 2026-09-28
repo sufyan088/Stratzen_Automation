@@ -21,7 +21,6 @@ const loginWithValidCredentials = async (page, testInfo) => {
   const { buildUrl, email, password } = getRuntimeConfig(testInfo);
 
   // Step 1: Navigate to the login page.
-  await page.setViewportSize({ width: 1600, height: 1400 });
   await page.goto(buildUrl('/login'), {
     waitUntil: 'domcontentloaded',
     timeout: 90000,
@@ -61,8 +60,6 @@ test.describe('Login Module', () => {
   test.describe.configure({ timeout: 120000 });
 
   test('TC001_Login_PageDisplaysExpectedFormControls', async ({ page }) => {
-    await page.setViewportSize({ width: 1600, height: 1400 });
-
     const { buildUrl } = getRuntimeConfig(test.info());
 
     // Step 1: Navigate directly to the login page.
@@ -98,8 +95,6 @@ test.describe('Login Module', () => {
   });
 
   test('TC002_Login_InvalidEmailInputRejected', async ({ page }) => {
-    await page.setViewportSize({ width: 1600, height: 1400 });
-
     const { buildUrl } = getRuntimeConfig(test.info());
 
     // Step 1: Navigate to the login page.
@@ -152,8 +147,6 @@ test.describe('Login Module', () => {
   });
 
   test('TC003_Login_EmptyFormSubmissionBlocked', async ({ page }) => {
-    await page.setViewportSize({ width: 1600, height: 1400 });
-
     const { buildUrl } = getRuntimeConfig(test.info());
 
     // Step 1: Navigate to the login page.
@@ -199,8 +192,6 @@ test.describe('Login Module', () => {
   });
 
   test('TC004_Login_PasswordRequiredWhenEmailProvided', async ({ page }) => {
-    await page.setViewportSize({ width: 1600, height: 1400 });
-
     const { buildUrl } = getRuntimeConfig(test.info());
 
     // Step 1: Navigate to the login page.

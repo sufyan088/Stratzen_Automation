@@ -4,7 +4,6 @@ test.setTimeout(120000);
 
 test.describe('Research and Summary XLK Watchlist', () => {
 	test('TC004_RemoveXLKAndVerifyAcrossPages', async ({ page }) => {
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const baseUrl = process.env.URL
 			|| process.env.APP_URL

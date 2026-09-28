@@ -4,7 +4,6 @@ test.setTimeout(120000);
 
 test.describe('Summary Module - Macro Economic Indicators', () => {
 	test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const baseUrl = process.env.URL
 			|| process.env.APP_URL

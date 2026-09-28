@@ -4,7 +4,6 @@ test.describe('Summary Module - Login', () => {
     test.describe.configure({ timeout: 120000 });
 
     test('TC001_Login_To_Stratzen', async ({ page }) => {
-        await page.setViewportSize({ width: 1600, height: 1400 });
 
         const appBaseUrl = process.env.URL
             || process.env.APP_URL
