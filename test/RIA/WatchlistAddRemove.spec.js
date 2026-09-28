@@ -91,19 +91,6 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 			return null;
 		};
 
-		const findRowByBusinessName = async (businessNameValue) => {
-			const rowCount = await exploreRows.count();
-			for (let index = 0; index < rowCount; index += 1) {
-				const row = exploreRows.nth(index);
-				const businessNameCellText = (await row.locator('td').nth(1).textContent())?.trim() || '';
-				if (businessNameCellText === businessNameValue) {
-					return row;
-				}
-			}
-
-			return null;
-		};
-
 		await test.step('Step 6: Add one RIA to the watchlist and verify it appears there', async () => {
 			await expect(exploreTable).toBeVisible();
 			await expect(exploreRows.first()).toBeVisible();
@@ -162,13 +149,12 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 			await exploreBusinessNameFilterField.press('Enter');
 			await expect(exploreBusinessNameFilterField).toHaveValue(targetBusinessName);
 
-			await expect.poll(async () => findRowByBusinessName(targetBusinessName)).not.toBeNull();
-			const restoredExploreRow = await findRowByBusinessName(targetBusinessName);
-			if (!restoredExploreRow) {
-				throw new Error(`Expected to find a RIA row with business name "${targetBusinessName}" after watchlist removal.`);
-			}
-
+			const restoredExploreRow = exploreRows
+				.filter({ has: page.getByText(targetCrd, { exact: true }) })
+				.filter({ has: page.getByText(targetBusinessName, { exact: true }) })
+				.first();
 			await expect(restoredExploreRow).toBeVisible({ timeout: 15000 });
+			await expect(restoredExploreRow.locator('td').nth(0)).toContainText(targetCrd);
 			await expect(restoredExploreRow.locator('td').nth(1)).toContainText(targetBusinessName);
 
 			const restoredActionsCell = restoredExploreRow.locator('td').last();

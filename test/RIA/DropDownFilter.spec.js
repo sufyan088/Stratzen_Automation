@@ -114,6 +114,11 @@ test.describe('RIA Module - Dropdown Filters', () => {
 		});
 
 		await test.step('Step 8: Log out so the test remains independent', async () => {
+			if (await getStateFilterList().isVisible().catch(() => false)) {
+				await page.keyboard.press('Escape');
+				await expect(getStateFilterList()).not.toBeVisible({ timeout: 15000 });
+			}
+
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
 			await expect(page).toHaveURL(/login/);
