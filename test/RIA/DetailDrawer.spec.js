@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+const { test, expect } = require('@playwright/test');
 
 test.describe('RIA Module - Detail Drawer', () => {
-	test.describe.configure({ timeout: 120000 });
 	test('TC_VerifyRiaDetailDrawerOpensFromListRow', async ({ page }) => {
+		test.setTimeout(120000);
 		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
