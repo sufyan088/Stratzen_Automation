@@ -103,9 +103,8 @@ test.describe('Research and Summary XLK Watchlist', () => {
     await expect(page.getByRole('button', { name: 'Equity Market Outlook Market' })).toBeVisible();
 
     const summaryTicker = page.getByText(xlkTickerSymbol, { exact: true }).first();
-    if (await summaryTicker.isVisible().catch(() => false)) {
-      await expect(summaryTicker).toBeVisible();
-    }
+    await expect.poll(async () => await summaryTicker.count(), { timeout: 15000 }).toBeGreaterThan(0);
+    await expect(summaryTicker).toBeVisible();
 
     await page.getByText('QA', { exact: true }).click();
     await page.getByRole('menuitem', { name: 'Preferences' }).click();
