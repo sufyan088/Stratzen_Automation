@@ -4,7 +4,6 @@ test.setTimeout(120000);
 
 test.describe('Summary Module - Login', () => {
 	test('TC_Login_EmailFieldEmpty', async ({ page }) => {
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const baseUrl = process.env.URL
 			|| process.env.APP_URL

@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('RIA Module - Data Table Controls', () => {
 	test.describe.configure({ timeout: 90000 });
 	test('TC_VerifyRiaDataTableControlsAndColumnVisibility', async ({ page }) => {
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
 			|| process.env.APP_URL

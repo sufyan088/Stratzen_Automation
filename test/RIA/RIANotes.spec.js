@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('RIA Module - Notes In Detail Drawer', () => {
 	test.describe.configure({ timeout: 120000 });
 	test('TC_VerifyNotesAddEditDeleteAndExpandCollapseInDetailDrawer', async ({ page }) => {
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
 			|| process.env.APP_URL
