@@ -33,7 +33,7 @@ test.describe('RIA Module - Archive Action', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -62,25 +62,41 @@ test.describe('RIA Module - Archive Action', () => {
 		const dataRows = riasTable.locator('tbody tr');
 		const crdFilterField = riasTable.getByRole('columnheader').nth(0).getByRole('textbox');
 		const actionsHeader = riasTable.getByRole('columnheader').nth(7);
-		const archiveStatusControl = actionsHeader
-			.getByRole('button', { name: notArchivedLabel })
-			.or(actionsHeader.getByRole('combobox'))
-			.or(actionsHeader.getByText(notArchivedLabel).locator('..'));
 		const archiveStatusList = page.getByRole('listbox').last();
 		const notArchivedOption = page.getByRole('option', { name: notArchivedLabel }).last();
 		const archivedOption = page.getByRole('option', { name: archivedLabel }).last();
 
 		const openArchiveStatusMenu = async () => {
-			await expect(archiveStatusControl.first()).toBeVisible();
-			await archiveStatusControl.first().click();
-			await expect(archiveStatusList.or(page.getByRole('menu')).last()).toBeVisible();
+			let archiveStatusControl = actionsHeader.getByRole('button', { name: notArchivedLabel }).first();
+			if ((await archiveStatusControl.count()) === 0) {
+				archiveStatusControl = actionsHeader.getByRole('combobox').first();
+			}
+			if ((await archiveStatusControl.count()) === 0) {
+				archiveStatusControl = actionsHeader.getByText(notArchivedLabel).locator('..').first();
+			}
+
+			await expect(archiveStatusControl).toBeVisible();
+			await archiveStatusControl.click();
+
+			const archiveStatusMenu = page.getByRole('menu').last();
+			if (await archiveStatusList.isVisible().catch(() => false)) {
+				await expect(archiveStatusList).toBeVisible();
+			} else {
+				await expect(archiveStatusMenu).toBeVisible();
+			}
 		};
 
 		const selectArchiveStatus = async (optionLocator, expectedLabel) => {
 			await openArchiveStatusMenu();
 			await expect(optionLocator).toBeVisible();
 			await optionLocator.click();
-			await expect(archiveStatusControl.first()).toContainText(expectedLabel);
+			const archiveStatusButton = actionsHeader.getByRole('button').first();
+			const archiveStatusCombobox = actionsHeader.getByRole('combobox').first();
+			if (await archiveStatusButton.isVisible().catch(() => false)) {
+				await expect(archiveStatusButton).toContainText(expectedLabel);
+			} else {
+				await expect(archiveStatusCombobox).toContainText(expectedLabel);
+			}
 		};
 
 		const getFirstPopulatedRow = async () => {
@@ -103,8 +119,13 @@ test.describe('RIA Module - Archive Action', () => {
 			await expect(dataRows.first()).toBeVisible();
 			await expect(actionsHeader).toContainText(/actions/i);
 
-			await expect(archiveStatusControl.first()).toBeVisible();
-			await expect(archiveStatusControl.first()).toContainText(notArchivedLabel);
+			const initialArchiveStatusButton = actionsHeader.getByRole('button').first();
+			const initialArchiveStatusCombobox = actionsHeader.getByRole('combobox').first();
+			if (await initialArchiveStatusButton.isVisible().catch(() => false)) {
+				await expect(initialArchiveStatusButton).toContainText(notArchivedLabel);
+			} else {
+				await expect(initialArchiveStatusCombobox).toContainText(notArchivedLabel);
+			}
 
 			await selectArchiveStatus(notArchivedOption, notArchivedLabel);
 
@@ -160,8 +181,8 @@ test.describe('RIA Module - Archive Action', () => {
 			await expect(restoredTargetRow.locator('td').nth(0)).toContainText(targetCrd);
 		});
 
-		// Step 7: Log out so the test remains independent.
-		await test.step('Step 7: Log out so the test remains independent', async () => {
+		// Step 7: Logout from the application.
+		await test.step('Step 7: Logout from the application', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
 			await expect(page).toHaveURL(/login/);

@@ -4,6 +4,8 @@ test.describe('Summary Module - Login', () => {
     test.describe.configure({ timeout: 120000 });
 
     test('TC001_Login_To_Stratzen', async ({ page }) => {
+		await page.setViewportSize({ width: 1600, height: 1400 });
+
         const appBaseUrl = process.env.URL
             || process.env.APP_URL
             || process.env.BASE_URL
@@ -17,32 +19,46 @@ test.describe('Summary Module - Login', () => {
         const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
         const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
-        // Step 1: Navigate to Login Page
-        await page.goto(buildUrl('/login'));
+        // Step 1: Navigate to the login page.
+        await test.step('Step 1: Navigate to the login page', async () => {
+            await page.goto(buildUrl('/login'), {
+                waitUntil: 'domcontentloaded',
+                timeout: 90000,
+            });
+            await expect(page).toHaveURL(/login/);
+        });
 
-        // Verify Login Page
-        await expect(page).toHaveURL(/login/);
+        // Step 2: Enter the email address.
+        await test.step('Step 2: Enter the email address', async () => {
+            const emailField = page.locator('input[type="email"]').first();
+            await expect(emailField).toBeVisible();
+            await emailField.fill(email);
+        });
 
-        // Step 2: Enter Email
-        const emailField = page.locator('input[type="email"]');
-        await expect(emailField).toBeVisible();
-        await emailField.fill(email);
+        // Step 3: Enter the password.
+        await test.step('Step 3: Enter the password', async () => {
+            const passwordField = page.locator('input[type="password"]').first();
+            await expect(passwordField).toBeVisible();
+            await passwordField.fill(passwordValue);
+        });
 
-        // Step 3: Enter Password
-        const passwordField = page.locator('input[type="password"]');
-        await expect(passwordField).toBeVisible();
-        await passwordField.fill(passwordValue);
+        // Step 4: Click the Sign In button.
+        await test.step('Step 4: Click the Sign In button', async () => {
+            await page.getByRole('button', { name: /sign in/i }).click();
+        });
 
-        // Step 4: Click Sign In
-        await page.getByRole('button', { name: /sign in/i }).click();
+        // Step 5: Verify the login redirect completes.
+        await test.step('Step 5: Verify the login redirect completes', async () => {
+            await page.waitForLoadState('networkidle');
+            await expect(page).not.toHaveURL(/login/);
+        });
 
-        // Step 5: Verify Redirect
-        await page.waitForLoadState('networkidle');
-        await expect(page).not.toHaveURL(/login/);
-
-        // Step 6: Log out.
-        await page.getByText('QA', { exact: true }).click();
-        await page.getByRole('menuitem', { name: 'Logout' }).click();
+        // Step 6: Logout from the application.
+        await test.step('Step 6: Logout from the application', async () => {
+            await page.getByText('QA', { exact: true }).click();
+            await page.getByRole('menuitem', { name: 'Logout' }).click();
+            await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+        });
 
     });
 

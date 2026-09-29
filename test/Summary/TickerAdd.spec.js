@@ -117,9 +117,12 @@ test.describe('Research and Summary XLK Watchlist', () => {
     await xlkResearchRow.locator('td').first().click();
     await expect(xlkResearchRow).toHaveCount(0);
 
-    // Step 11: Log out.
-    await page.getByText('QA', { exact: true }).click();
-    await page.getByRole('menuitem', { name: 'Logout' }).click();
+    // Step 11: Logout from the application.
+    await test.step('Step 11: Logout from the application', async () => {
+      await page.getByText('QA', { exact: true }).click();
+      await page.getByRole('menuitem', { name: 'Logout' }).click();
+      await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+    });
 
   });
   });

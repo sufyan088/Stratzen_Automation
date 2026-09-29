@@ -30,7 +30,7 @@ test.describe('RIA Module - Dropdown Filters', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -120,8 +120,8 @@ test.describe('RIA Module - Dropdown Filters', () => {
 				.toBe(true);
 		});
 
-		// Step 8: Log out so the test remains independent.
-		await test.step('Step 8: Log out so the test remains independent', async () => {
+		// Step 8: Logout from the application.
+		await test.step('Step 8: Logout from the application', async () => {
 			if (await getStateFilterList().isVisible().catch(() => false)) {
 				await page.keyboard.press('Escape');
 				await expect(getStateFilterList()).not.toBeVisible({ timeout: 15000 });

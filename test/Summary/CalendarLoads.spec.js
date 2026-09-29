@@ -4,6 +4,8 @@ test.describe('Summary Module - Calendar', () => {
 	test.describe.configure({ timeout: 120000 });
 
 	test('TC002_VerifyCalendarLoadsAndDateSelection', async ({ page }) => {
+		await page.setViewportSize({ width: 1600, height: 1400 });
+
 		const appBaseUrl = process.env.URL
 			|| process.env.APP_URL
 			|| process.env.BASE_URL
@@ -28,20 +30,34 @@ test.describe('Summary Module - Calendar', () => {
 		).getDate();
 
 		// Step 1: Navigate to the login page.
-		await page.goto(buildUrl('/login'));
-		// Step 2: Verify the login page loads.
-		await expect(page).toHaveURL(/login/);
+		await test.step('Step 1: Navigate to the login page', async () => {
+			await page.goto(buildUrl('/login'), {
+				waitUntil: 'domcontentloaded',
+				timeout: 90000,
+			});
+			await expect(page).toHaveURL(/login/);
+		});
 
-		// Step 3: Enter the email address.
-		await page.locator('input[type="email"]').fill(email);
-		// Step 4: Enter the password.
-		await page.locator('input[type="password"]').fill(passwordValue);
-		// Step 5: Click the Sign In button.
-		await page.getByRole('button', { name: /sign in/i }).click();
+		// Step 2: Enter the email address.
+		await test.step('Step 2: Enter the email address', async () => {
+			await page.locator('input[type="email"]').first().fill(email);
+		});
 
-		// Step 6: Verify the login redirect completes.
-		await page.waitForLoadState('networkidle');
-		await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+		// Step 3: Enter the password.
+		await test.step('Step 3: Enter the password', async () => {
+			await page.locator('input[type="password"]').first().fill(passwordValue);
+		});
+
+		// Step 4: Click the Sign In button.
+		await test.step('Step 4: Click the Sign In button', async () => {
+			await page.getByRole('button', { name: /sign in/i }).click();
+		});
+
+		// Step 5: Verify the login redirect completes.
+		await test.step('Step 5: Verify the login redirect completes', async () => {
+			await page.waitForLoadState('networkidle');
+			await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+		});
 
 		const calendarSection = page.locator('.summary-calendar-wrapper');
 		const monthHeader = calendarSection.locator('.calendar-month-year');
@@ -50,16 +66,19 @@ test.describe('Summary Module - Calendar', () => {
 		const meetingsPanel = page.locator('.summary-meetings-wrapper');
 		const meetingsTitle = meetingsPanel.locator('.meetings-list-title');
 
-		// Step 7: Verify the calendar section loads.
-		await expect(calendarSection).toBeVisible();
-		// Step 8: Verify the current month and date grid are displayed.
-		await expect(monthHeader).toHaveText(currentMonthLabel);
-		await expect(dayButtons).toHaveCount(daysInCurrentMonth);
-		await expect(selectedDay).toHaveCount(1);
+		// Step 6: Verify the calendar section loads.
+		await test.step('Step 6: Verify the calendar section loads', async () => {
+			await expect(calendarSection).toBeVisible();
+			await expect(monthHeader).toHaveText(currentMonthLabel);
+			await expect(dayButtons).toHaveCount(daysInCurrentMonth);
+			await expect(selectedDay).toHaveCount(1);
+		});
 
 		const selectedDateBeforeClick = (await selectedDay.textContent()).trim();
-		// Step 9: Verify Today's Meetings is shown for the selected date.
-		await expect(meetingsTitle).toContainText("Today's Meetings");
+		// Step 7: Verify Today's Meetings is shown for the selected date.
+		await test.step("Step 7: Verify Today's Meetings is shown for the selected date", async () => {
+			await expect(meetingsTitle).toContainText("Today's Meetings");
+		});
 
 		let targetButton;
 		let targetDateText = '';
@@ -77,15 +96,19 @@ test.describe('Summary Module - Calendar', () => {
 
 		const meetingsTextBeforeClick = (await meetingsPanel.innerText()).trim();
 
-		// Step 10: Select another calendar date.
-		await targetButton.click();
+		// Step 8: Select another calendar date.
+		await test.step('Step 8: Select another calendar date', async () => {
+			await targetButton.click();
+		});
 
-		// Step 11: Verify the selected date and meetings panel update.
-		await expect(selectedDay).toHaveText(targetDateText);
-		await expect(meetingsTitle).toContainText('Meetings');
-		await expect(meetingsTitle).not.toContainText("Today's Meetings");
-		await expect
-			.poll(async () => (await meetingsPanel.innerText()).trim())
-			.not.toBe(meetingsTextBeforeClick);
+		// Step 9: Verify the selected date and meetings panel update.
+		await test.step('Step 9: Verify the selected date and meetings panel update', async () => {
+			await expect(selectedDay).toHaveText(targetDateText);
+			await expect(meetingsTitle).toContainText('Meetings');
+			await expect(meetingsTitle).not.toContainText("Today's Meetings");
+			await expect
+				.poll(async () => (await meetingsPanel.innerText()).trim())
+				.not.toBe(meetingsTextBeforeClick);
+		});
 	});
 });

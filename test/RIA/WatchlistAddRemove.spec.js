@@ -32,7 +32,7 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -169,8 +169,8 @@ test.describe('RIA Module - Watchlist Add / Remove', () => {
 			await expect(watchlistButtonAgain).toBeEnabled();
 		});
 
-		// Step 7: Log out so the test remains independent.
-		await test.step('Step 7: Log out so the test remains independent', async () => {
+		// Step 7: Logout from the application.
+		await test.step('Step 7: Logout from the application', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
 			await expect(page).toHaveURL(/login/);

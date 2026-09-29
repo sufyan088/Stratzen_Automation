@@ -31,7 +31,7 @@ test.describe('RIA Module - Notes In Detail Drawer', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -210,8 +210,8 @@ test.describe('RIA Module - Notes In Detail Drawer', () => {
 			await expect(noteComposer).toBeVisible();
 		});
 
-		// Step 7: Log out so the test remains independent.
-		await test.step('Step 7: Log out so the test remains independent', async () => {
+		// Step 7: Logout from the application.
+		await test.step('Step 7: Logout from the application', async () => {
 			const drawerCloseButton = drawer.getByRole('button', {
 				name: /close drawer|close|dismiss|x/i,
 			}).first();

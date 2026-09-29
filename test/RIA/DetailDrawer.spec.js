@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('RIA Module - Detail Drawer', () => {
 	test('TC_VerifyRiaDetailDrawerOpensFromListRow', async ({ page }) => {
@@ -29,7 +29,7 @@ test.describe('RIA Module - Detail Drawer', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -120,8 +120,8 @@ test.describe('RIA Module - Detail Drawer', () => {
 			await expect(riasTable).toBeVisible();
 		});
 
-		// Step 7: Log out so the test remains independent.
-		await test.step('Step 7: Log out so the test remains independent', async () => {
+		// Step 7: Logout from the application.
+		await test.step('Step 7: Logout from the application', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
 			await expect(page).toHaveURL(/login/);

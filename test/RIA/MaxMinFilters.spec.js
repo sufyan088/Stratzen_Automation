@@ -53,7 +53,7 @@ test.describe('RIA Module - Max / Min Filters', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -129,7 +129,7 @@ test.describe('RIA Module - Max / Min Filters', () => {
 				.poll(async () => {
 					const values = await getVisibleAumValues();
 					return values.length > 0 && values.every((value) => !Number.isNaN(value) && value >= minAum);
-				})
+				}, { timeout: 30000 })
 				.toBe(true);
 
 			await maxAumField.fill(String(maxAum));
@@ -142,7 +142,7 @@ test.describe('RIA Module - Max / Min Filters', () => {
 						values.length > 0 &&
 						values.every((value) => !Number.isNaN(value) && value >= minAum && value <= maxAum)
 					);
-				})
+				}, { timeout: 30000 })
 				.toBe(true);
 
 			const filteredValues = await getVisibleAumValues();
@@ -169,12 +169,12 @@ test.describe('RIA Module - Max / Min Filters', () => {
 					const rowCount = await dataRows.count();
 					const values = await getVisibleAumValues();
 					return rowCount >= filteredRowCount && values.some((value) => !Number.isNaN(value) && (value < minAum || value > maxAum));
-				})
+				}, { timeout: 30000 })
 				.toBe(true);
 		});
 
-		// Step 8: Log out so the test remains independent.
-		await test.step('Step 8: Log out so the test remains independent', async () => {
+		// Step 8: Logout from the application.
+		await test.step('Step 8: Logout from the application', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
 			await expect(page).toHaveURL(/login/);

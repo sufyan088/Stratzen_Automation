@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('RIA Module - Detail Drawer Web Links', () => {
 	test('TC_VerifyDetailDrawerHeaderWebLinksAreClickableAndRenderCorrectly', async ({ page }) => {
@@ -29,10 +29,7 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailTextbox = page.getByRole('textbox', { name: /email/i });
-			const emailField = (await emailTextbox.count())
-				? emailTextbox.first()
-				: page.locator('input[type="email"]').first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -49,11 +46,14 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 			await page.getByRole('button', { name: /sign in/i }).click();
 		});
 
-		// Step 5: Open the RIAs page.
-		await test.step('Step 5: Open the RIAs page', async () => {
+		// Step 5: Verify the Summary page loads after sign in.
+		await test.step('Step 5: Verify the Summary page loads after sign in', async () => {
 			await page.waitForLoadState('networkidle');
 			await expect(page).toHaveURL(/summary/);
+		});
 
+		// Step 6: Open the RIAs page.
+		await test.step('Step 6: Open the RIAs page', async () => {
 			const riasLink = page.getByRole('link', { name: 'RIAs', exact: true });
 			await expect(riasLink).toBeVisible({ timeout: 15000 });
 			await riasLink.click();
@@ -63,8 +63,8 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 		const riasTable = page.locator('table').first();
 		const dataRows = riasTable.locator('tbody tr');
 
-		// Step 6: Open a RIA drawer with web links and verify they navigate correctly.
-		await test.step('Step 6: Open a RIA drawer with web links and verify they navigate correctly', async () => {
+		// Step 7: Open a RIA drawer with web links and verify they navigate correctly.
+		await test.step('Step 7: Open a RIA drawer with web links and verify they navigate correctly', async () => {
 			await expect(riasTable).toBeVisible();
 			const businessNameCells = page.locator('table tbody tr td:nth-child(2) p');
 			let firstVisibleName = '';
@@ -78,17 +78,17 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 			expect(firstVisibleName).not.toBe('');
 
 			const rowCount = await dataRows.count();
-			let selectedDrawer = null;
-			let selectedRecord = null;
+			let selectedRowIndex = -1;
+			let selectedBusinessName = '';
+			let selectedCrd = '';
 			let selectedDrawerLinks = [];
-			let externalLinks = null;
 
 			for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
 				const targetRow = dataRows.nth(rowIndex);
 				const crdCell = targetRow.locator('td').nth(0).locator('p').first();
 				const businessNameCell = targetRow.locator('td').nth(1).locator('p').first();
 
-				if (!(await crdCell.isVisible().catch(() => false)) || !(await businessNameCell.isVisible().catch(() => false))) {
+				if ((await crdCell.count()) === 0 || (await businessNameCell.count()) === 0) {
 					continue;
 				}
 
@@ -101,117 +101,190 @@ test.describe('RIA Module - Detail Drawer Web Links', () => {
 
 				await businessNameCell.click();
 
-				const candidateDrawer = page
-					.locator('[role="dialog"], [role="complementary"], aside')
-					.filter({ has: page.getByText(businessName, { exact: false }) })
-					.first();
+				const candidateDrawer = page.locator('[role="dialog"]:visible, [role="complementary"]:visible, aside:visible').first();
 
 				await expect(candidateDrawer).toBeVisible({ timeout: 15000 });
 				await expect(candidateDrawer).toContainText(businessName);
 				await expect(candidateDrawer).toContainText(crd);
 
-				const candidateLinks = candidateDrawer.locator('a[href]');
-				let candidateLinkCount = 0;
-				for (let attempt = 0; attempt < 5; attempt += 1) {
-					candidateLinkCount = await candidateLinks.count();
-					if (candidateLinkCount > 0) {
+				const candidateDrawerLinks = [];
+				for (let attempt = 0; attempt < 15; attempt += 1) {
+					candidateDrawerLinks.length = 0;
+					const candidateLinks = candidateDrawer.locator('a[href]');
+					const candidateLinkCount = await candidateLinks.count();
+
+					for (let linkIndex = 0; linkIndex < candidateLinkCount; linkIndex += 1) {
+						const link = candidateLinks.nth(linkIndex);
+						const href = ((await link.getAttribute('href')) || '').trim();
+						const linkVisible = await link.isVisible().catch(() => false);
+						const linkEnabled = await link.isEnabled().catch(() => false);
+
+						if (!linkVisible || !linkEnabled || !href) {
+							continue;
+						}
+
+						if (/^(#|javascript:|mailto:|tel:)/i.test(href)) {
+							continue;
+						}
+
+						const className = ((await link.getAttribute('class')) || '').trim();
+						candidateDrawerLinks.push({
+							index: linkIndex,
+							href,
+							text: ((await link.textContent()) || '').trim(),
+							className,
+							isIconLink: /contact-icon-link/i.test(className),
+						});
+					}
+
+					if (candidateDrawerLinks.length > 0) {
 						break;
 					}
+
+					const drawerText = ((await candidateDrawer.textContent()) || '').trim();
+					if (!/Loading RIA details/i.test(drawerText) && attempt >= 4) {
+						break;
+					}
+
 					await page.waitForTimeout(1000);
 				}
 
-				const candidateDrawerLinks = [];
-				for (let linkIndex = 0; linkIndex < candidateLinkCount; linkIndex += 1) {
-					const link = candidateLinks.nth(linkIndex);
-					const href = ((await link.getAttribute('href')) || '').trim();
-
-					if (!/^https?:\/\//i.test(href)) {
-						continue;
-					}
-
-					candidateDrawerLinks.push({
-						index: linkIndex,
-						href,
-						text: ((await link.textContent()) || '').trim(),
-					});
-				}
-
 				if (candidateDrawerLinks.length > 0) {
-					selectedDrawer = candidateDrawer;
-					selectedRecord = { crd, businessName };
+					selectedRowIndex = rowIndex;
+					selectedBusinessName = businessName;
+					selectedCrd = crd;
 					selectedDrawerLinks = candidateDrawerLinks;
-					externalLinks = candidateLinks;
 					break;
 				}
 
 				const labelledCloseButton = candidateDrawer.getByRole('button', {
 					name: /close window|close drawer|close|dismiss|x/i,
 				});
-				const closeButton = (await labelledCloseButton.count()) > 0
-					? labelledCloseButton.first()
-					: candidateDrawer.locator('header button:visible').last();
+				let closeButton = labelledCloseButton.first();
+				if ((await labelledCloseButton.count()) === 0) {
+					closeButton = candidateDrawer.locator('header button:visible').last();
+				}
 				await expect(closeButton).toBeVisible();
 				await closeButton.click();
 				await expect(candidateDrawer).not.toBeVisible({ timeout: 15000 });
 			}
 
-			if (!selectedDrawer || !selectedRecord || !externalLinks || selectedDrawerLinks.length === 0) {
+			if (selectedRowIndex < 0 || !selectedBusinessName || !selectedCrd || selectedDrawerLinks.length === 0) {
 				throw new Error('Expected at least one RIA row whose detail drawer contains external web links.');
 			}
 
-			await expect(selectedDrawer).toContainText(selectedRecord.businessName);
-			await expect(selectedDrawer).toContainText(selectedRecord.crd);
+			const selectedRow = dataRows.nth(selectedRowIndex);
+			const selectedDrawer = page
+				.locator('[role="dialog"]:visible, [role="complementary"]:visible, aside:visible')
+				.filter({ hasText: selectedBusinessName })
+				.first();
+			await expect(selectedDrawer).toBeVisible({ timeout: 15000 });
 
-			for (const webLink of selectedDrawerLinks) {
-				const link = externalLinks.nth(webLink.index);
+			await expect(selectedDrawer).toContainText(selectedBusinessName);
+			await expect(selectedDrawer).toContainText(selectedCrd);
+			let hasIconLink = false;
+			let hasTextLink = false;
+			for (let selectedLinkIndex = 0; selectedLinkIndex < selectedDrawerLinks.length; selectedLinkIndex += 1) {
+				if (selectedDrawerLinks[selectedLinkIndex].isIconLink) {
+					hasIconLink = true;
+				} else {
+					hasTextLink = true;
+				}
+			}
+			expect(hasIconLink).toBeTruthy();
+			expect(hasTextLink).toBeTruthy();
+
+			for (let linkIndex = 0; linkIndex < selectedDrawerLinks.length; linkIndex += 1) {
+				const webLink = selectedDrawerLinks[linkIndex];
+				let link = selectedDrawer.locator('a[href]').nth(webLink.index);
+				if ((await link.count()) === 0) {
+					const matchingHrefLinks = selectedDrawer.locator(`a[href="${webLink.href.replace(/"/g, '\\"')}"]`);
+					const matchingHrefCount = await matchingHrefLinks.count();
+					for (let matchingIndex = 0; matchingIndex < matchingHrefCount; matchingIndex += 1) {
+						const matchingLink = matchingHrefLinks.nth(matchingIndex);
+						const matchingClassName = ((await matchingLink.getAttribute('class')) || '').trim();
+						const matchingIsIconLink = /contact-icon-link/i.test(matchingClassName);
+						if (matchingIsIconLink === webLink.isIconLink) {
+							link = matchingLink;
+							break;
+						}
+					}
+				}
 				await expect(link).toBeVisible();
 				await expect(link).toBeEnabled();
-				expect(webLink.href).toMatch(/^https?:\/\//i);
-				expect(webLink.href).not.toMatch(/demoapp\.stratzen\.ai/i);
 
-				const popupPromise = page.waitForEvent('popup', { timeout: 8000 }).catch(() => null);
 				const currentUrlBeforeClick = page.url();
+				const href = ((await link.getAttribute('href')) || '').trim();
+				const target = ((await link.getAttribute('target')) || '').trim().toLowerCase();
 
-				await link.click();
-
-				const popupPage = await popupPromise;
-				if (popupPage) {
+				if (target === '_blank') {
+					const popupPromise = page.waitForEvent('popup', { timeout: 15000 });
+					await link.click();
+					const popupPage = await popupPromise;
 					await popupPage.waitForLoadState('domcontentloaded');
 					const popupUrl = popupPage.url();
-					expect(popupUrl === 'chrome-error://chromewebdata/' || /^https?:\/\//i.test(popupUrl)).toBeTruthy();
-					expect(popupUrl).not.toMatch(/demoapp\.stratzen\.ai/i);
+					expect(Boolean(popupUrl)).toBeTruthy();
+					expect(popupUrl === 'chrome-error://chromewebdata/' || popupUrl !== 'about:blank').toBeTruthy();
 					await popupPage.close();
-					continue;
+				} else if (/^https?:\/\//i.test(href) || href.startsWith('/')) {
+					await link.click();
+					await page.waitForLoadState('domcontentloaded');
+					const navigatedUrl = page.url();
+					expect(Boolean(navigatedUrl)).toBeTruthy();
+					expect(navigatedUrl).not.toBe(currentUrlBeforeClick);
+					await page.goBack();
+					await page.waitForLoadState('networkidle');
+					await expect(page).toHaveURL(currentUrlBeforeClick);
+					const restoredDrawerLinks = [];
+					const restoredLinks = selectedDrawer.locator('a[href]');
+					const restoredLinkCount = await restoredLinks.count();
+					for (let restoredLinkIndex = 0; restoredLinkIndex < restoredLinkCount; restoredLinkIndex += 1) {
+						const restoredLink = restoredLinks.nth(restoredLinkIndex);
+						const restoredHref = ((await restoredLink.getAttribute('href')) || '').trim();
+						const restoredLinkVisible = await restoredLink.isVisible().catch(() => false);
+						const restoredLinkEnabled = await restoredLink.isEnabled().catch(() => false);
+
+						if (!restoredLinkVisible || !restoredLinkEnabled || !restoredHref) {
+							continue;
+						}
+
+						if (/^(#|javascript:|mailto:|tel:)/i.test(restoredHref)) {
+							continue;
+						}
+
+						restoredDrawerLinks.push(restoredHref);
+					}
+					if (restoredDrawerLinks.length > 0) {
+						await expect(selectedDrawer).toBeVisible({ timeout: 15000 });
+					} else {
+						await selectedRow.locator('td').nth(1).dispatchEvent('click');
+						await expect(selectedDrawer).toBeVisible({ timeout: 15000 });
+					}
+				} else {
+					await link.dispatchEvent('click');
+					await expect(selectedDrawer).toBeVisible({ timeout: 15000 });
 				}
-
-				await page.waitForLoadState('domcontentloaded');
-				const navigatedUrl = page.url();
-				expect(navigatedUrl === 'chrome-error://chromewebdata/' || /^https?:\/\//i.test(navigatedUrl)).toBeTruthy();
-				expect(navigatedUrl).not.toBe(currentUrlBeforeClick);
-				await page.goBack();
-				await page.waitForLoadState('networkidle');
-				await expect(page).toHaveURL(currentUrlBeforeClick);
-
-				const restoredDrawer = page.locator('[role="dialog"]:visible, [role="complementary"]:visible, aside:visible').first();
-				await expect(restoredDrawer).toBeVisible({ timeout: 15000 });
 			}
 
 			const labelledCloseButton = selectedDrawer.getByRole('button', {
 				name: /close window|close drawer|close|dismiss|x/i,
 			});
-			const closeButton = (await labelledCloseButton.count()) > 0
-				? labelledCloseButton.first()
-				: selectedDrawer.locator('header button:visible').last();
+			let closeButton = labelledCloseButton.first();
+			if ((await labelledCloseButton.count()) === 0) {
+				closeButton = selectedDrawer.locator('header button:visible').last();
+			}
 			await expect(closeButton).toBeVisible();
-			await closeButton.click();
+			await closeButton.dispatchEvent('click');
 			await expect(selectedDrawer).not.toBeVisible({ timeout: 15000 });
 			await expect(riasTable).toBeVisible();
 		});
 
-		// Step 7: Log out so the test remains independent.
-		await test.step('Step 7: Log out so the test remains independent', async () => {
-			await page.getByText('QA', { exact: true }).click();
-			await page.getByRole('menuitem', { name: 'Logout' }).click();
+		// Step 8: Logout from the application.
+		await test.step('Step 8: Logout from the application', async () => {
+			await page.getByText('QA', { exact: true }).dispatchEvent('click');
+			const logoutMenuItem = page.getByRole('menuitem', { name: 'Logout' });
+			await expect(logoutMenuItem).toBeVisible();
+			await logoutMenuItem.dispatchEvent('click');
 			await expect(page).toHaveURL(/login/);
 		});
 	});

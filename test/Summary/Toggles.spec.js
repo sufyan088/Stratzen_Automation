@@ -199,9 +199,11 @@ test.describe('Summary Module - Toggle Visibility', () => {
             await expect(getNewsMarketToggle()).toHaveAttribute('aria-pressed', 'true');
         }
 
-        // Step 27: Log out.
-
-        await page.getByText('QA', { exact: true }).click();
-        await page.getByRole('menuitem', { name: 'Logout' }).click(); 
+        // Step 27: Logout from the application.
+        await test.step('Step 27: Logout from the application', async () => {
+            await page.getByText('QA', { exact: true }).click();
+            await page.getByRole('menuitem', { name: 'Logout' }).click();
+            await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+        });
     });
 });

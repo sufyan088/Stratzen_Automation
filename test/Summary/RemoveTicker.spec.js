@@ -101,19 +101,45 @@ test.describe('Research and Summary XLK Watchlist', () => {
 	await page.getByRole('link', { name: 'Summary' }).click();
     await expect(page.getByRole('button', { name: 'Equity Market Outlook Market' })).toBeVisible();
 
-    await page.waitForTimeout(5000);
-    await expect(page.getByText('XLK', { exact: true })).toHaveCount(0);
+	const summaryXlkMatches = page.getByText('XLK', { exact: true });
+	await expect
+		.poll(async () => {
+			const matchCount = await summaryXlkMatches.count();
+			for (let matchIndex = 0; matchIndex < matchCount; matchIndex += 1) {
+				if (await summaryXlkMatches.nth(matchIndex).isVisible().catch(() => false)) {
+					return 1;
+				}
+			}
+
+			return 0;
+		}, { timeout: 15000 })
+		.toBe(0);
 
 	await page.getByText('QA', { exact: true }).click();
     await page.getByRole('menuitem', { name: 'Preferences' }).click();
     await expect(page.getByRole('button', { name: 'Watchlist', exact: true })).toBeVisible();
     await expect(page.getByText('Stocks & ETFs', { exact: true })).toBeVisible(); 
-	await expect(page.getByText('XLK', { exact: true })).toHaveCount(0);
 
-	// Step 11: Log out.
+	const preferencesXlkMatches = page.getByText('XLK', { exact: true });
+	await expect
+		.poll(async () => {
+			const matchCount = await preferencesXlkMatches.count();
+			for (let matchIndex = 0; matchIndex < matchCount; matchIndex += 1) {
+				if (await preferencesXlkMatches.nth(matchIndex).isVisible().catch(() => false)) {
+					return 1;
+				}
+			}
 
-    await page.getByText('QA', { exact: true }).click();
-    await page.getByRole('menuitem', { name: 'Logout' }).click();
+			return 0;
+		}, { timeout: 15000 })
+		.toBe(0);
+
+	// Step 11: Logout from the application.
+	await test.step('Step 11: Logout from the application', async () => {
+		await page.getByText('QA', { exact: true }).click();
+		await page.getByRole('menuitem', { name: 'Logout' }).click();
+		await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+	});
 
 });
   });

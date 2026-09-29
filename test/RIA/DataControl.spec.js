@@ -18,41 +18,16 @@ test.describe('RIA Module - Data Table Controls', () => {
 		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
 		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
-		const getColumnsButton = () => page.getByRole('button', { name: 'Columns', exact: true });
-		const getFiltersButton = () => page.getByRole('button', { name: 'Filters', exact: true });
-		const getDensityButton = () => page.getByRole('button', { name: 'Density', exact: true });
-		const getExportButton = () => page.getByRole('button', { name: /^Export\b/i }).first();
-		const getRiasTable = () => page.locator('table').first();
-		const getTableHeaders = () => getRiasTable().getByRole('columnheader');
-		const getColumnHeader = (name) => getRiasTable().getByRole('columnheader').filter({ hasText: name });
-		const getColumnsPopup = () => page.getByRole('menu').last();
-		const getColumnsResetButton = () => getColumnsPopup().getByRole('button', { name: 'RESET', exact: true });
-		const getColumnToggle = (name) =>
-			getColumnsPopup().getByRole('checkbox', { name: new RegExp(name, 'i') }).first();
-
-		const isToggleChecked = async (toggle) => {
-			return toggle.evaluate((element) => {
-				if (element instanceof HTMLInputElement) {
-					return Boolean(element.checked);
-				}
-
-				return element.getAttribute('aria-checked') === 'true'
-					|| element.getAttribute('data-state') === 'checked';
-			});
-		};
-
-		const setToggleState = async (columnName, shouldBeChecked) => {
-			const toggle = getColumnToggle(columnName);
-
-			await expect(toggle).toBeVisible();
-			if ((await isToggleChecked(toggle)) !== shouldBeChecked) {
-				await toggle.click({ force: true });
-			}
-
-			await expect
-				.poll(async () => isToggleChecked(toggle))
-				.toBe(shouldBeChecked);
-		};
+		const columnsButton = page.getByRole('button', { name: 'Columns', exact: true });
+		const filtersButton = page.getByRole('button', { name: 'Filters', exact: true });
+		const densityButton = page.getByRole('button', { name: 'Density', exact: true });
+		const exportButton = page.getByRole('button', { name: /^Export\b/i }).first();
+		const riasTable = page.locator('table').first();
+		const tableHeaders = riasTable.getByRole('columnheader');
+		const columnsPopup = page.getByRole('menu').last();
+		const columnsResetButton = columnsPopup.getByRole('button', { name: 'RESET', exact: true });
+		const crdToggle = columnsPopup.getByRole('checkbox', { name: /CRD/i }).first();
+		const businessNameToggle = columnsPopup.getByRole('checkbox', { name: /Business Name/i }).first();
 
 		// Step 1: Navigate to the login page.
 		await test.step('Step 1: Navigate to the login page', async () => {
@@ -65,7 +40,7 @@ test.describe('RIA Module - Data Table Controls', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -91,50 +66,87 @@ test.describe('RIA Module - Data Table Controls', () => {
 			await expect(page.getByRole('heading', { name: 'Explore RIAs', exact: true })).toBeVisible();
 		});
 
-		// Step 6: Verify toolbar controls and column visibility toggles.
-		await test.step('Step 6: Verify toolbar controls and column visibility toggles', async () => {
-			await expect(getRiasTable()).toBeVisible();
-			await expect(getTableHeaders().first()).toBeVisible();
+		// Step 6: Verify toolbar controls are visible on the RIAs page.
+		await test.step('Step 6: Verify toolbar controls are visible on the RIAs page', async () => {
+			await expect(riasTable).toBeVisible();
+			await expect(tableHeaders.first()).toBeVisible();
 
+			await columnsButton.scrollIntoViewIfNeeded();
+			await expect(columnsButton).toBeVisible();
+			await expect(filtersButton).toBeVisible();
+			await expect(densityButton).toBeVisible();
+			await expect(exportButton).toBeVisible();
+		});
+
+		// Step 7: Open the Columns popup and verify column toggles are available.
+		await test.step('Step 7: Open the Columns popup and verify column toggles are available', async () => {
 			const riasUrl = page.url();
-
-			await getColumnsButton().scrollIntoViewIfNeeded();
-			await expect(getColumnsButton()).toBeVisible();
-			await expect(getFiltersButton()).toBeVisible();
-			await expect(getDensityButton()).toBeVisible();
-			await expect(getExportButton()).toBeVisible();
-
-			await getColumnsButton().click();
-			await expect(getColumnsPopup()).toBeVisible();
+			await columnsButton.click();
+			await expect(columnsPopup).toBeVisible();
 			await expect(page).toHaveURL(riasUrl);
-			await expect(getRiasTable()).toBeVisible();
+			await expect(riasTable).toBeVisible();
 
-			const crdToggle = getColumnToggle('CRD');
-			const businessNameToggle = getColumnToggle('Business Name');
 			await expect(crdToggle).toBeVisible();
 			await expect(businessNameToggle).toBeVisible();
 
-			await setToggleState('CRD', true);
-			await setToggleState('Business Name', true);
+			if (!(await crdToggle.isChecked())) {
+				await crdToggle.click({ force: true });
+			}
+			await expect(crdToggle).toBeChecked();
 
-			await setToggleState('CRD', false);
-			await setToggleState('Business Name', false);
-			await expect
-				.poll(async () => await getColumnHeader('CRD').count())
-				.toBe(0);
-			await expect
-				.poll(async () => await getColumnHeader('Business Name').count())
-				.toBe(0);
-
-			await expect(getColumnsPopup()).toBeVisible();
-			await getColumnsResetButton().click();
-			await page.keyboard.press('Escape');
-			await expect(getColumnsPopup()).toBeHidden();
-			await expect(getColumnHeader('Business Name')).toBeVisible();
+			if (!(await businessNameToggle.isChecked())) {
+				await businessNameToggle.click({ force: true });
+			}
+			await expect(businessNameToggle).toBeChecked();
 		});
 
-		// Step 7: Log out so the test remains independent.
-		await test.step('Step 7: Log out so the test remains independent', async () => {
+		// Step 8: Uncheck (disable) the CRD column option.
+		await test.step('Step 8: Uncheck the CRD column option', async () => {
+			await expect(crdToggle).toBeVisible();
+			if (await crdToggle.isChecked()) {
+				await crdToggle.click({ force: true });
+			}
+			await expect(crdToggle).not.toBeChecked();
+		});
+
+		// Step 9: Uncheck (disable) the Business Name column option.
+		await test.step('Step 9: Uncheck the Business Name column option', async () => {
+			await expect(businessNameToggle).toBeVisible();
+			if (await businessNameToggle.isChecked()) {
+				await businessNameToggle.click({ force: true });
+			}
+			await expect(businessNameToggle).not.toBeChecked();
+		});
+
+		// Step 10: Verify the unchecked columns are hidden from the table.
+		await test.step('Step 10: Verify the unchecked columns are hidden from the table', async () => {
+			await expect
+				.poll(async () => await riasTable.getByRole('columnheader').filter({ hasText: 'CRD' }).count())
+				.toBe(0);
+			await expect
+				.poll(async () => await riasTable.getByRole('columnheader').filter({ hasText: 'Business Name' }).count())
+				.toBe(0);
+		});
+
+		// Step 11: Reset the column selections to the default state.
+		await test.step('Step 11: Reset the column selections to the default state', async () => {
+			await expect(columnsPopup).toBeVisible();
+			await columnsResetButton.click();
+		});
+
+		// Step 12: Close the Columns popup after resetting the defaults.
+		await test.step('Step 12: Close the Columns popup after resetting the defaults', async () => {
+			await page.keyboard.press('Escape');
+			await expect(columnsPopup).toBeHidden();
+		});
+
+		// Step 13: Verify the default columns are visible again.
+		await test.step('Step 13: Verify the default columns are visible again', async () => {
+			await expect(riasTable.getByRole('columnheader').filter({ hasText: 'Business Name' })).toBeVisible();
+		});
+
+		// Step 14: Logout from the application.
+		await test.step('Step 14: Logout from the application', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
 			await expect(page).toHaveURL(/login/);

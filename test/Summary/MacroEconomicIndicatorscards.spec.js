@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Summary Module - Macro Economic Indicators', () => {
     test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
         test.setTimeout(90000);
+		await page.setViewportSize({ width: 1600, height: 1400 });
 
         const appBaseUrl = process.env.URL
             || process.env.APP_URL
@@ -18,24 +19,36 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
         const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
         // Step 1: Navigate to the login page.
-        await page.goto(buildUrl('/login'));
+        await test.step('Step 1: Navigate to the login page', async () => {
+            await page.goto(buildUrl('/login'), {
+                waitUntil: 'domcontentloaded',
+                timeout: 90000,
+            });
+            await expect(page).toHaveURL(/login/);
+        });
 
-        // Step 2: Verify the login page loads.
-        await expect(page).toHaveURL(/login/);
+        // Step 2: Enter the email address.
+        await test.step('Step 2: Enter the email address', async () => {
+            await page.locator('input[type="email"]').first().fill(email);
+        });
 
-        // Step 3: Enter the email address.
-        await page.locator('input[type="email"]').fill(email);
-        // Step 4: Enter the password.
-        await page.locator('input[type="password"]').fill(passwordValue);
+        // Step 3: Enter the password.
+        await test.step('Step 3: Enter the password', async () => {
+            await page.locator('input[type="password"]').first().fill(passwordValue);
+        });
 
-        // Step 5: Click the Sign In button.
-        await page.getByRole('button', {
-            name: /sign in/i
-        }).click();
+        // Step 4: Click the Sign In button.
+        await test.step('Step 4: Click the Sign In button', async () => {
+            await page.getByRole('button', {
+                name: /sign in/i
+            }).click();
+        });
 
-        // Step 6: Verify the login redirect completes.
-        await page.waitForLoadState('networkidle');
-        await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+        // Step 5: Verify the login redirect completes.
+        await test.step('Step 5: Verify the login redirect completes', async () => {
+            await page.waitForLoadState('networkidle');
+            await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+        });
 
         // Step 7: Scroll to Macro Economic Indicators.
         const macroHeading = page.getByRole('heading', {
@@ -52,25 +65,30 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
 
         await macroHeading.scrollIntoViewIfNeeded();
 
-    // Step 8: Verify section title and description.
-        await expect(macroHeading).toBeVisible();
-        await expect(macroDescription).toBeVisible();
+        // Step 8: Verify section title and description.
+        await test.step('Step 8: Verify section title and description', async () => {
+            await expect(macroHeading).toBeVisible();
+            await expect(macroDescription).toBeVisible();
+        });
 
-    // Step 9: Verify cards are visible.
-        await expect(macroRegion).toContainText('Fed Funds Rate');
-        await expect(macroRegion).toContainText('Unemployment Rate (U3)');
-        await expect(macroRegion).toContainText('CSI');
+        // Step 9: Verify cards are visible.
+        await test.step('Step 9: Verify cards are visible', async () => {
+            await expect(macroRegion).toContainText('Fed Funds Rate');
+            await expect(macroRegion).toContainText('Unemployment Rate (U3)');
+            await expect(macroRegion).toContainText('CSI');
+        });
 
         const macroRegionText = await macroRegion.innerText();
         const fedFundsValue = (macroRegionText.match(/\b3\.72%\b/) || [''])[0];
         const unemploymentValue = (macroRegionText.match(/\b4\.4%\b/) || [''])[0];
 
-        // Step 10: Click Read More.
-        await macroSection
-            .getByRole('button', { name: 'Read More', exact: true })
-            .click();
+        // Step 10: Click the Read More button.
+        await test.step('Step 10: Click the Read More button', async () => {
+            await macroSection
+                .getByRole('button', { name: 'Read More', exact: true })
+                .click();
+        });
 
-        // Step 11: Verify detail view opens.
         const closeDrawerButton = page.getByRole('button', {
             name: 'Close drawer'
         });
@@ -84,38 +102,53 @@ test.describe('Summary Module - Macro Economic Indicators', () => {
             name: /financialmodelingprep/i
         });
 
-        await expect(closeDrawerButton).toBeVisible();
-        await expect(detailHeading).toBeVisible();
+        // Step 11: Verify detail view opens.
+        await test.step('Step 11: Verify detail view opens', async () => {
+            await expect(closeDrawerButton).toBeVisible();
+            await expect(detailHeading).toBeVisible();
+        });
 
         // Step 12: Verify detail date is displayed.
-        await expect(detailDate).toBeVisible();
+        await test.step('Step 12: Verify detail date is displayed', async () => {
+            await expect(detailDate).toBeVisible();
+        });
 
         // Step 13: Verify narrative references the same headline values.
-        await expect(page.locator('body')).toContainText(fedFundsValue);
-        await expect(page.locator('body')).toContainText(unemploymentValue);
+        await test.step('Step 13: Verify narrative references the same headline values', async () => {
+            await expect(page.locator('body')).toContainText(fedFundsValue);
+            await expect(page.locator('body')).toContainText(unemploymentValue);
+        });
 
-        // Step 14: Verify source attribution/link is present.
-        await expect(sourceAttribution).toBeVisible();
-        await expect(sourceLink).toBeVisible();
+        // Step 14: Verify source attribution and link are present.
+        await test.step('Step 14: Verify source attribution and link are present', async () => {
+            await expect(sourceAttribution).toBeVisible();
+            await expect(sourceLink).toBeVisible();
+        });
 
-        // Step 15: Close detail view using X.
-        await closeDrawerButton.click();
+        // Step 15: Close the detail view using the X button.
+        await test.step('Step 15: Close the detail view using the X button', async () => {
+            await closeDrawerButton.click();
+        });
 
-        // Step 16: Verify Summary is restored.
-        await expect(
-            page.getByRole('link', {
-                name: 'Summary',
-                exact: true
-            })
-        ).toBeVisible();
+        // Step 16: Verify the Summary page is restored.
+        await test.step('Step 16: Verify the Summary page is restored', async () => {
+            await expect(
+                page.getByRole('link', {
+                    name: 'Summary',
+                    exact: true
+                })
+            ).toBeVisible();
 
-        await expect(detailDate).toHaveCount(0);
-        await expect(macroHeading).toBeVisible();
-        await expect(macroDescription).toBeVisible();
+            await expect(detailDate).toHaveCount(0);
+            await expect(macroHeading).toBeVisible();
+            await expect(macroDescription).toBeVisible();
+        });
 
-                // Step 17: Log out.
-
-        await page.getByText('QA', { exact: true }).click();
-        await page.getByRole('menuitem', { name: 'Logout' }).click();
+        // Step 17: Logout from the application.
+        await test.step('Step 17: Logout from the application', async () => {
+            await page.getByText('QA', { exact: true }).click();
+            await page.getByRole('menuitem', { name: 'Logout' }).click();
+            await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+        });
     });
 });

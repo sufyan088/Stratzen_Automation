@@ -17,8 +17,6 @@ test.describe('RIA Module - Search Filters', () => {
 		const buildUrl = (path) => new URL(path, appBaseUrl).toString();
 		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
 		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
-		const targetCrd = '147746';
-		const businessNameFragment = 'HARTFORD FUNDS';
 
 		// Step 1: Navigate to the login page.
 		await test.step('Step 1: Navigate to the login page', async () => {
@@ -31,7 +29,7 @@ test.describe('RIA Module - Search Filters', () => {
 
 		// Step 2: Enter the email address.
 		await test.step('Step 2: Enter the email address', async () => {
-			const emailField = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+			const emailField = page.locator('input[type="email"]').first();
 			await expect(emailField).toBeVisible();
 			await emailField.fill(email);
 		});
@@ -65,6 +63,9 @@ test.describe('RIA Module - Search Filters', () => {
 		const businessNameFilter = businessNameHeader.getByRole('textbox', {
 			name: /filter by business name/i,
 		});
+		let targetCrd = '';
+		let targetBusinessName = '';
+		let businessNameFragment = '';
 
 		// Step 6: Verify the CRD search filter works.
 		await test.step('Step 6: Verify the CRD search filter works', async () => {
@@ -73,6 +74,42 @@ test.describe('RIA Module - Search Filters', () => {
 
 			const initialRowCount = await dataRows.count();
 			expect(initialRowCount).toBeGreaterThan(1);
+
+			const crdCells = page.locator('table tbody tr td:nth-child(1) p');
+			const businessNameCells = page.locator('table tbody tr td:nth-child(2) p');
+			let firstVisibleCrd = '';
+			let firstVisibleBusinessName = '';
+			for (let attempt = 0; attempt < 30; attempt += 1) {
+				firstVisibleCrd = ((await crdCells.first().textContent()) || '').trim();
+				firstVisibleBusinessName = ((await businessNameCells.first().textContent()) || '').trim();
+				if (firstVisibleCrd && firstVisibleBusinessName) {
+					break;
+				}
+				await page.waitForTimeout(1000);
+			}
+
+			expect(firstVisibleCrd).not.toBe('');
+			expect(firstVisibleBusinessName).not.toBe('');
+
+			for (let rowIndex = 0; rowIndex < initialRowCount; rowIndex += 1) {
+				const row = dataRows.nth(rowIndex);
+				const currentCrd = ((await row.locator('td').nth(0).locator('p').first().textContent()) || '').trim();
+				const currentBusinessName = ((await row.locator('td').nth(1).locator('p').first().textContent()) || '').trim();
+
+				if (!currentCrd || !currentBusinessName || currentCrd === 'No results found') {
+					continue;
+				}
+
+				targetCrd = currentCrd;
+				targetBusinessName = currentBusinessName;
+				break;
+			}
+
+			expect(targetCrd).not.toBe('');
+			expect(targetBusinessName).not.toBe('');
+
+			const businessNameWords = targetBusinessName.split(/\s+/).filter(Boolean);
+			businessNameFragment = businessNameWords.slice(0, 2).join(' ') || targetBusinessName;
 
 			await crdFilter.fill(targetCrd);
 			await expect(dataRows).toHaveCount(1);
@@ -87,9 +124,10 @@ test.describe('RIA Module - Search Filters', () => {
 		// Step 7: Verify the Business Name search filter works.
 		await test.step('Step 7: Verify the Business Name search filter works', async () => {
 			await expect(businessNameFilter).toBeVisible();
+			expect(businessNameFragment).not.toBe('');
 			await businessNameFilter.fill(businessNameFragment);
 			await expect(dataRows).toHaveCount(1);
-			await expect(dataRows.first().locator('td').nth(1)).toContainText(businessNameFragment);
+			await expect(dataRows.first().locator('td').nth(1)).toContainText(targetBusinessName);
 
 			await businessNameFilter.clear();
 			await expect(businessNameFilter).toHaveValue('');
@@ -97,8 +135,8 @@ test.describe('RIA Module - Search Filters', () => {
 			expect(await dataRows.count()).toBeGreaterThan(1);
 		});
 
-		// Step 8: Log out so the test remains independent.
-		await test.step('Step 8: Log out so the test remains independent', async () => {
+		// Step 8: Logout from the application.
+		await test.step('Step 8: Logout from the application', async () => {
 			await page.getByText('QA', { exact: true }).click();
 			await page.getByRole('menuitem', { name: 'Logout' }).click();
 			await expect(page).toHaveURL(/login/);

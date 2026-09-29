@@ -29,7 +29,7 @@ test.describe('Login Module', () => {
 
     // Step 3: Validate email field is present and editable.
     // Selector to verify against live UI labels if this fails.
-    const email = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+    const email = page.locator('input[type="email"]').first();
     await expect(email).toBeVisible();
     await expect(email).toBeEditable();
 
@@ -53,7 +53,7 @@ test.describe('Login Module', () => {
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
 
     // Step 2: Enter an invalid email value.
-    const email = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+    const email = page.locator('input[type="email"]').first();
     await expect(email).toBeVisible();
     await email.fill('invalid-email');
 
@@ -75,12 +75,7 @@ test.describe('Login Module', () => {
     const validationMessage = page.getByText(/invalid email|valid email|email.+(invalid|valid)|enter.+email/i).first();
     const messageVisible = await validationMessage.isVisible().catch(() => false);
     const ariaInvalid = (await email.getAttribute('aria-invalid')) === 'true';
-    const htmlInvalid = await email.evaluate((el) => {
-      if (!(el instanceof HTMLInputElement)) {
-        return false;
-      }
-      return !el.checkValidity();
-    });
+    const htmlInvalid = await email.evaluate((el) => !el.checkValidity());
 
     expect(messageVisible || ariaInvalid || htmlInvalid).toBeTruthy();
   });
@@ -103,23 +98,13 @@ test.describe('Login Module', () => {
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
 
     // Step 5: Verify at least one required-field validation signal is shown.
-    const email = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+    const email = page.locator('input[type="email"]').first();
     const password = page.locator('input[type="password"]').first();
     const validationMessage = page.getByText(/required|enter.+email|enter.+password|please fill/i).first();
 
     const messageVisible = await validationMessage.isVisible().catch(() => false);
-    const emailInvalid = await email.evaluate((el) => {
-      if (!(el instanceof HTMLInputElement)) {
-        return false;
-      }
-      return !el.checkValidity();
-    });
-    const passwordInvalid = await password.evaluate((el) => {
-      if (!(el instanceof HTMLInputElement)) {
-        return false;
-      }
-      return !el.checkValidity();
-    });
+    const emailInvalid = await email.evaluate((el) => !el.checkValidity());
+    const passwordInvalid = await password.evaluate((el) => !el.checkValidity());
 
     expect(messageVisible || emailInvalid || passwordInvalid).toBeTruthy();
   });
@@ -132,7 +117,7 @@ test.describe('Login Module', () => {
     await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
 
     // Step 2: Fill only the email value.
-    const email = page.getByRole('textbox', { name: /email/i }).or(page.locator('input[type="email"]')).first();
+    const email = page.locator('input[type="email"]').first();
     const password = page.locator('input[type="password"]').first();
     await expect(email).toBeVisible();
     await expect(password).toBeVisible();
@@ -149,12 +134,7 @@ test.describe('Login Module', () => {
     // Step 5: Verify password-required signal appears.
     const validationMessage = page.getByText(/password.+required|enter.+password|required/i).first();
     const messageVisible = await validationMessage.isVisible().catch(() => false);
-    const passwordInvalid = await password.evaluate((el) => {
-      if (!(el instanceof HTMLInputElement)) {
-        return false;
-      }
-      return !el.checkValidity();
-    });
+    const passwordInvalid = await password.evaluate((el) => !el.checkValidity());
 
     expect(messageVisible || passwordInvalid).toBeTruthy();
   });

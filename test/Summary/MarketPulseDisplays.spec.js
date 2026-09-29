@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Summary Module - Market Pulse', () => {
 	test('TC_VerifyMarketPulseDisplayAndRefresh', async ({ page }) => {
 		test.setTimeout(90000);
+		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
 			|| process.env.APP_URL
@@ -18,20 +19,34 @@ test.describe('Summary Module - Market Pulse', () => {
 		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
 
 		// Step 1: Navigate to the login page.
-		await page.goto(buildUrl('/login'));
-		// Step 2: Verify the login page loads.
-		await expect(page).toHaveURL(/login/);
+		await test.step('Step 1: Navigate to the login page', async () => {
+			await page.goto(buildUrl('/login'), {
+				waitUntil: 'domcontentloaded',
+				timeout: 90000,
+			});
+			await expect(page).toHaveURL(/login/);
+		});
 
-		// Step 3: Enter the email address.
-		await page.locator('input[type="email"]').fill(email);
-		// Step 4: Enter the password.
-		await page.locator('input[type="password"]').fill(passwordValue);
-		// Step 5: Click the Sign In button.
-		await page.getByRole('button', { name: /sign in/i }).click();
+		// Step 2: Enter the email address.
+		await test.step('Step 2: Enter the email address', async () => {
+			await page.locator('input[type="email"]').first().fill(email);
+		});
 
-		// Step 6: Verify the login redirect completes.
-		await page.waitForLoadState('networkidle');
-		await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+		// Step 3: Enter the password.
+		await test.step('Step 3: Enter the password', async () => {
+			await page.locator('input[type="password"]').first().fill(passwordValue);
+		});
+
+		// Step 4: Click the Sign In button.
+		await test.step('Step 4: Click the Sign In button', async () => {
+			await page.getByRole('button', { name: /sign in/i }).click();
+		});
+
+		// Step 5: Verify the login redirect completes.
+		await test.step('Step 5: Verify the login redirect completes', async () => {
+			await page.waitForLoadState('networkidle');
+			await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+		});
 
 		// Step 7: Scroll to the Market Pulse section.
 		const marketPulseSection = page
@@ -62,35 +77,43 @@ test.describe('Summary Module - Market Pulse', () => {
 		);
 
 		// Step 8: Verify the Market Pulse content is visible.
-		await expect(marketPulseHeading).toBeVisible();
-		await expect(marketPulseDescription).toBeVisible();
-		await expect(liveBriefingText).toBeVisible();
-		await expect(refreshButton).toBeVisible();
-		await expect(expandCollapseControl).toBeVisible();
-		await expect(whatToWatchHeading).toBeVisible();
-		await expect(cacheTimestamp).toBeVisible();
-
-		// Step 9: Click Refresh.
-		await refreshButton.click();
-
-		// Step 10: Verify the Market Pulse refresh cycle completes.
-		await expect(refreshButton).toBeDisabled();
-		await expect(refreshButton.getByRole('progressbar')).toBeVisible();
-		await expect(liveBriefingText).toBeVisible();
-		await expect(whatToWatchHeading).toBeVisible();
-		await expect(cacheTimestamp).toBeVisible();
-		await expect(refreshButton.getByRole('progressbar')).toHaveCount(0, {
-			timeout: 60000,
+		await test.step('Step 8: Verify the Market Pulse content is visible', async () => {
+			await expect(marketPulseHeading).toBeVisible();
+			await expect(marketPulseDescription).toBeVisible();
+			await expect(liveBriefingText).toBeVisible();
+			await expect(refreshButton).toBeVisible();
+			await expect(expandCollapseControl).toBeVisible();
+			await expect(whatToWatchHeading).toBeVisible();
+			await expect(cacheTimestamp).toBeVisible();
 		});
 
-		await expect(liveBriefingText).toBeVisible();
-		await expect(whatToWatchHeading).toBeVisible();
-		await expect(cacheTimestamp).toBeVisible();
-		await expect(marketPulseRegion).not.toContainText(/loading|refreshing/i);
+		// Step 9: Click the Refresh button.
+		await test.step('Step 9: Click the Refresh button', async () => {
+			await refreshButton.click();
+		});
 
-		// Step 11: Log out.
+		// Step 10: Verify the Market Pulse refresh cycle completes.
+		await test.step('Step 10: Verify the Market Pulse refresh cycle completes', async () => {
+			await expect(refreshButton).toBeDisabled();
+			await expect(refreshButton.getByRole('progressbar')).toBeVisible();
+			await expect(liveBriefingText).toBeVisible();
+			await expect(whatToWatchHeading).toBeVisible();
+			await expect(cacheTimestamp).toBeVisible();
+			await expect(refreshButton.getByRole('progressbar')).toHaveCount(0, {
+				timeout: 60000,
+			});
 
-        await page.getByText('QA', { exact: true }).click();
-        await page.getByRole('menuitem', { name: 'Logout' }).click();
+			await expect(liveBriefingText).toBeVisible();
+			await expect(whatToWatchHeading).toBeVisible();
+			await expect(cacheTimestamp).toBeVisible();
+			await expect(marketPulseRegion).not.toContainText(/loading|refreshing/i);
+		});
+
+		// Step 11: Logout from the application.
+		await test.step('Step 11: Logout from the application', async () => {
+			await page.getByText('QA', { exact: true }).click();
+			await page.getByRole('menuitem', { name: 'Logout' }).click();
+			await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
+		});
 	});
 });
