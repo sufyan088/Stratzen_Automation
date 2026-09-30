@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Research and Summary XLK Watchlist', () => {
+test.describe('Research and Summary - Remove XLK Watchlist', () => {
 	test.describe.configure({ timeout: 120000 });
 
-  test('TC003_AddXLKAndVerifyAcrossPages', async ({ page }) => {
+	test('TC004_RemoveXLKAndVerifyAcrossPages', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1400 });
 
 	const appBaseUrl = process.env.URL

@@ -53,6 +53,9 @@ test.describe('Summary Module - Toggle Visibility', () => {
         const getChinaToggle = () => page.getByRole('button', { name: 'Toggle China', exact: true });
         const getForexNewsToggle = () => page.getByRole('button', { name: 'Toggle Forex News', exact: true });
         const getNewsMarketToggle = () => page.getByRole('button', { name: 'Toggle News Market', exact: true });
+        const getMacroEconomicIndicatorsToggle = () => page.getByRole('button', { name: 'Toggle Macro Economic Indicators', exact: true });
+        const getRiskPremiumIndicatorToggle = () => page.getByRole('button', { name: 'Toggle Risk Premium Indicator', exact: true });
+        const getKeyEconomicAndMarketEventsToggle = () => page.getByRole('button', { name: 'Toggle Key Economic and Market Events', exact: true });
         const clickWhenStable = async (getLocator) => {
             for (let attempt = 0; attempt < 3; attempt += 1) {
                 const locator = getLocator();
@@ -75,6 +78,9 @@ test.describe('Summary Module - Toggle Visibility', () => {
                 const targetValue = shouldBeOn ? 'true' : 'false';
                 if ((await toggle.getAttribute('aria-pressed')) !== targetValue) {
                     await clickWhenStable(getToggle);
+                    if ((await getToggle().getAttribute('aria-pressed')) !== targetValue) {
+                        await getToggle().evaluate((button) => button.click());
+                    }
                     await expect(getToggle()).toHaveAttribute('aria-pressed', targetValue);
                     return { available: true, changed: true };
                 }
@@ -88,10 +94,14 @@ test.describe('Summary Module - Toggle Visibility', () => {
         const savePreferences = async () => {
             const savePreferencesButton = page.getByRole('button', { name: 'Save Preferences' });
             await expect(savePreferencesButton).toBeVisible();
-            await savePreferencesButton.dispatchEvent('click');
-            await expect(savePreferencesButton).toBeEnabled({ timeout: 30000 });
+            await expect(savePreferencesButton).toBeEnabled();
+            await savePreferencesButton.evaluate((button) => button.click());
             await page.waitForLoadState('networkidle');
         };
+
+        await setToggleStateIfAvailable(getMacroEconomicIndicatorsToggle, true);
+        await setToggleStateIfAvailable(getRiskPremiumIndicatorToggle, true);
+        await setToggleStateIfAvailable(getKeyEconomicAndMarketEventsToggle, true);
 
         // Step 7: Turn off the CPI toggle when available.
         const cpiResult = await setToggleStateIfAvailable(getCpiToggle, false);
@@ -156,6 +166,10 @@ test.describe('Summary Module - Toggle Visibility', () => {
         await expect(page).toHaveURL(/preferences/);
         await expect(page.getByRole('button', { name: 'Summary Page Display', exact: true })).toBeVisible();
 
+        await setToggleStateIfAvailable(getMacroEconomicIndicatorsToggle, true);
+        await setToggleStateIfAvailable(getRiskPremiumIndicatorToggle, true);
+        await setToggleStateIfAvailable(getKeyEconomicAndMarketEventsToggle, true);
+
         // Step 18: Turn on the CPI toggle when available.
         if (cpiResult.available) {
             await setToggleStateIfAvailable(getCpiToggle, true);
@@ -181,26 +195,32 @@ test.describe('Summary Module - Toggle Visibility', () => {
         await navigateToSummary();
 
         // Step 23: Verify Macro Economic Indicators is visible again.
-        const restoredMacroSection = page.getByText('Macro Economic Indicators').first();
+        const restoredMacroSection = page.getByRole('heading', { name: /Macro Economic Indicators/i }).first();
         await expect(restoredMacroSection).toBeVisible();
 
-        // Step 24: Verify the China toggle is on when available.
+        // Step 24: Return to Preferences to verify the restored toggle states.
+        await page.getByText('QA', { exact: true }).click();
+        await page.getByRole('menuitem', { name: 'Preferences' }).click();
+        await expect(page).toHaveURL(/preferences/);
+        await expect(page.getByRole('button', { name: 'Summary Page Display', exact: true })).toBeVisible();
+
+        // Step 25: Verify the China toggle is on when available.
         if (chinaResult.available) {
             await expect(getChinaToggle()).toHaveAttribute('aria-pressed', 'true');
         }
 
-        // Step 25: Verify the Forex News toggle is on when available.
+        // Step 26: Verify the Forex News toggle is on when available.
         if (forexNewsResult.available) {
             await expect(getForexNewsToggle()).toHaveAttribute('aria-pressed', 'true');
         }
 
-        // Step 26: Verify the News Market toggle is on when available.
+        // Step 27: Verify the News Market toggle is on when available.
         if (newsMarketResult.available) {
             await expect(getNewsMarketToggle()).toHaveAttribute('aria-pressed', 'true');
         }
 
-        // Step 27: Logout from the application.
-        await test.step('Step 27: Logout from the application', async () => {
+        // Step 28: Logout from the application.
+        await test.step('Step 28: Logout from the application', async () => {
             await page.getByText('QA', { exact: true }).click();
             await page.getByRole('menuitem', { name: 'Logout' }).click();
             await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
