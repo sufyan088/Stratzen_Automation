@@ -63,13 +63,16 @@ test.describe('Summary Preferences - Summary Page Display', () => {
 
 			if ((await toggle.getAttribute('aria-pressed')) !== targetValue) {
 				await clickWhenStable(() => getToggle(label));
+				await page.waitForTimeout(500);
 
 				if ((await getToggle(label).getAttribute('aria-pressed')) !== targetValue) {
 					await getToggle(label).evaluate((button) => button.click());
+					await page.waitForTimeout(500);
 				}
 			}
 
 			await expect(getToggle(label)).toHaveAttribute('aria-pressed', targetValue);
+			await page.waitForTimeout(500);
 		};
 
 		const openPreferences = async () => {
@@ -105,24 +108,43 @@ test.describe('Summary Preferences - Summary Page Display', () => {
 		};
 
 		const ensureAllSummaryDisplayTogglesOn = async () => {
-			const toggleLabels = [
+			const parentToggleLabels = [
 				'Macro Economic Indicators',
-				'CPI',
 				'Risk Premium Indicator',
-				'China',
 				'Key Economic and Market Events',
+			];
+			const childToggleLabels = [
+				'CPI',
+				'China',
 				'Forex News',
 				'FOMC Recent Summary',
 			];
 
-			for (const label of toggleLabels) {
+			for (const label of parentToggleLabels) {
 				await setToggleState(label, true);
 			}
+
+			for (const label of childToggleLabels) {
+				await setToggleState(label, true);
+			}
+
+			await turnOnAllVisibleOffToggles(false);
 
 			await savePreferences();
 		};
 
-		const turnOnAllVisibleOffToggles = async () => {
+		const turnOnAllVisibleOffToggles = async (shouldSave = true) => {
+			const parentToggleLabels = [
+				'Macro Economic Indicators',
+				'Risk Premium Indicator',
+				'Key Economic and Market Events',
+			];
+			const childToggleLabels = [
+				'CPI',
+				'China',
+				'Forex News',
+				'FOMC Recent Summary',
+			];
 			const offToggleLabels = await page
 				.locator('button[aria-pressed="false"]')
 				.evaluateAll((buttons) => buttons
@@ -136,11 +158,31 @@ test.describe('Summary Preferences - Summary Page Display', () => {
 					.map((button) => button.getAttribute('aria-label')?.replace(/^Toggle\s+/, ''))
 					.filter(Boolean));
 
+			for (const label of parentToggleLabels) {
+				if (offToggleLabels.includes(label)) {
+					await setToggleState(label, true);
+				}
+			}
+
+			for (const label of childToggleLabels) {
+				if (offToggleLabels.includes(label)) {
+					await setToggleState(label, true);
+				}
+			}
+
 			for (const label of offToggleLabels) {
+				if (parentToggleLabels.includes(label) || childToggleLabels.includes(label)) {
+					continue;
+				}
+
 				await setToggleState(label, true);
 			}
 
-			await savePreferences();
+			await expect(page.locator('button[aria-pressed="false"]:visible')).toHaveCount(0);
+
+			if (shouldSave) {
+				await savePreferences();
+			}
 		};
 
 		const macroHeading = page.getByRole('heading', { name: /Macro Economic Indicators/i }).first();
@@ -381,6 +423,8 @@ test.describe('Summary Preferences - Summary Page Display', () => {
 		// Step 40: Turn on any visible toggles that are still off.
 		await test.step('Step 40: Turn on all visible toggles that are off', async () => {
 			await openPreferences();
+			await page.waitForLoadState('networkidle');
+			await page.waitForTimeout(1000);
 			await turnOnAllVisibleOffToggles();
 			await savePreferences();
 		});
