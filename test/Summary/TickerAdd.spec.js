@@ -4,7 +4,6 @@ test.describe('Research and Summary - Add XLK Watchlist', () => {
   test.describe.configure({ timeout: 120000 });
 
   test('TC003_AddXLKAndVerifyAcrossPages', async ({ page }) => {
-    await page.setViewportSize({ width: 1600, height: 1400 });
 
     const appBaseUrl = process.env.URL
       || process.env.APP_URL

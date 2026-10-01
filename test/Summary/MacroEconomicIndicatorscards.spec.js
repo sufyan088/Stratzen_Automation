@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('Summary Module - Macro Economic Indicators', () => {
     test('TC_VerifyMacroEconomicIndicatorsDetailView', async ({ page }) => {
         test.setTimeout(90000);
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
         const appBaseUrl = process.env.URL
             || process.env.APP_URL

@@ -4,7 +4,6 @@ test.describe('Research and Summary - Remove XLK Watchlist', () => {
 	test.describe.configure({ timeout: 120000 });
 
 	test('TC004_RemoveXLKAndVerifyAcrossPages', async ({ page }) => {
-	await page.setViewportSize({ width: 1600, height: 1400 });
 
 	const appBaseUrl = process.env.URL
 		|| process.env.APP_URL
@@ -89,7 +88,7 @@ test.describe('Research and Summary - Remove XLK Watchlist', () => {
 	await expect(xlkRow).toBeVisible();
 
 	const xlkStar = xlkRow.locator('td').first().locator('span').first();
-	await expect(xlkStar).toHaveText('★');
+	await expect(xlkStar).toHaveText('â˜…');
 	await expect(xlkStar).toHaveCSS('color', 'rgb(245, 158, 11)');
 
 	// Step 9: Remove XLK from the ETF watchlist.

@@ -4,7 +4,6 @@ test.describe('Summary Module - Toggle Visibility', () => {
     test.describe.configure({ timeout: 120000 });
 
     test('TC002_SummaryPageDisplay_ToggleCardsOff', async ({ page }) => {
-        await page.setViewportSize({ width: 1600, height: 1400 });
 
         const appBaseUrl = process.env.URL
             || process.env.APP_URL

@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('RIA Module - Detail Drawer Web Links', () => {
 	test('TC_VerifyDetailDrawerHeaderWebLinksAreClickableAndRenderCorrectly', async ({ page }) => {
 		test.setTimeout(180000);
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
 			|| process.env.APP_URL

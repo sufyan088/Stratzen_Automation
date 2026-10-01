@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('Summary Module - Market Pulse', () => {
 	test('TC_VerifyMarketPulseDisplayAndRefresh', async ({ page }) => {
 		test.setTimeout(90000);
-		await page.setViewportSize({ width: 1600, height: 1400 });
 
 		const appBaseUrl = process.env.URL
 			|| process.env.APP_URL
@@ -73,7 +72,7 @@ test.describe('Summary Module - Market Pulse', () => {
 			hasText: /S&P 500 at/i,
 			}).first();
 		const cacheTimestamp = marketPulseRegion.getByText(
-			/(?:Cached\s+[·•]\s+)?Next refresh:/i,
+			/(?:Cached\s+[Â·â€¢]\s+)?Next refresh:/i,
 		);
 
 		// Step 8: Verify the Market Pulse content is visible.
