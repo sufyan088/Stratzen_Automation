@@ -122,6 +122,27 @@ test.describe('Summary Preferences - Summary Page Display', () => {
 			await savePreferences();
 		};
 
+		const turnOnAllVisibleOffToggles = async () => {
+			const offToggleLabels = await page
+				.locator('button[aria-pressed="false"]')
+				.evaluateAll((buttons) => buttons
+					.filter((button) => {
+						const element = button;
+						const styles = window.getComputedStyle(element);
+						return styles.visibility !== 'hidden'
+							&& styles.display !== 'none'
+							&& element.getClientRects().length > 0;
+					})
+					.map((button) => button.getAttribute('aria-label')?.replace(/^Toggle\s+/, ''))
+					.filter(Boolean));
+
+			for (const label of offToggleLabels) {
+				await setToggleState(label, true);
+			}
+
+			await savePreferences();
+		};
+
 		const macroHeading = page.getByRole('heading', { name: /Macro Economic Indicators/i }).first();
 		const riskPremiumHeading = page.getByRole('heading', { name: /Risk Premium Indicator/i }).first();
 		const keyEventsHeading = page.getByRole('heading', { name: /Key Economic and Market Events/i }).first();
@@ -357,8 +378,15 @@ test.describe('Summary Preferences - Summary Page Display', () => {
 			await expect(keyEventsRegion).toContainText(/FOMC Recent Summary/i);
 		});
 
-		// Step 40: Logout from the application.
-		await test.step('Step 40: Logout from the application', async () => {
+		// Step 40: Turn on any visible toggles that are still off.
+		await test.step('Step 40: Turn on all visible toggles that are off', async () => {
+			await openPreferences();
+			await turnOnAllVisibleOffToggles();
+			await savePreferences();
+		});
+
+		// Step 41: Logout from the application.
+		await test.step('Step 41: Logout from the application', async () => {
 			await clickWhenStable(() => profileButton);
 			await clickWhenStable(() => page.getByRole('menuitem', { name: 'Logout' }));
 			await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
