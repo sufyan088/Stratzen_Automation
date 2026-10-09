@@ -1,5 +1,4 @@
 const { defineConfig, devices } = require('@playwright/test');
-
 module.exports = defineConfig({
   testDir: './test',
   timeout: 30000,
@@ -10,7 +9,7 @@ module.exports = defineConfig({
   fullyParallel: false,
 
   use: {
-    baseURL: 'https://demoapp.stratzen.ai',
+    baseURL: process.env.BASE_URL || 'https://demoapp.stratzen.ai',
     headless: false,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',

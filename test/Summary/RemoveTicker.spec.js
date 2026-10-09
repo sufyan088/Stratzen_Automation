@@ -88,7 +88,7 @@ test.describe('Research and Summary - Remove XLK Watchlist', () => {
 	await expect(xlkRow).toBeVisible();
 
 	const xlkStar = xlkRow.locator('td').first().locator('span').first();
-	await expect(xlkStar).toHaveText('â˜…');
+	await expect(xlkStar).toHaveText('★');
 	await expect(xlkStar).toHaveCSS('color', 'rgb(245, 158, 11)');
 
 	// Step 9: Remove XLK from the ETF watchlist.
