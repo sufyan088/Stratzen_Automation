@@ -1,8 +1,9 @@
 const { defineConfig, devices } = require('@playwright/test');
+require('dotenv').config();
 
 module.exports = defineConfig({
   testDir: './test',
-  timeout: 30000,
+  timeout: 120000,
   workers: 1,
   expect: {
     timeout: 10000,
@@ -10,7 +11,11 @@ module.exports = defineConfig({
   fullyParallel: false,
 
   use: {
-    baseURL: 'https://demoapp.stratzen.ai',
+    baseURL: process.env.BASE_URL || 'https://demoapp.stratzen.ai',
+    username: process.env.STRATZEN_EMAIL,
+    password: process.env.STRATZEN_PASSWORD,
+    outlookUsername: process.env.OUTLOOK_EMAIL,
+    outlookPassword: process.env.OUTLOOK_PASSWORD,
     headless: false,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',

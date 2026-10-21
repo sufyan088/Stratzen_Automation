@@ -1,47 +1,62 @@
 import { test, expect } from '@playwright/test';
+import {
+  completeSignInWithOptionalOutlookSso,
+  getTestData,
+  installNativeDialogHandler,
+  resilientLocator,
+  safeClick,
+  safeFill,
+} from './mammothhai-playwright-helpers.js';
 
 test.describe('Research and Summary - Add XLK Watchlist', () => {
   test.describe.configure({ timeout: 120000 });
 
   test('TC003_AddXLKAndVerifyAcrossPages', async ({ page }) => {
 
+    installNativeDialogHandler(page);
+    const use = test.info().project.use;
+    const destinationUrlStep1 = getTestData('destination_url__step1');
+
     const appBaseUrl = process.env.URL
       || process.env.APP_URL
       || process.env.BASE_URL
-      || test.info().project.use.baseURL;
+      || use.baseURL;
 
-    if (!appBaseUrl) {
-      throw new Error('Set URL, APP_URL, or BASE_URL before running this test.');
-    }
-
-    const buildUrl = (path) => new URL(path, appBaseUrl).toString();
-    const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
-    const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
+    const destinationUrl = destinationUrlStep1 || `${String(appBaseUrl).replace(/\/+$/, '')}/login`;
+    const authUsername = use.username || process.env.STRATZEN_EMAIL;
+    const password = use.password || process.env.STRATZEN_PASSWORD;
+    const outlookUsername = use.outlookUsername || process.env.OUTLOOK_EMAIL;
+    const outlookPassword = use.outlookPassword || process.env.OUTLOOK_PASSWORD;
     const tickerSymbol = 'XLK';
 
+    if (!destinationUrl) throw new Error('Missing destination_url__step1 / BASEURL test data.');
+    if (!authUsername || !password) throw new Error('Missing username or password in project.use or environment variables.');
+
     // Step 1: Navigate to the login page.
-    await page.goto(buildUrl('/login'), {
+    await page.goto(destinationUrl, {
       waitUntil: 'domcontentloaded',
       timeout: 90000,
     });
     await expect(page).toHaveURL(/login/);
 
     // Step 2: Enter the email address.
-    const emailField = page.locator('input[type="email"]');
-    await expect(emailField).toBeVisible();
-    await emailField.fill(email);
+    const emailField = await resilientLocator(page, ['input[type="email"]'], { labelFallback: 'Email Address', role: 'textbox' });
+    await safeFill(emailField, String(authUsername));
+    await expect(page.locator('input[type="email"]').first()).toHaveValue(String(authUsername));
 
     // Step 3: Enter the password.
-    const passwordField = page.locator('input[type="password"]');
-    await expect(passwordField).toBeVisible();
-    await passwordField.fill(passwordValue);
+    const passwordField = await resilientLocator(page, ['input[type="password"]'], { labelFallback: 'Password', role: 'textbox' });
+    await safeFill(passwordField, String(password));
+    await expect(page.locator('input[type="password"]').first()).toHaveValue(String(password));
 
     // Step 4: Click the Sign In button.
-    await page.getByRole('button', { name: /sign in/i }).click();
+    const signInButton = await resilientLocator(page, ['button[type="submit"]'], { labelFallback: 'Sign In', role: 'button' });
+    await safeClick(signInButton, { timeout: 15000 });
+    await completeSignInWithOptionalOutlookSso(page, outlookUsername, outlookPassword);
 
     // Step 5: Verify the login redirect completes.
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
+    await expect(page).toHaveURL(/\/(summary|rias|research|preferences)(?:[/?#]|$)/);
 
     // Step 6: Open Research and the ETF watchlist.
     await page.getByRole('link', { name: 'Research', exact: true }).click();

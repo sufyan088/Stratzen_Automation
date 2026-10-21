@@ -1,26 +1,33 @@
 import { test, expect } from '@playwright/test';
+import {
+	getTestData,
+	installNativeDialogHandler,
+	resilientLocator,
+	safeClick,
+	safeFill,
+} from './mammothhai-playwright-helpers.js';
 
 test.setTimeout(120000);
 
 test.describe('Summary Module - Login', () => {
 	test('TC_Login_EmailFieldEmpty', async ({ page }) => {
+		installNativeDialogHandler(page);
+		const use = test.info().project.use;
+		const destinationUrlStep1 = getTestData('destination_url__step1');
 
 		const baseUrl = process.env.URL
 			|| process.env.APP_URL
 			|| process.env.BASE_URL
-			|| test.info().project.use.baseURL
+			|| use.baseURL
 			|| 'https://demoapp.stratzen.ai';
+		const destinationUrl = destinationUrlStep1 || `${String(baseUrl).replace(/\/+$/, '')}/login`;
+		const password = use.password || process.env.STRATZEN_PASSWORD;
 
-		const buildUrl = (path) => {
-			const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
-			const cleanPath = path.startsWith('/') ? path : `/${path}`;
-			return `${cleanBaseUrl}${cleanPath}`;
-		};
-
-		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
+		if (!destinationUrl) throw new Error('Missing destination_url__step1 / BASEURL test data.');
+		if (!password) throw new Error('Missing password in project.use or environment variables.');
 
 		// Step 1: Navigate to the login page.
-		await page.goto(buildUrl('/login'), {
+		await page.goto(destinationUrl, {
 			waitUntil: 'domcontentloaded',
 			timeout: 90000,
 		});
@@ -29,18 +36,19 @@ test.describe('Summary Module - Login', () => {
 		});
 
 		const emailField = page.getByRole('textbox', { name: 'Email Address' });
-		const passwordField = page.getByRole('textbox', { name: 'Password' });
+		const passwordField = await resilientLocator(page, ['input[type="password"]'], { labelFallback: 'Password', role: 'textbox' });
 
 		// Step 2: Keep the email field empty.
 		await expect(emailField).toBeVisible({ timeout: 10000 });
 		await emailField.fill('');
 
 		// Step 3: Enter the password.
-		await expect(passwordField).toBeVisible({ timeout: 10000 });
-		await passwordField.fill(passwordValue);
+		await safeFill(passwordField, String(password));
+		await expect(page.locator('input[type="password"]').first()).toHaveValue(String(password));
 
 		// Step 4: Click the Sign In button.
-		await page.getByRole('button', { name: /sign in/i }).click();
+		const signInButton = await resilientLocator(page, ['button[type="submit"]'], { labelFallback: 'Sign In', role: 'button' });
+		await safeClick(signInButton, { timeout: 15000 });
 
 		// Step 5: Verify login is blocked and email validation appears.
 		await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
