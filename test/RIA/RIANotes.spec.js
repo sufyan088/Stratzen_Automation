@@ -1,4 +1,106 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
+
+async function clickIfVisible(locator, timeout = 1500) {
+	const visible = await locator.first().isVisible({ timeout }).catch(() => false);
+	if (visible) {
+		await locator.first().click();
+		return true;
+	}
+
+	return false;
+}
+
+async function fillFirstVisible(page, selectors, value, timeout = 6000) {
+	for (const selector of selectors) {
+		const field = page.locator(selector).first();
+		const visible = await field.isVisible({ timeout }).catch(() => false);
+		if (!visible) {
+			continue;
+		}
+
+		await field.fill(value);
+		return true;
+	}
+
+	return false;
+}
+
+function isMicrosoftHost(urlString) {
+	try {
+		const url = new URL(urlString);
+		return /microsoftonline\.com$/i.test(url.hostname)
+			|| /live\.com$/i.test(url.hostname)
+			|| /outlook\.com$/i.test(url.hostname);
+	} catch {
+		return false;
+	}
+}
+
+function isTargetAppUrl(urlString) {
+	try {
+		const url = new URL(urlString);
+		if (!/demoapp\.stratzen\.ai$/i.test(url.hostname)) {
+			return false;
+		}
+
+		return /^\/(summary|rias)(\/|$)/i.test(url.pathname);
+	} catch {
+		return false;
+	}
+}
+
+async function handleOutlookSsoAfterAppSignIn(page, outlookEmail, outlookPassword) {
+	const deadline = Date.now() + 90000;
+
+	while (Date.now() < deadline) {
+		const currentUrl = page.url();
+
+		if (isMicrosoftHost(currentUrl)) {
+			await clickIfVisible(page.getByRole('button', { name: /use another account/i }), 1000);
+
+			const emailEntered = await fillFirstVisible(
+				page,
+				['input[name="loginfmt"]', 'input[placeholder="Email, phone, or Skype"]'],
+				outlookEmail,
+				5000,
+			);
+
+			if (emailEntered) {
+				await clickIfVisible(page.getByRole('button', { name: /next|sign in/i }), 3000);
+				await clickIfVisible(page.locator('#idSIButton9'), 3000);
+			}
+
+			const passwordEntered = await fillFirstVisible(page, ['input[name="passwd"]'], outlookPassword, 10000);
+			if (passwordEntered) {
+				await clickIfVisible(page.getByRole('button', { name: /sign in|log in|next/i }), 3000);
+				await clickIfVisible(page.locator('#idSIButton9'), 3000);
+			}
+
+			await clickIfVisible(page.locator('#KmsiCheckboxField'), 2000);
+			await clickIfVisible(page.locator('input[name="DontShowAgain"]'), 2000);
+			await clickIfVisible(page.getByRole('checkbox', { name: /don'?t show this again/i }), 2000);
+			await clickIfVisible(page.getByRole('button', { name: /^yes$/i }), 3000);
+			await clickIfVisible(page.locator('#idSIButton9'), 3000);
+
+			await page.waitForLoadState('domcontentloaded').catch(() => {});
+			await page.waitForTimeout(400);
+			continue;
+		}
+
+		if (isTargetAppUrl(currentUrl)) {
+			await page.waitForTimeout(2500);
+			if (isTargetAppUrl(page.url())) {
+				return;
+			}
+
+			continue;
+		}
+
+		await page.waitForTimeout(300);
+	}
+
+	throw new Error(`Outlook SSO did not complete within timeout. Current URL: ${page.url()}`);
+}
 
 test.describe('RIA Module - Notes In Detail Drawer', () => {
 	test.describe.configure({ timeout: 120000 });
@@ -16,6 +118,8 @@ test.describe('RIA Module - Notes In Detail Drawer', () => {
 		const buildUrl = (path) => new URL(path, appBaseUrl).toString();
 		const email = process.env.STRATZEN_EMAIL || 'SZ_AutoQA@stratzen.ai';
 		const passwordValue = process.env.STRATZEN_PASSWORD || 'StratzenAutomation123';
+		const outlookEmail = process.env.OUTLOOK_EMAIL || 'muhammadf@stratzen.ai';
+		const outlookPassword = process.env.OUTLOOK_PASSWORD || 'Tornado#123';
 		const noteText = 'RIA TEST NOTE ADDED';
 		const updatedNoteText = 'RIA TEST NOTE UPDATED';
 
@@ -45,6 +149,8 @@ test.describe('RIA Module - Notes In Detail Drawer', () => {
 		// Step 4: Click the Sign In button.
 		await test.step('Step 4: Click the Sign In button', async () => {
 			await page.getByRole('button', { name: /sign in/i }).click();
+			await handleOutlookSsoAfterAppSignIn(page, outlookEmail, outlookPassword);
+			await page.waitForURL('https://demoapp.stratzen.ai/summary');
 		});
 
 		// Step 5: Open the RIAs page.
@@ -227,3 +333,4 @@ test.describe('RIA Module - Notes In Detail Drawer', () => {
 		});
 	});
 });
+
