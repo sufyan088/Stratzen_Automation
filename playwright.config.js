@@ -1,6 +1,5 @@
 const { defineConfig, devices } = require('@playwright/test');
 require('dotenv').config();
-
 module.exports = defineConfig({
   testDir: './test',
   timeout: 120000,

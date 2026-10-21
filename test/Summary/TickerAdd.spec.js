@@ -12,6 +12,7 @@ test.describe('Research and Summary - Add XLK Watchlist', () => {
   test.describe.configure({ timeout: 120000 });
 
   test('TC003_AddXLKAndVerifyAcrossPages', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1400 });
 
     installNativeDialogHandler(page);
     const use = test.info().project.use;
@@ -31,6 +32,13 @@ test.describe('Research and Summary - Add XLK Watchlist', () => {
 
     if (!destinationUrl) throw new Error('Missing destination_url__step1 / BASEURL test data.');
     if (!authUsername || !password) throw new Error('Missing username or password in project.use or environment variables.');
+
+    const parseCurrency = (value) => Number((value || '').replace(/[^0-9.-]/g, ''));
+    const normalizeValue = (value) => (value || '').replace(/\s+/g, ' ').trim();
+    const extractScoreValue = (value) => {
+      const match = normalizeValue(value).match(/-?\d+(?:\.\d+)?/);
+      return match ? match[0] : '';
+    };
 
     // Step 1: Navigate to the login page.
     await page.goto(destinationUrl, {
@@ -109,15 +117,43 @@ test.describe('Research and Summary - Add XLK Watchlist', () => {
     // Step 8: Capture the XLK watchlist row details.
     const researchTickerCell = xlkResearchRow.getByText('XLK', { exact: true });
     await expect(researchTickerCell).toBeVisible();
+    const researchRowCells = xlkResearchRow.locator('td');
+    const researchNavText = normalizeValue(await researchRowCells.nth(3).textContent());
+    const researchScoreText = extractScoreValue(await researchRowCells.nth(10).textContent());
+
+    expect(researchNavText).toMatch(/^\$/);
+    expect(researchScoreText).toBeTruthy();
 
     // Step 9: Open Summary and verify synchronized ticker visibility.
     await page.getByRole('link', { name: 'Summary', exact: true }).click();
     await expect(page).toHaveURL(/\/summary(?:[/?#]|$)/);
     await expect(page.getByRole('button', { name: 'Equity Market Outlook Market' })).toBeVisible();
 
-    const summaryTicker = page.getByText(tickerSymbol, { exact: true }).first();
+    const summaryEquitiesSection = page
+      .getByText('EQUITIES', { exact: true })
+      .locator('xpath=ancestor::*[.//*[normalize-space()="Ticker"] and .//*[normalize-space()="Price"] and .//*[normalize-space()="Score"]][1]');
+    const summaryTicker = summaryEquitiesSection.getByText(tickerSymbol, { exact: true }).first();
     await expect.poll(async () => await summaryTicker.count(), { timeout: 15000 }).toBeGreaterThan(0);
     await expect(summaryTicker).toBeVisible();
+
+    const summaryTickerRow = summaryTicker.locator('xpath=ancestor::*[count(*)=4][1]');
+    const summaryTickerCells = summaryTickerRow.locator('xpath=./*');
+    const summaryPriceText = normalizeValue(await summaryTickerCells.nth(1).textContent());
+    const summaryScoreText = extractScoreValue(await summaryTickerCells.nth(3).textContent());
+
+    expect(summaryPriceText).toMatch(/^\$/);
+    expect(summaryScoreText).toBe(researchScoreText);
+
+    const researchNavValue = parseCurrency(researchNavText);
+    const summaryPriceValue = parseCurrency(summaryPriceText);
+    const navDifference = Math.abs(researchNavValue - summaryPriceValue);
+
+    expect(Number.isFinite(researchNavValue)).toBeTruthy();
+    expect(Number.isFinite(summaryPriceValue)).toBeTruthy();
+    expect(
+      navDifference,
+      `Expected Research NAV ${researchNavText} and Summary price ${summaryPriceText} to differ by no more than $30, but the difference was $${navDifference.toFixed(2)}.`
+    ).toBeLessThanOrEqual(30);
 
     await page.getByText('QA', { exact: true }).click();
     await page.getByRole('menuitem', { name: 'Preferences' }).click();
@@ -136,6 +172,5 @@ test.describe('Research and Summary - Add XLK Watchlist', () => {
       await page.getByRole('menuitem', { name: 'Logout' }).click();
       await expect(page).toHaveURL(/\/login(?:[/?#]|$)/);
     });
-
   });
-  });
+});
