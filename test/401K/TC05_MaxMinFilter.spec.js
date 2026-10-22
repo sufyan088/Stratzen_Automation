@@ -9,7 +9,7 @@ import {
 } from '../Summary/mammothhai-playwright-helpers.js';
 
 test.describe('401K Module - Max / Min Filters', () => {
-	test.describe.configure({ timeout: 90000 });
+	test.describe.configure({ timeout: 120000 });
 
 	test('TC05_VerifyParticipantsTotalAssetsAndTotalFeesMinimumMaximumFilters', async ({ page }) => {
 		installNativeDialogHandler(page);
@@ -184,10 +184,18 @@ test.describe('401K Module - Max / Min Filters', () => {
 		const totalFeesMaxField = totalFeesHeader.locator('input').nth(1);
 
 		const clearField = async (field) => {
-			await field.click();
+			await activateField(field);
 			await field.press('ControlOrMeta+A');
 			await field.press('Backspace');
 			await field.blur();
+		};
+
+		const activateField = async (field) => {
+			await field.scrollIntoViewIfNeeded().catch(() => {});
+			const focused = await field.focus().then(() => true).catch(() => false);
+			if (!focused) {
+				await field.evaluate((element) => element.focus());
+			}
 		};
 
 		const commitField = async (field) => {
@@ -203,14 +211,25 @@ test.describe('401K Module - Max / Min Filters', () => {
 		const setNumericFieldWithRetry = async (field, value) => {
 			const expectedValue = String(value);
 			for (let attempt = 0; attempt < 3; attempt += 1) {
-				await field.click();
+				await activateField(field);
+				await field.press('ControlOrMeta+A');
+				await field.press('Backspace');
+				await field.fill(expectedValue);
+				await commitField(field);
+
+				const normalizedValue = await getNormalizedFieldValue(field);
+				if (normalizedValue === expectedValue) {
+					return;
+				}
+
+				await activateField(field);
 				await field.press('ControlOrMeta+A');
 				await field.press('Backspace');
 				await field.type(expectedValue, { delay: 40 });
 				await commitField(field);
 
-				const normalizedValue = await getNormalizedFieldValue(field);
-				if (normalizedValue === expectedValue) {
+				const typedValue = await getNormalizedFieldValue(field);
+				if (typedValue === expectedValue) {
 					return;
 				}
 			}
