@@ -195,6 +195,29 @@ test.describe('401K Module - Max / Min Filters', () => {
 			await field.blur();
 		};
 
+		const getNormalizedFieldValue = async (field) => {
+			const rawValue = (await field.inputValue().catch(() => '')) || '';
+			return rawValue.replace(/[,$\s]/g, '').trim();
+		};
+
+		const setNumericFieldWithRetry = async (field, value) => {
+			const expectedValue = String(value);
+			for (let attempt = 0; attempt < 3; attempt += 1) {
+				await field.click();
+				await field.press('ControlOrMeta+A');
+				await field.press('Backspace');
+				await field.type(expectedValue, { delay: 40 });
+				await commitField(field);
+
+				const normalizedValue = await getNormalizedFieldValue(field);
+				if (normalizedValue === expectedValue) {
+					return;
+				}
+			}
+
+			throw new Error(`Unable to set numeric field value to ${expectedValue} after retries.`);
+		};
+
 		const getVisibleColumnValues = async (columnIndex) => {
 			const rowCount = await dataRows.count();
 			const values = [];
@@ -253,9 +276,8 @@ test.describe('401K Module - Max / Min Filters', () => {
 			await expect(participantsMinField).toBeVisible();
 			await expect(participantsMaxField).toBeVisible();
 
-			await participantsMinField.fill(String(participantsMin));
-			await commitField(participantsMinField);
-			await expect(participantsMinField).toHaveValue(String(participantsMin));
+			await setNumericFieldWithRetry(participantsMinField, participantsMin);
+			await expect.poll(async () => getNormalizedFieldValue(participantsMinField), { timeout: 15000 }).toBe(String(participantsMin));
 
 			await expect
 				.poll(async () => {
@@ -266,9 +288,8 @@ test.describe('401K Module - Max / Min Filters', () => {
 		});
 
 		await test.step('Step 7: Enter Participants maximum and verify range', async () => {
-			await participantsMaxField.fill(String(participantsMax));
-			await commitField(participantsMaxField);
-			await expect(participantsMaxField).toHaveValue(String(participantsMax));
+			await setNumericFieldWithRetry(participantsMaxField, participantsMax);
+			await expect.poll(async () => getNormalizedFieldValue(participantsMaxField), { timeout: 15000 }).toBe(String(participantsMax));
 
 			await verifyRangeValues(2, participantsMin, participantsMax);
 		});
@@ -290,12 +311,10 @@ test.describe('401K Module - Max / Min Filters', () => {
 			await expect(totalAssetsMinField).toBeVisible();
 			await expect(totalAssetsMaxField).toBeVisible();
 
-			await totalAssetsMinField.fill(String(totalAssetsMin));
-			await commitField(totalAssetsMinField);
-			await expect(totalAssetsMinField).toHaveValue(String(totalAssetsMin));
-			await totalAssetsMaxField.fill(String(totalAssetsMax));
-			await commitField(totalAssetsMaxField);
-			await expect(totalAssetsMaxField).toHaveValue(String(totalAssetsMax));
+			await setNumericFieldWithRetry(totalAssetsMinField, totalAssetsMin);
+			await expect.poll(async () => getNormalizedFieldValue(totalAssetsMinField), { timeout: 15000 }).toBe(String(totalAssetsMin));
+			await setNumericFieldWithRetry(totalAssetsMaxField, totalAssetsMax);
+			await expect.poll(async () => getNormalizedFieldValue(totalAssetsMaxField), { timeout: 15000 }).toBe(String(totalAssetsMax));
 
 			await verifyRangeValues(3, totalAssetsMin, totalAssetsMax);
 		});
@@ -317,12 +336,10 @@ test.describe('401K Module - Max / Min Filters', () => {
 			await expect(totalFeesMinField).toBeVisible();
 			await expect(totalFeesMaxField).toBeVisible();
 
-			await totalFeesMinField.fill(String(totalFeesMin));
-			await commitField(totalFeesMinField);
-			await expect(totalFeesMinField).toHaveValue(String(totalFeesMin));
-			await totalFeesMaxField.fill(String(totalFeesMax));
-			await commitField(totalFeesMaxField);
-			await expect(totalFeesMaxField).toHaveValue(String(totalFeesMax));
+			await setNumericFieldWithRetry(totalFeesMinField, totalFeesMin);
+			await expect.poll(async () => getNormalizedFieldValue(totalFeesMinField), { timeout: 15000 }).toBe(String(totalFeesMin));
+			await setNumericFieldWithRetry(totalFeesMaxField, totalFeesMax);
+			await expect.poll(async () => getNormalizedFieldValue(totalFeesMaxField), { timeout: 15000 }).toBe(String(totalFeesMax));
 
 			await verifyRangeValues(4, totalFeesMin, totalFeesMax);
 		});
